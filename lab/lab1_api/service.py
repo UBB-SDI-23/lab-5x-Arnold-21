@@ -2,6 +2,11 @@ from .serializers import *
 from .models import *
 from django.db.models import F, Q, Avg
 
+class StadiumLogic:
+    @staticmethod
+    def getStadiumFilteredByName(name):
+        return StadiumSerializer(Stadium.objects.filter(name__icontains = name), many = True).data
+
 class ClubLogic:
     @staticmethod
     def getStadiumCapacityQuery():

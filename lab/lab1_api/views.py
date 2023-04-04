@@ -12,6 +12,12 @@ class stadiumList(generics.ListCreateAPIView):
     queryset = Stadium.objects.all()
     serializer_class = StadiumSerializer
 
+    def get(self, request, *args, **kwargs):
+        nameParam = request.query_params.get("name")
+        if nameParam is None:
+            nameParam = ""
+        return Response(StadiumLogic.getStadiumFilteredByName(nameParam))
+
 class stadiumDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Stadium.objects.all()
     serializer_class = StadiumSerializer
