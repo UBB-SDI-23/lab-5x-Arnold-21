@@ -42,7 +42,7 @@ function CustomForm(props) {
             })
         };
 
-        fetch("http://localhost:8000/stadiums/", requestOptions)
+        fetch("/stadiums/", requestOptions)
             .then((stadium) => {props.refresh();})
     }
 
@@ -59,7 +59,7 @@ function CustomForm(props) {
             })
         };
 
-        const URL = "http://localhost:8000/stadiums/" + String(props.value.id) + "/"
+        const URL = "/stadiums/" + String(props.value.id) + "/"
 
         fetch(URL, requestOptions)
             .then((stadium) => {props.refresh();})
@@ -70,7 +70,7 @@ function CustomForm(props) {
             method: 'DELETE'
         };
 
-        const URL = "http://localhost:8000/stadiums/" + String(props.value.id)
+        const URL = "/stadiums/" + String(props.value.id)
 
         fetch(URL, requestOptions)
             .then((stadium) => {props.refresh();})
