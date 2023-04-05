@@ -183,7 +183,7 @@ export default function CustomTable(){
     const [ stadiumNameFilter, setStadiumNameFilter ] = React.useState("");
     
     var getUrlForStadiums = useCallback(() => {
-        var URL = "http://35.174.171.199/stadiums/"
+        var URL = "/stadiums/";
         if (stadiumNameFilter !== ""){
             URL += "?name=" + stadiumNameFilter;
         }

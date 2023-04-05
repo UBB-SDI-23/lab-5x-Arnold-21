@@ -1,2 +1,1 @@
-/stadiums/* http://ec2-35-174-171-199.compute-1.amazonaws.com/stadiums/ 200!
-/* /index.html 200
+/stadiums/* http://ec2-35-174-171-199.compute-1.amazonaws.com/stadiums/:splat 200
