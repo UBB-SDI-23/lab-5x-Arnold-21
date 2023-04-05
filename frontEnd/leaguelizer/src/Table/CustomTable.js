@@ -3,7 +3,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Table from "@mui/material/Table";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, Container, Grid, TextField } from "@mui/material";
 
 const initialStadiumValue = {
@@ -180,21 +180,21 @@ export default function CustomTable(){
     const [ stadiumValue, setStadiumValue ] = React.useState(initialStadiumValue);
     const [ orderValue, setOrderValue ] = React.useState("name");
     const [ orderDirection, setOrderDirection ] = React.useState("asc");
-    var stadiumNameFilter = ""
+    const [ stadiumNameFilter, setStadiumNameFilter ] = React.useState("");
     
-    var getUrlForStadiums = () => {
-        URL = "http://localhost:8000/stadiums/"
+    var getUrlForStadiums = useCallback(() => {
+        var URL = "http://localhost:8000/stadiums/"
         if (stadiumNameFilter !== ""){
             URL += "?name=" + stadiumNameFilter;
         }
         return URL;
-    }
+    }, [stadiumNameFilter])
 
     useEffect(() => {
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
             .then(stadium => setStadiumList(stadium));
-    }, [])
+    }, [getUrlForStadiums])
 
     const rowClickHandler = (stadium) => {
         setStadiumValue(stadium);
@@ -209,8 +209,7 @@ export default function CustomTable(){
     }
 
     const searchHandler = (e) => {
-        stadiumNameFilter = e.target.value;
-        refresh();
+        setStadiumNameFilter(e.target.value);
     }
 
     const sortingHandler = (property) => {
