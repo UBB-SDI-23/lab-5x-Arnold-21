@@ -118,6 +118,6 @@ matchThread.join()
 
 sqlText += stadiumText + compText + clubText + matchText
 
-with open("data.sql", "w") as file:
+with open("lab/SQL Queries/data.sql", "w") as file:
     print("Writing")
     file.write(sqlText)
