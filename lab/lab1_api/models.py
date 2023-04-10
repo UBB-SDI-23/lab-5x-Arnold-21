@@ -4,6 +4,7 @@ from django.db import models
 class Stadium(models.Model):
     name = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
+    description = models.TextField()
     capacity = models.IntegerField()
     buildDate = models.DateField()
     renovationDate = models.DateField()
