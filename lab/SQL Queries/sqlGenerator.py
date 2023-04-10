@@ -9,7 +9,7 @@ roundOfPlayList = ["G", "R16", "QF", "SM", "F", "L"]
 
 sqlText = "USE leaguelizer;\n"
 
-with open("./lab/SQL Queries/data.sql", "w") as file:
+with open("data.sql", "w") as file:
         print("Writing Start")
         file.write(sqlText)
 
@@ -65,7 +65,7 @@ def addStadiums():
 
         stadiumText += insertText
 
-    with open("./lab/SQL Queries/data.sql", "a") as file:
+    with open("data.sql", "a") as file:
         print("Writing Stadium")
         file.write(stadiumText)
 
@@ -81,7 +81,7 @@ def addCompetition():
 
         compText += insertText
 
-    with open("./lab/SQL Queries/data.sql", "a") as file:
+    with open("data.sql", "a") as file:
         print("Writing Competition")
         file.write(compText)
 
@@ -97,7 +97,7 @@ def addClub():
 
         clubText += insertText
 
-    with open("./lab/SQL Queries/data.sql", "a") as file:
+    with open("data.sql", "a") as file:
         print("Writing Club")
         file.write(clubText)
 
@@ -113,12 +113,12 @@ def addMatches():
         matchText += insertText
 
         if (i + 1) % 1_000 == 0:
-            with open("lab/SQL Queries/data.sql", "a") as file:
+            with open("data.sql", "a") as file:
                 print("Writing Club")
                 file.write(matchText)
                 matchText = ""
 
-    with open("./lab/SQL Queries/data.sql", "a") as file:
+    with open("data.sql", "a") as file:
         print("Writing Club")
         file.write(matchText)
 
