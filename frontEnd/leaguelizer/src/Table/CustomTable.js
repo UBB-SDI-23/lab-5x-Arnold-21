@@ -203,8 +203,8 @@ export default function CustomTable(){
     
     var getUrlForStadiums = useCallback(() => {
         // var URL = "SArnold-sdi-22-23.chickenkiller.com/stadiums/";
-        var URL = URL_BASE + "?page=" + String(pageNumber);
-    }, [ pageNumber])
+        return URL_BASE + "?page=" + String(pageNumber);
+    }, [pageNumber])
 
     useEffect(() => {
         fetch(getUrlForStadiums())
@@ -269,7 +269,7 @@ export default function CustomTable(){
         }
     };
 
-    const debouncedHandler = useCallback(debounce(fetchSuggestion, 500), [fetchSuggestion]);
+    const debouncedHandler = useCallback(() => {debounce(fetchSuggestion, 500)}, []);
 
     return (
         <Container>
