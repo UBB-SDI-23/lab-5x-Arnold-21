@@ -1,10 +1,11 @@
-import { React, useEffect, useCallback, useRef } from "react";
-import debounce from "lodash";
+import { React, useEffect, useCallback, useRef, useState } from "react";
 import { Container, Autocomplete, TextField, Button, Table } from "@mui/material";
 import CustomForm from "./CustomForm";
 import TableHeader from "./Table/TableHeader";
 import TableContent from "./Table/TableContent";
 import URL_BASE from "./constants";
+import { debounce } from "lodash";
+
 
 
 const initialStadiumValue = {
@@ -17,13 +18,13 @@ const initialStadiumValue = {
 }
 
 export default function StadiumPage(){
-    const [ stadiumList, setStadiumList ] = React.useState([]);
-    const [ stadiumValue, setStadiumValue ] = React.useState(initialStadiumValue);
-    const [ orderValue, setOrderValue ] = React.useState("name");
-    const [ orderDirection, setOrderDirection ] = React.useState("asc");
-    const [ pageNumber, setPageNumber ] = React.useState(1);
-    const [ pageMax, setPageMax ] = React.useState(1);
-    const [ autoCompleteNames, setAutoCompleteNames ] = React.useState([]);
+    const [ stadiumList, setStadiumList ] = useState([]);
+    const [ stadiumValue, setStadiumValue ] = useState(initialStadiumValue);
+    const [ orderValue, setOrderValue ] = useState("name");
+    const [ orderDirection, setOrderDirection ] = useState("asc");
+    const [ pageNumber, setPageNumber ] = useState(1);
+    const [ pageMax, setPageMax ] = useState(1);
+    const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=0")

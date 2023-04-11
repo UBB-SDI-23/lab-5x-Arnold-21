@@ -1,14 +1,14 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
 import URL_BASE from "./constants";
 
 export default function CustomForm(props) {
-    const [stadiumNameValue, setStadiumNameValue] = React.useState(props.value.name);
-    const [stadiumBDateValue, setStadiumBDateValue] = React.useState(props.value.name);
-    const [stadiumRDateValue, setStadiumRDateValue] = React.useState(props.value.name);
-    const [stadiumCityValue, setStadiumCityValue] = React.useState(props.value.name);
-    const [stadiumCapacityValue, setStadiumCapacityValue] = React.useState(props.value.name);
-    const [stadiumDescription, setStadiumDescription] = React.useState(props.value.name);
+    const [stadiumNameValue, setStadiumNameValue] = useState(props.value.name);
+    const [stadiumBDateValue, setStadiumBDateValue] = useState(props.value.name);
+    const [stadiumRDateValue, setStadiumRDateValue] = useState(props.value.name);
+    const [stadiumCityValue, setStadiumCityValue] = useState(props.value.name);
+    const [stadiumCapacityValue, setStadiumCapacityValue] = useState(props.value.name);
+    const [stadiumDescription, setStadiumDescription] = useState(props.value.name);
 
     useEffect(() => {
         setStadiumNameValue(props.value.name)
