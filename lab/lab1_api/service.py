@@ -10,8 +10,7 @@ class StadiumLogic:
     
     @staticmethod
     def getAutocompleteStadium(name):
-        # return StadiumSerializer(Stadium.objects.filter(name__icontains=name)[:20], many = True).data
-        return StadiumSerializer(Stadium.objects.raw(f"Select * from lab1_api_stadium where to_tsvector(name) @@ to_tsquery({name}) limit 100"), many=True).data
+        return StadiumSerializer(Stadium.objects.filter(name__icontains=name)[:20], many = True).data
     
     @staticmethod
     def getPageNumber():
