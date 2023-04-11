@@ -13,10 +13,23 @@ class stadiumList(generics.ListCreateAPIView):
     serializer_class = StadiumSerializer
 
     def get(self, request, *args, **kwargs):
+        rowParam = request.query_params.get("pageNumber")
+        if rowParam is not None:
+            return Response({"pageNumber": 2}, status=status.HTTP_200_OK)
+
+        pageNumber = request.query_params.get("page")
         nameParam = request.query_params.get("name")
+        if pageNumber is None and nameParam is None:
+            return Response({"response": "No page recieved"}, status=status.HTTP_200_OK)
+
+        if pageNumber is None:
+            return Response(StadiumLogic.getAutocompleteStadium(nameParam))
+        
+        pageNumber = int(pageNumber)
         if nameParam is None:
-            nameParam = ""
-        return Response(StadiumLogic.getStadiumFilteredByName(nameParam))
+            return Response(StadiumLogic.getPagedStadiums(pageNumber))
+
+        return Response({}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
 class stadiumDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Stadium.objects.all()

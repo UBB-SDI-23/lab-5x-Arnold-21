@@ -1,11 +1,21 @@
 from .serializers import *
 from .models import *
 from django.db.models import F, Q, Avg
+from math import ceil
 
 class StadiumLogic:
     @staticmethod
-    def getStadiumFilteredByName(name):
-        return StadiumSerializer(Stadium.objects.filter(name__icontains = name), many = True).data
+    def getPagedStadiums(page):
+        return StadiumSerializer(Stadium.objects.all()[100*(page - 1):100*page], many = True).data
+    
+    @staticmethod
+    def getAutocompleteStadium(name):
+        return StadiumSerializer(Stadium.objects.filter(name__icontains=name)[:20], many = True).data
+    
+    @staticmethod
+    def getPageNumber():
+        return ceil(Stadium.objects.all().count()/100)
+        
 
 class ClubLogic:
     @staticmethod

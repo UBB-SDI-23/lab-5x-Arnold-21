@@ -4,15 +4,19 @@ import TableCell from "@mui/material/TableCell";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Table from "@mui/material/Table";
 import React, { useCallback, useEffect } from "react";
-import { Button, Container, Grid, TextField } from "@mui/material";
+import { Autocomplete, Button, Container, Grid, TextField } from "@mui/material";
+import { debounce } from "lodash"
 
 const initialStadiumValue = {
     "name": "asd",
     "capacity": "",
     "buildDate": "",
     "renovationDate": "",
-    "city": ""
+    "city": "",
+    "description": ""
 }
+
+const URL_BASE = "http://localhost:8000/api/stadiums/";
 
 function CustomForm(props) {
     const [stadiumNameValue, setStadiumNameValue] = React.useState(props.value.name);
@@ -20,6 +24,7 @@ function CustomForm(props) {
     const [stadiumRDateValue, setStadiumRDateValue] = React.useState(props.value.name);
     const [stadiumCityValue, setStadiumCityValue] = React.useState(props.value.name);
     const [stadiumCapacityValue, setStadiumCapacityValue] = React.useState(props.value.name);
+    const [stadiumDescription, setStadiumDescription] = React.useState(props.value.name);
 
     useEffect(() => {
         setStadiumNameValue(props.value.name)
@@ -27,6 +32,7 @@ function CustomForm(props) {
         setStadiumRDateValue(props.value.renovationDate)
         setStadiumCityValue(props.value.city)
         setStadiumCapacityValue(props.value.capacity)
+        setStadiumDescription(props.value.description)
     }, [props]);
 
     const postButtonHandler = () => {
@@ -38,11 +44,12 @@ function CustomForm(props) {
                 "city": stadiumCityValue,
                 "capacity": stadiumCapacityValue,
                 "buildDate": stadiumBDateValue,
-                "renovationDate": stadiumRDateValue
+                "renovationDate": stadiumRDateValue,
+                "description": stadiumDescription
             })
         };
 
-        fetch("/stadiums/", requestOptions)
+        fetch(URL_BASE, requestOptions)
             .then((stadium) => {props.refresh();})
     }
 
@@ -55,11 +62,12 @@ function CustomForm(props) {
                 "city": stadiumCityValue,
                 "capacity": stadiumCapacityValue,
                 "buildDate": stadiumBDateValue,
-                "renovationDate": stadiumRDateValue
+                "renovationDate": stadiumRDateValue,
+                "description": stadiumDescription
             })
         };
 
-        const URL = "/stadiums/" + String(props.value.id) + "/"
+        const URL = URL_BASE + String(props.value.id) + "/"
 
         fetch(URL, requestOptions)
             .then((stadium) => {props.refresh();})
@@ -70,7 +78,7 @@ function CustomForm(props) {
             method: 'DELETE'
         };
 
-        const URL = "/stadiums/" + String(props.value.id)
+        const URL = URL_BASE + String(props.value.id)
 
         fetch(URL, requestOptions)
             .then((stadium) => {props.refresh();})
@@ -84,6 +92,9 @@ function CustomForm(props) {
                 <TextField variant="outlined" id="rDate" value={stadiumRDateValue} label="Renovation Date" onChange={(e) => {setStadiumRDateValue(e.target.value)}}>Renovation Date</TextField>
                 <TextField variant="outlined" id="city" value={stadiumCityValue} label="City" onChange={(e) => {setStadiumCityValue(e.target.value)}}>City</TextField>
                 <TextField variant="outlined" id="capacity" value={stadiumCapacityValue} label="Capacity" onChange={(e) => {setStadiumCapacityValue(e.target.value)}}>Capacity</TextField>
+                <TextField variant="outlined" id="description" value={stadiumDescription} label="Description" onChange={(e) => {setStadiumDescription(e.target.value)}}
+                    sx={{width:"100%", mt:3}}
+                >Description</TextField>
             </Grid>
             <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
                 <Button variant="contained" onClick={postButtonHandler}>Post</Button>
@@ -181,14 +192,24 @@ export default function CustomTable(){
     const [ orderValue, setOrderValue ] = React.useState("name");
     const [ orderDirection, setOrderDirection ] = React.useState("asc");
     const [ stadiumNameFilter, setStadiumNameFilter ] = React.useState("");
+    const [ pageNumber, setPageNumber ] = React.useState(1);
+    const [ pageMax, setPageMax ] = React.useState(1);
+    const [ autoCompleteNames, setAutoCompleteNames ] = React.useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:8000/api/stadiums/?pageNumber=0")
+            .then(number => number.json())
+            .then(number => setPageMax(number["pageNumber"]));
+    }, []);
     
     var getUrlForStadiums = useCallback(() => {
-        var URL = "/stadiums/";
+        // var URL = "SArnold-sdi-22-23.chickenkiller.com/stadiums/";
+        var URL = URL_BASE + "?page=" + String(pageNumber);
         if (stadiumNameFilter !== ""){
-            URL += "?name=" + stadiumNameFilter;
+            URL += ",?name=" + stadiumNameFilter;
         }
         return URL;
-    }, [stadiumNameFilter])
+    }, [stadiumNameFilter, pageNumber])
 
     useEffect(() => {
         fetch(getUrlForStadiums())
@@ -233,13 +254,50 @@ export default function CustomTable(){
         setStadiumList(varStadiumList);
     }
 
+    const pageUp = () => {
+        if (pageNumber < pageMax) {
+            const newPageNumber = pageNumber + 1;
+            setPageNumber(newPageNumber);
+        }
+    }
+
+    const pageDown = () => {
+        if (pageNumber > 1) {
+            const newPageNumber = pageNumber - 1;
+            setPageNumber(newPageNumber);
+        }
+    }
+
+    const fetchSuggestion = async (e) => {
+        try {
+            fetch(URL_BASE + "?name=" + e.target.value)
+                .then(stadium => stadium.json())
+                .then(stadium => setAutoCompleteNames(stadium));
+        } catch (error) {
+            console.error("Error: ", error)
+        }
+    };
+
+    const debouncedHandler = useCallback(debounce(fetchSuggestion, 500), []);
+
     return (
         <Container>
             <CustomForm value = {stadiumValue} refresh={refresh}/>
-            <TextField sx={{mt:10, width: "100%"}}
+            <Autocomplete sx={{mt:10, width: "100%"}}
+                options={autoCompleteNames}
+                getOptionLabel={(option) => option.name}
                 label="Search Stadium name"
-                onChange={searchHandler}
+                renderInput={(params) => <TextField {...params} label="Teacher" variant="outlined"></TextField>}
+                filterOptions={(x) => x}
+                onInputChange={debouncedHandler}
+                onChange={(event, value) => {
+                    if (value) {
+                        setStadiumValue(value);
+                    }
+                }}
             />
+            <Button variant="contained" onClick={pageDown} sx={{mt:3, mr:10}}>Previous Page</Button>
+            <Button variant="contained" onClick={pageUp} sx={{mt:3}}>Next Page</Button>
             <Table sx={{mt: 5}}>
                 <TableHeader 
                     orderValue = {orderValue}
