@@ -6,7 +6,7 @@ from math import ceil
 class StadiumLogic:
     @staticmethod
     def getPagedStadiums(page):
-        return StadiumSerializer(Stadium.objects.all()[100*(page - 1):100*page], many = True).data
+        return StadiumSerializer(Stadium.objects.filter(id__gt=0)[100*(page - 1):100*page], many = True).data
     
     @staticmethod
     def getAutocompleteStadium(name):
