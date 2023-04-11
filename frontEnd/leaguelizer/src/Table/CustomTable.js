@@ -191,7 +191,6 @@ export default function CustomTable(){
     const [ stadiumValue, setStadiumValue ] = React.useState(initialStadiumValue);
     const [ orderValue, setOrderValue ] = React.useState("name");
     const [ orderDirection, setOrderDirection ] = React.useState("asc");
-    const [ stadiumNameFilter, setStadiumNameFilter ] = React.useState("");
     const [ pageNumber, setPageNumber ] = React.useState(1);
     const [ pageMax, setPageMax ] = React.useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = React.useState([]);
@@ -205,11 +204,7 @@ export default function CustomTable(){
     var getUrlForStadiums = useCallback(() => {
         // var URL = "SArnold-sdi-22-23.chickenkiller.com/stadiums/";
         var URL = URL_BASE + "?page=" + String(pageNumber);
-        if (stadiumNameFilter !== ""){
-            URL += ",?name=" + stadiumNameFilter;
-        }
-        return URL;
-    }, [stadiumNameFilter, pageNumber])
+    }, [ pageNumber])
 
     useEffect(() => {
         fetch(getUrlForStadiums())
@@ -227,10 +222,6 @@ export default function CustomTable(){
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
             .then(stadium => setStadiumList(stadium));
-    }
-
-    const searchHandler = (e) => {
-        setStadiumNameFilter(e.target.value);
     }
 
     const sortingHandler = (property) => {
@@ -278,7 +269,7 @@ export default function CustomTable(){
         }
     };
 
-    const debouncedHandler = useCallback(debounce(fetchSuggestion, 500), []);
+    const debouncedHandler = useCallback(debounce(fetchSuggestion, 500), [fetchSuggestion]);
 
     return (
         <Container>
