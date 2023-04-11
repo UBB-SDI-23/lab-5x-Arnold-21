@@ -16,7 +16,7 @@ const initialStadiumValue = {
     "description": ""
 }
 
-const URL_BASE = "http://localhost:8000/api/stadiums/";
+const URL_BASE = "SArnold-sdi-22-23.chickenkiller.com/api/stadiums/";
 
 function CustomForm(props) {
     const [stadiumNameValue, setStadiumNameValue] = React.useState(props.value.name);
