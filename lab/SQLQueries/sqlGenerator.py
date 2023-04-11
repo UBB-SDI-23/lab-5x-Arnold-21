@@ -105,21 +105,21 @@ def addClub():
 
 def addMatches():
     global matchText
+    varText = ""
     print("matches")
     
-    for i in range(int(int(NUM_MANY/NUM_BATCH)/5)):
+    for i in range(int(int(NUM_MANY/NUM_BATCH))):
         insertText = "INSERT INTO lab1_api_matchesplayed(\"club1_id\", \"club2_id\", \"competition_id\", \"stadium_id\", \"roundOfPlay\", \"score\", \"date\") values "
         for _ in range(NUM_BATCH - 1):
             insertText += insertMatches() + ", "
         insertText += insertMatches() + ";\n"
 
-        matchText += insertText
+        varText += insertText
 
-        # if (i + 1) % 1_000 == 0:
-        #     with open("lab/SQL Queries/data.sql", "a") as file:
-        #         print("Writing Club")
-        #         file.write(matchText)
-        #         matchText = ""
+        if int((i + 1) % 1_000) == 0:
+            print("asd")
+            matchText += varText
+            varText = ""
 
     # with open("lab/SQL Queries/data.sql", "a") as file:
     #     print("Writing Club")
@@ -147,6 +147,6 @@ sqlText += stadiumText + compText + clubText + matchText
 # addClub()
 # addMatches()
 
-with open("data.sql", "w") as file:
+with open("lab/SQLQueries/data.sql", "w") as file:
     print("Writing")
     file.write(sqlText)
