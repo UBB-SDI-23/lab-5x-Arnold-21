@@ -15,7 +15,8 @@ class stadiumList(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
         if rowParam is not None:
-            return Response({"pageNumber": 2}, status=status.HTTP_200_OK)
+            rowNumber = StadiumLogic.getPageNumber()
+            return Response({"pageNumber": rowNumber}, status=status.HTTP_200_OK)
 
         pageNumber = request.query_params.get("page")
         nameParam = request.query_params.get("name")

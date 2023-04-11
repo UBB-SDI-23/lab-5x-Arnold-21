@@ -3,7 +3,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Table from "@mui/material/Table";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Autocomplete, Button, Container, Grid, TextField } from "@mui/material";
 import { debounce } from "lodash"
 
@@ -17,6 +17,7 @@ const initialStadiumValue = {
 }
 
 const URL_BASE = "https://SArnold-sdi-22-23.chickenkiller.com/api/stadiums/";
+//const URL_BASE = "http://localhost:8000/api/stadiums/";
 
 function CustomForm(props) {
     const [stadiumNameValue, setStadiumNameValue] = React.useState(props.value.name);
@@ -269,7 +270,13 @@ export default function CustomTable(){
         }
     };
 
-    const debouncedHandler = useCallback(() => {debounce(fetchSuggestion, 500)}, []);
+    const debouncedHandler = useRef(debounce(fetchSuggestion, 500)).current;
+
+    // useEffect(() => {
+    //     return () => {
+    //         debouncedHandler.cancel()
+    //     }
+    // }, [debouncedHandler])
 
     return (
         <Container>
