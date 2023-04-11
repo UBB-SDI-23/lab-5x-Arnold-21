@@ -16,7 +16,7 @@ const initialStadiumValue = {
     "description": ""
 }
 
-const URL_BASE = "SArnold-sdi-22-23.chickenkiller.com/api/stadiums/";
+const URL_BASE = "https://SArnold-sdi-22-23.chickenkiller.com/api/stadiums/";
 
 function CustomForm(props) {
     const [stadiumNameValue, setStadiumNameValue] = React.useState(props.value.name);
@@ -196,7 +196,7 @@ export default function CustomTable(){
     const [ autoCompleteNames, setAutoCompleteNames ] = React.useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/stadiums/?pageNumber=0")
+        fetch(URL_BASE + "?pageNumber=0")
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
     }, []);
