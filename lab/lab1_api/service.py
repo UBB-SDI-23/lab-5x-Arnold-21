@@ -210,7 +210,8 @@ class MatchesPlayedLogic:
     
     @staticmethod
     def getPagedMatches(page):
-        return matchesPlayedSerializer(MatchesPlayed.objects.annotate(AvgLeagueBudget=Avg("competition__league__annualBudget"))[100*(page - 1):100*page], many=True).data
+        # return matchesPlayedSerializer(MatchesPlayed.objects.annotate(AvgLeagueBudget=Avg("competition__league__annualBudget"))[100*(page - 1):100*page], many=True).data
+        return MatchesPlayed.objects.annotate(AvgLeagueBudget=Avg("competition__league__annualBudget")).query
     
     @staticmethod
     def getSingleMatchPlayedWithDetail(id):
