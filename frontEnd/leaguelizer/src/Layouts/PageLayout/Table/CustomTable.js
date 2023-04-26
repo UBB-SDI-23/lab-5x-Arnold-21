@@ -24,7 +24,12 @@ function CustomTable(props) {
         let varButtons = []
         let varNumber = parseInt(pageNumber)
 
-        if (varNumber >= 2 && varNumber <= 6) {
+        if (pageMax <= 15){
+            for (let i = 1; i<=pageMax; i++){
+                varButtons.push(<Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={i} key={"button" + String(i)}>{i}</Button>);
+            }
+        }
+        else if (varNumber >= 2 && varNumber <= 6) {
             for (let i = 4; i<varNumber + 3; i++){
                 if (i > 3)
                     varButtons.push(<Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={i} key={"button" + String(i)}>{i}</Button>);
@@ -50,13 +55,21 @@ function CustomTable(props) {
         <>
             <div style={{display:"flex", justifyContent:"flex-start", flexDirection:"row", width:"100%"}}>
                 <Button variant="contained" onClick={pageDown} sx={{mt:3, width:"80px", mr:1, fontSize:"13px"}}>Previous Page</Button>
-                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={1}>1</Button>
-                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={2} key={"button2"}>2</Button>
-                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={3} key={"button3"}>3</Button>
+                {(pageMax > 15) ? (
+                    <>
+                        <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={1}>1</Button>
+                        <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={2} key={"button2"}>2</Button>
+                        <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={3} key={"button3"}>3</Button>
+                    </>
+                ) : <></>}
                 {buttons}
-                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax - 2} key={"button" + String(pageMax - 2)}>{pageMax - 2}</Button>
-                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax - 1} key={"button" + String(pageMax - 1)}>{pageMax - 1}</Button>
-                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax} key={"button" + String(pageMax)}>{pageMax}</Button>
+                {(pageMax > 15) ? (
+                    <>
+                        <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax - 2} key={"button" + String(pageMax - 2)}>{pageMax - 2}</Button>
+                        <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax - 1} key={"button" + String(pageMax - 1)}>{pageMax - 1}</Button>
+                        <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax} key={"button" + String(pageMax)}>{pageMax}</Button>
+                    </>
+                ) : <></>}
                 <Button variant="contained" onClick={pageUp} sx={{mt:3, width:"80px", mr:1, fontSize:"13px"}}>Next Page</Button>
                 <Select
                     value={paginationOptions}
