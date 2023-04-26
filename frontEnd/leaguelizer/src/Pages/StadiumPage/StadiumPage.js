@@ -25,16 +25,18 @@ export default function StadiumPage(){
     const [ pageNumber, setPageNumber ] = useState(1);
     const [ pageMax, setPageMax ] = useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
+    const [ paginationValue, setPaginationValue ] = useState(12);
+    const paginationOptions = [12, 20, 40];
 
     useEffect(() => {
-        fetch(URL_BASE + "?pageNumber=0")
+        fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, []);
+    }, [paginationValue]);
     
     var getUrlForStadiums = useCallback(() => {
-        return URL_BASE + "?page=" + String(pageNumber);
-    }, [pageNumber])
+        return URL_BASE + "?page=" + String(pageNumber) + "?pageNumber=" + String(paginationValue);
+    }, [pageNumber, paginationValue])
 
     useEffect(() => {
         fetch(getUrlForStadiums())
@@ -133,6 +135,11 @@ export default function StadiumPage(){
                 rowClickHandler = {rowClickHandler}
                 pageDown = {pageDown}
                 pageUp = {pageUp}
+                pageNumber = {pageNumber}
+                pageMax = {pageMax}
+                setPageNumber = {setPageNumber}
+                paginationOptions = {paginationOptions}
+                paginationHandler = {setPaginationValue}
             ></CustomTable>
         </MainLayout>
     );

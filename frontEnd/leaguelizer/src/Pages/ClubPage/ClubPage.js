@@ -29,17 +29,19 @@ export default function StadiumPage(){
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
     const [ budgetFilter, setBudgetFilter ] = useState(null);
     const [ localBudgetFilter, setLocalBudgetFilter ] = useState(null);
+    const [ paginationValue, setPaginationValue ] = useState(12);
+    const paginationOptions = [12, 20, 40];
 
     useEffect(() => {
-        fetch(URL_BASE + "?pageNumber=0")
+        fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, []);
+    }, [paginationValue]);
     
     var getUrlForClubs = useCallback(() => {
         let URL = URL_BASE + "?page=" + String(pageNumber);
         if (budgetFilter !== null){
-            fetch(URL_BASE + "?pageNumber=0&budgetFilter=" + String(budgetFilter))
+            fetch(URL_BASE + "?pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
 
@@ -48,7 +50,7 @@ export default function StadiumPage(){
             URL += "&budgetFilter=" + String(budgetFilter);
         }
         return URL;
-    }, [pageNumber, budgetFilter])
+    }, [pageNumber, budgetFilter, paginationValue])
 
     useEffect(() => {
         fetch(getUrlForClubs())
@@ -161,6 +163,11 @@ export default function StadiumPage(){
                 rowClickHandler = {rowClickHandler}
                 pageDown = {pageDown}
                 pageUp = {pageUp}
+                pageNumber = {pageNumber}
+                pageMax = {pageMax}
+                setPageNumber = {setPageNumber}
+                paginationOptions = {paginationOptions}
+                paginationHandler = {setPaginationValue}
             ></CustomTable>
         </MainLayout>
     );
