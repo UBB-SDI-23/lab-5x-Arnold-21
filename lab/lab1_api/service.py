@@ -28,7 +28,7 @@ class ClubLogic:
     
     @staticmethod
     def getPagedClubs(page):
-        return clubSerializer(Club.objects.all()[100*(page - 1):100*page], many = True).data
+        return clubSerializer(Club.objects.annotate(matchesPlayed=Count("related_club1"))[100*(page - 1):100*page], many = True).data
     
     @staticmethod
     def getAutocompleteClub(name):
