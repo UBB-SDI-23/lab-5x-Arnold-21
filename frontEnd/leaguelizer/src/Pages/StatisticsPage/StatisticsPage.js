@@ -35,7 +35,7 @@ export default function StadiumPage(){
     }, [paginationValue]);
 
     var getUrlForClubs = useCallback(() => {
-        let URL = statURLS.clubs + "?page=" + String(clubPageNumber) + "&pageNumber=" + String(paginationValue);
+        let URL = statURLS.clubs + "?page=" + String(clubPageNumber) + "?pageNumber=" + String(paginationValue);
         return URL;
     }, [clubPageNumber, paginationValue])
 
@@ -47,7 +47,7 @@ export default function StadiumPage(){
     }, [getUrlForClubs, clubStatVisible])
 
     var getUrlForLeague = useCallback(() => {
-        let URL = statURLS.league + "?page=" + String(leaguePageNumber) + "&pageNumber=" + String(paginationValue);
+        let URL = statURLS.league + "?page=" + String(leaguePageNumber) + "?pageNumber=" + String(paginationValue);
         return URL;
     }, [leaguePageNumber, paginationValue])
 
