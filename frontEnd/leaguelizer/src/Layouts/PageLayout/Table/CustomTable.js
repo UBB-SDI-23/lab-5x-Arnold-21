@@ -50,7 +50,7 @@ function CustomTable(props) {
         <>
             <div style={{display:"flex", justifyContent:"flex-start", flexDirection:"row", width:"100%"}}>
                 <Button variant="contained" onClick={pageDown} sx={{mt:3, width:"80px", mr:1, fontSize:"13px"}}>Previous Page</Button>
-                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={1} key={"button1"}>1</Button>
+                <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={1}>1</Button>
                 <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={2} key={"button2"}>2</Button>
                 <Button variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={3} key={"button3"}>3</Button>
                 {buttons}

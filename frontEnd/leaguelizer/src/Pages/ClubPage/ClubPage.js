@@ -30,7 +30,6 @@ export default function StadiumPage(){
     const [ budgetFilter, setBudgetFilter ] = useState(null);
     const [ localBudgetFilter, setLocalBudgetFilter ] = useState(null);
     const [ paginationValue, setPaginationValue ] = useState(12);
-    const paginationOptions = [12, 20, 40];
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
@@ -39,9 +38,9 @@ export default function StadiumPage(){
     }, [paginationValue]);
     
     var getUrlForClubs = useCallback(() => {
-        let URL = URL_BASE + "?page=" + String(pageNumber);
+        let URL = URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
         if (budgetFilter !== null){
-            fetch(URL_BASE + "?pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
+            fetch(URL_BASE + "&pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
 
@@ -64,7 +63,6 @@ export default function StadiumPage(){
 
     const refresh = () => {
         setclubValue(initialClubValue);
-        setclubList([]);
         fetch(getUrlForClubs())
             .then(club => club.json())
             .then(club => setclubList(club));
@@ -166,7 +164,7 @@ export default function StadiumPage(){
                 pageNumber = {pageNumber}
                 pageMax = {pageMax}
                 setPageNumber = {setPageNumber}
-                paginationOptions = {paginationOptions}
+                paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
             ></CustomTable>
         </MainLayout>

@@ -57,7 +57,7 @@ class clubList(generics.ListCreateAPIView):
             rowParam = int(rowParam)
             rowNumber = ClubLogic.getBudgetFilteredPageNumber(budgetFilterParam, rowParam)
             return Response({"pageNumber": rowNumber}, status=status.HTTP_200_OK)
-        elif rowParam is not None:
+        elif rowParam is not None and pageNumber is None:
             rowParam = int(rowParam)
             rowNumber = ClubLogic.getPageNumber(rowParam)
             return Response({"pageNumber": rowNumber}, status=status.HTTP_200_OK)

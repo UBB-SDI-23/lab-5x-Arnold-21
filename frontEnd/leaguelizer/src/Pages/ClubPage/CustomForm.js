@@ -56,6 +56,7 @@ export default function CustomForm(props) {
     const [ orderDirection, setOrderDirection ] = useState("asc");
     const [ pageNumber, setPageNumber ] = useState(1);
     const [ pageMax, setPageMax ] = useState(1);
+    const [ paginationValue, setPaginationValue ] = useState(12);
 
     function validateMatch(){
         if (!/^[0-9]{1,2}-[0-9]{1,2}$/.test(scoreValue)){
@@ -94,8 +95,8 @@ export default function CustomForm(props) {
         if (props.value.id === undefined)
             return "";
 
-        return URL_BASE + String(props.value.id) + "/competitions/?page=" + String(pageNumber);
-    }, [pageNumber, props.value.id])
+        return URL_BASE + String(props.value.id) + "/competitions/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+    }, [pageNumber, props.value.id, paginationValue])
 
     useEffect(() => {
         if (getUrlForMatches() !== "")
@@ -410,6 +411,11 @@ export default function CustomForm(props) {
                         rowClickHandler = {rowClickHandler}
                         pageDown = {pageDown}
                         pageUp = {pageUp}
+                        pageNumber = {pageNumber}
+                        pageMax = {pageMax}
+                        setPageNumber = {setPageNumber}
+                        paginationOptions = {paginationValue}
+                        paginationHandler = {setPaginationValue}
                     ></CustomTable>
                 </Container>
             }
