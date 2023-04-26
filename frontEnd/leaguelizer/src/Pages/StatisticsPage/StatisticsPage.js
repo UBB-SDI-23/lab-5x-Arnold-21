@@ -7,8 +7,6 @@ import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
 export default function StadiumPage(){
     const [leagueStatVisible, setLeagueStatVisible] = useState(false);
     const [clubStatVisible, setClubStatVisible] = useState(false);
-    const [ paginationValue, setPaginationValue ] = useState(12);
-    const paginationOptions = [12, 20, 40];
 
     const [ leagueList, setLeagueList ] = useState([]);
     const [ leagueOrderValue, setLeagueOrderValue ] = useState("name");
@@ -23,21 +21,21 @@ export default function StadiumPage(){
     const [ clubPageMax, setClubPageMax ] = useState(1);
 
     useEffect(() => {
-        fetch(statURLS.league + "?pageNumber=" + String(paginationValue))
+        fetch(statURLS.league + "?pageNumber=0")
             .then(number => number.json())
             .then(number => setLeaguePageMax(number["pageNumber"]));
-    }, [paginationValue]);
+    }, []);
 
     useEffect(() => {
-        fetch(statURLS.clubs + "?pageNumber=" + String(paginationValue))
+        fetch(statURLS.clubs + "?pageNumber=0")
             .then(number => number.json())
             .then(number => setClubPageMax(number["pageNumber"]));
-    }, [paginationValue]);
+    }, []);
 
     var getUrlForClubs = useCallback(() => {
-        let URL = statURLS.clubs + "?page=" + String(clubPageNumber) + "?pageNumber=" + String(paginationValue);
+        let URL = statURLS.clubs + "?page=" + String(clubPageNumber);
         return URL;
-    }, [clubPageNumber, paginationValue])
+    }, [clubPageNumber])
 
     useEffect(() => {
         if (clubStatVisible)
@@ -47,9 +45,9 @@ export default function StadiumPage(){
     }, [getUrlForClubs, clubStatVisible])
 
     var getUrlForLeague = useCallback(() => {
-        let URL = statURLS.league + "?page=" + String(leaguePageNumber) + "?pageNumber=" + String(paginationValue);
+        let URL = statURLS.league + "?page=" + String(leaguePageNumber);
         return URL;
-    }, [leaguePageNumber, paginationValue])
+    }, [leaguePageNumber])
 
     useEffect(() => {
         if (leagueStatVisible)
@@ -161,11 +159,6 @@ export default function StadiumPage(){
                         rowClickHandler = {() => {}}
                         pageDown = {clubPageDown}
                         pageUp = {clubPageUp}
-                        pageNumber = {clubPageNumber}
-                        pageMax = {clubPageMax}
-                        setPageNumber = {setClubPageNumber}
-                        paginationOptions = {paginationOptions}
-                        paginationHandler = {setPaginationValue}
                     ></CustomTable>
                 </>
             }
@@ -180,11 +173,6 @@ export default function StadiumPage(){
                         rowClickHandler = {() => {}}
                         pageDown = {leaguePageDown}
                         pageUp = {leaguePageUp}
-                        pageNumber = {leaguePageNumber}
-                        pageMax = {leaguePageMax}
-                        setPageNumber = {setLeaguePageNumber}
-                        paginationOptions = {paginationOptions}
-                        paginationHandler = {setPaginationValue}
                     ></CustomTable>
                 </>
             }
