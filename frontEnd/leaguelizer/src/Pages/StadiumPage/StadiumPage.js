@@ -24,7 +24,6 @@ export default function StadiumPage(){
     const [ pageMax, setPageMax ] = useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
     const [ paginationValue, setPaginationValue ] = useState(12);
-    const paginationOptions = [12, 20, 40];
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
@@ -48,7 +47,6 @@ export default function StadiumPage(){
 
     const refresh = () => {
         setStadiumValue(initialStadiumValue);
-        setStadiumList([]);
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
             .then(stadium => setStadiumList(stadium));
@@ -83,6 +81,7 @@ export default function StadiumPage(){
     }
 
     const pageDown = () => {
+        console.log(pageNumber);
         if (pageNumber > 1) {
             const newPageNumber = pageNumber - 1;
             setPageNumber(newPageNumber);
@@ -91,7 +90,6 @@ export default function StadiumPage(){
 
     const fetchSuggestion = async (e) => {
         try {
-            setAutoCompleteNames([])
             fetch(URL_BASE + "?name=" + e.target.value)
                 .then(stadium => stadium.json())
                 .then(stadium => setAutoCompleteNames(stadium));
@@ -103,7 +101,6 @@ export default function StadiumPage(){
     const debouncedHandler = useRef(debounce(fetchSuggestion, 500)).current;
 
     const getHeadings = useCallback(() => {
-        console.log(stadiumList);
         if(stadiumList.length === 0)
             return [];
         return Object.keys(stadiumList[0])
@@ -137,7 +134,7 @@ export default function StadiumPage(){
                 pageNumber = {pageNumber}
                 pageMax = {pageMax}
                 setPageNumber = {setPageNumber}
-                paginationOptions = {paginationOptions}
+                paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
             ></CustomTable>
         </MainLayout>

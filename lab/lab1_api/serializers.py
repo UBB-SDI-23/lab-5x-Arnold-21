@@ -3,6 +3,8 @@ from .models import Stadium, Club, Competition, MatchesPlayed
 import re
 
 class StadiumSerializer(serializers.ModelSerializer):
+    NumberOfClubs = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Stadium
         fields = "__all__"

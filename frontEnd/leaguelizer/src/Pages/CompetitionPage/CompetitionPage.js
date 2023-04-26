@@ -23,7 +23,6 @@ export default function StadiumPage(){
     const [ pageMax, setPageMax ] = useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
     const [ paginationValue, setPaginationValue ] = useState(12);
-    const paginationOptions = [12, 20, 40];
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
@@ -32,9 +31,9 @@ export default function StadiumPage(){
     }, [paginationValue]);
     
     var getUrlForClubs = useCallback(() => {
-        let URL = URL_BASE + "?page=" + String(pageNumber);
+        let URL = URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
         return URL;
-    }, [pageNumber])
+    }, [pageNumber, paginationValue])
 
     useEffect(() => {
         fetch(getUrlForClubs())
@@ -48,7 +47,6 @@ export default function StadiumPage(){
 
     const refresh = () => {
         setCompValue(initialCompValue);
-        setCompList([]);
         fetch(getUrlForClubs())
             .then(comp => comp.json())
             .then(comp => setCompList(comp));
@@ -91,7 +89,6 @@ export default function StadiumPage(){
 
     const fetchSuggestion = async (e) => {
         try {
-            setAutoCompleteNames([])
             fetch(URL_BASE + "?name=" + e.target.value)
                 .then(club => club.json())
                 .then(club => setAutoCompleteNames(club));
@@ -138,7 +135,7 @@ export default function StadiumPage(){
                 pageNumber = {pageNumber}
                 pageMax = {pageMax}
                 setPageNumber = {setPageNumber}
-                paginationOptions = {paginationOptions}
+                paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
             ></CustomTable>
         </MainLayout>

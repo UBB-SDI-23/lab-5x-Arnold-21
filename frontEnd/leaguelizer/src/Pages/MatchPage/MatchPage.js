@@ -33,7 +33,6 @@ export default function MatchPage(){
     const [ pageMax, setPageMax ] = useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
     const [ paginationValue, setPaginationValue ] = useState(12);
-    const paginationOptions = [12, 20, 40];
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
@@ -42,7 +41,7 @@ export default function MatchPage(){
     }, [paginationValue]);
     
     var getUrlForMatches = useCallback(() => {
-        return URL_BASE + "?page=" + String(pageNumber) + "?pageNumber=" + String(paginationValue);
+        return URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
 
     useEffect(() => {
@@ -57,7 +56,6 @@ export default function MatchPage(){
 
     const refresh = () => {
         setMatchValue(initialMatchValue);
-        setMatchList([]);
         fetch(getUrlForMatches())
             .then(match => match.json())
             .then(match => setMatchList(match));
@@ -100,7 +98,6 @@ export default function MatchPage(){
 
     const fetchSuggestion = async (e) => {
         try {
-            setAutoCompleteNames([])
             fetch(URL_BASE + "?date=" + e.target.value)
                 .then(match => match.json())
                 .then(match => setAutoCompleteNames(match));
@@ -145,7 +142,7 @@ export default function MatchPage(){
                 pageNumber = {pageNumber}
                 pageMax = {pageMax}
                 setPageNumber = {setPageNumber}
-                paginationOptions = {paginationOptions}
+                paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
             ></CustomTable>
         </MainLayout>

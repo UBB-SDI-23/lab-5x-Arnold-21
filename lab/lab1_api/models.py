@@ -27,7 +27,7 @@ class Club(models.Model):
     annualBudget = models.IntegerField()
     numberOfStadd = models.IntegerField()
     foundedDate = models.DateField()
-    stadium = models.ForeignKey(Stadium, on_delete=models.SET_NULL, null=True)
+    stadium = models.ForeignKey(Stadium, related_name="stadium", on_delete=models.SET_NULL, null=True)
     league = models.ForeignKey(Competition, related_name="league", on_delete=models.SET_NULL, null = True)
 
     def __str__(self):
