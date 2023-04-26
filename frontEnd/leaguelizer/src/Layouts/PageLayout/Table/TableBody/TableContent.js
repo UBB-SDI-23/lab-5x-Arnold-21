@@ -14,7 +14,7 @@ export default function TableContent(props){
                     sx={{":hover": {bgcolor: "lightgray", cursor: "pointer"}}}
                 >
                     {headers.map((header)=> (
-                        (typeof object[header] !== "object" | header === "avgleaguebudget") ?
+                        (typeof object[header] !== "object" | header === "AvgLeagueBudget") ?
                             <TableCell key={header}>{object[header]}</TableCell> : (object[header].name !== undefined) ?
                                 <TableCell key={header}>{object[header].name}</TableCell> : <TableCell key={header}></TableCell>
                     ))}
