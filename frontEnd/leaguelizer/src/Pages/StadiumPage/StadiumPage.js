@@ -6,8 +6,6 @@ import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
 import URL_BASE from "./constants";
 import { debounce } from "lodash";
 
-
-
 const initialStadiumValue = {
     "name": "",
     "capacity": "",
@@ -35,7 +33,7 @@ export default function StadiumPage(){
     }, [paginationValue]);
     
     var getUrlForStadiums = useCallback(() => {
-        return URL_BASE + "?page=" + String(pageNumber) + "?pageNumber=" + String(paginationValue);
+        return URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
 
     useEffect(() => {
@@ -104,11 +102,12 @@ export default function StadiumPage(){
 
     const debouncedHandler = useRef(debounce(fetchSuggestion, 500)).current;
 
-    const getHeadings = () => {
+    const getHeadings = useCallback(() => {
+        console.log(stadiumList);
         if(stadiumList.length === 0)
             return [];
         return Object.keys(stadiumList[0])
-    }
+    }, [stadiumList]);
 
     return (
         <MainLayout>
