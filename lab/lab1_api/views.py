@@ -23,7 +23,7 @@ class stadiumList(generics.ListCreateAPIView):
         if pageNumber is None and nameParam is None:
             return Response({"response": "No page recieved"}, status=status.HTTP_200_OK)
 
-        if pageNumber is None:
+        if pageNumber is None and nameParam != "":
             return Response(StadiumLogic.getAutocompleteStadium(nameParam))
         
         pageNumber = int(pageNumber)
@@ -58,7 +58,7 @@ class clubList(generics.ListCreateAPIView):
         if pageNumber is None and nameParam is None:
             return Response({"response": "No page recieved"}, status=status.HTTP_200_OK)
 
-        if pageNumber is None:
+        if pageNumber is None and nameParam != "":
             return Response(ClubLogic.getAutocompleteClub(nameParam))
         
         pageNumber = int(pageNumber)
@@ -128,7 +128,7 @@ class competitionList(generics.ListCreateAPIView):
         if pageNumber is None and nameParam is None:
             return Response({"response": "No page recieved"}, status=status.HTTP_200_OK)
 
-        if pageNumber is None:
+        if pageNumber is None and nameParam != "":
             return Response(CompetitionLogic.getAutocompleteComps(nameParam))
         
         pageNumber = int(pageNumber)
@@ -189,7 +189,7 @@ class matchesPlayedList(generics.ListCreateAPIView):
         if pageNumber is None and nameParam is None:
             return Response({"response": "No page recieved"}, status=status.HTTP_200_OK)
 
-        if pageNumber is None:
+        if pageNumber is None and nameParam != "":
             return Response(MatchesPlayedLogic.getAutocompleteDates(nameParam))
         
         pageNumber = int(pageNumber)

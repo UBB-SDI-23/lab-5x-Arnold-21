@@ -28,6 +28,7 @@ export default function StadiumPage(){
     const [ pageMax, setPageMax ] = useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
     const [ budgetFilter, setBudgetFilter ] = useState(null);
+    const [ localBudgetFilter, setLocalBudgetFilter ] = useState(null);
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=0")
@@ -121,6 +122,17 @@ export default function StadiumPage(){
         return Object.keys(clubList[0])
     }
 
+    const budgetFetchHandler = (value) => {
+        setBudgetFilter(value)
+    }
+
+    const debouncedBudgetFetchHandler = useRef(debounce(budgetFetchHandler, 1000)).current
+
+    const budgetFilterHandler = (value) => {
+        setLocalBudgetFilter(value)
+        debouncedBudgetFetchHandler(value)
+    }
+
     return (
         <MainLayout>
             <CustomForm value = {clubValue} refresh={refresh}/>
@@ -137,7 +149,7 @@ export default function StadiumPage(){
                     }
                 }}
             />
-            <TextField variant="outlined" id="BudgetFilter" value={(budgetFilter === null) ? "" : budgetFilter} label="BudgetFilter" onChange={(e) => {setBudgetFilter((e.target.value.length === 0) ? null : e.target.value)}}
+            <TextField variant="outlined" id="BudgetFilter" value={(localBudgetFilter === null) ? "" : localBudgetFilter} label="BudgetFilter" onChange={(e) => {budgetFilterHandler((e.target.value.length === 0) ? null : e.target.value)}}
                 sx={{width:"100%", mt:2}}
             >BudgetFilter</TextField>
             <CustomTable

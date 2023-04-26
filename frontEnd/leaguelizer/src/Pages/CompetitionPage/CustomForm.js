@@ -115,7 +115,7 @@ export default function CustomForm(props) {
     }, [getUrlForMatches])
 
     useEffect(() => {
-        if (specificLeagueVisible && compNameValue !== "" && compTypeValue === "League"){
+        if (specificLeagueVisible && compNameValue !== ""){
             fetch(URL_BASE + String(props.value.id))
                 .then(clubs => clubs.json())
                 .then(clubs => setLeagueClubs(clubs["clubs"]));
