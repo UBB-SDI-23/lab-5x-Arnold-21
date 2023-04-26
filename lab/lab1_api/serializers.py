@@ -73,7 +73,7 @@ class matchesPlayedSerializer(serializers.ModelSerializer):
     club2 = simpleClubSerializer()
     competition = simpleCompetitionSerializer()
     stadium = StadiumSerializer()
-    AvgLeagueBudget = serializers.FloatField(read_only=True)
+    avgleaguebudget = serializers.FloatField(read_only=True)
 
     class Meta:
         model = MatchesPlayed
