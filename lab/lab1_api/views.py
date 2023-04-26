@@ -202,7 +202,7 @@ class matchesPlayedList(generics.ListCreateAPIView):
         
         pageNumber = int(pageNumber)
         if nameParam is None:
-            return Response([MatchesPlayedLogic.getPagedMatches(pageNumber)])
+            return Response(MatchesPlayedLogic.getPagedMatches(pageNumber))
 
         return Response({}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
