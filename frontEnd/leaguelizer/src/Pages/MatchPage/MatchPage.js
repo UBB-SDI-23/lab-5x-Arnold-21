@@ -98,6 +98,7 @@ export default function MatchPage(){
 
     const fetchSuggestion = async (e) => {
         try {
+            setAutoCompleteNames([])
             fetch(URL_BASE + "?date=" + e.target.value)
                 .then(match => match.json())
                 .then(match => setAutoCompleteNames(match));

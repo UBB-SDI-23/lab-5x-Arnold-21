@@ -89,6 +89,7 @@ export default function StadiumPage(){
 
     const fetchSuggestion = async (e) => {
         try {
+            setAutoCompleteNames([])
             fetch(URL_BASE + "?name=" + e.target.value)
                 .then(club => club.json())
                 .then(club => setAutoCompleteNames(club));
