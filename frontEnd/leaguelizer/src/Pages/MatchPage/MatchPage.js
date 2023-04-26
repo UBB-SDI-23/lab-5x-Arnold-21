@@ -42,7 +42,7 @@ export default function MatchPage(){
     }, [paginationValue]);
     
     var getUrlForMatches = useCallback(() => {
-        return URL_BASE + "?page=" + String(pageNumber) + "?pageNumber=" + String(paginationValue);
+        return URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
 
     useEffect(() => {

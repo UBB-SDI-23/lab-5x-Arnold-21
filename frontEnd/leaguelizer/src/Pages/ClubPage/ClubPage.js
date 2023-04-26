@@ -39,7 +39,7 @@ export default function StadiumPage(){
     }, [paginationValue]);
     
     var getUrlForClubs = useCallback(() => {
-        let URL = URL_BASE + "?page=" + String(pageNumber);
+        let URL = URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
         if (budgetFilter !== null){
             fetch(URL_BASE + "?pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
                 .then(number => number.json())
