@@ -1,6 +1,6 @@
 from .serializers import *
 from .models import *
-from django.db.models import F, Q, Avg
+from django.db.models import Count, Q, Avg
 from math import ceil
 
 class StadiumLogic:
@@ -19,22 +19,38 @@ class StadiumLogic:
 
 class ClubLogic:
     @staticmethod
-    def getStadiumCapacityQuery():
-        return Club.objects.annotate(stadiumCapacity=F('stadium__capacity'))\
-                                .order_by("stadiumCapacity")
+    def getPageNumber():
+        return ceil(Club.objects.all().count()/100)
     
     @staticmethod
-    def getClubsWithLeagues():
-        return clubSerializer(Club.objects.all(), many=True).data
+    def getBudgetFilteredPageNumber(budget):
+        return ceil(Club.objects.filter(annualBudget__gt=budget).count()/100)
+    
+    @staticmethod
+    def getPagedClubs(page):
+        return clubSerializer(Club.objects.annotate(matchesPlayed=Count("related_club1"))[100*(page - 1):100*page], many = True).data
+    
+    @staticmethod
+    def getAutocompleteClub(name):
+        return clubSerializer(Club.objects.filter(name__icontains=name)[:20], many = True).data
+    
+    @staticmethod
+    def getStadiumCapacityStatisticsPageNumber():
+        return ceil(Club.objects.annotate(stadiumCapacity=Avg('stadium__capacity'))\
+                                        .order_by("stadiumCapacity").count()/100)
+
+    @staticmethod
+    def getStadiumCapacityStatistics(page):
+        return simpleClubSerializer(Club.objects.annotate(stadiumCapacity=Avg('stadium__capacity'))\
+                                        .order_by("stadiumCapacity")[100*(page - 1):100*page], many=True).data
     
     @staticmethod
     def getSingleClubWithLeague(id):
         return clubSerializer(Club.objects.get(id=id)).data
     
     @staticmethod
-    def filterClubByAnnualBudget(budget):
-        clubs = Club.objects.filter(annualBudget__gt=budget)
-        return clubSerializer(clubs, many=True).data
+    def filterClubByAnnualBudget(budget, page):
+        return clubSerializer(Club.objects.filter(annualBudget__gt=budget)[100*(page - 1):100*page], many=True).data
     
     @staticmethod
     def saveClubWithLeague(club):
@@ -87,20 +103,36 @@ class ClubLogic:
         
 class CompetitionLogic:
     @staticmethod
-    def getCompetitionsWithLeagueClubs():
-        return competitionSerializer(Competition.objects.all(), many=True).data
+    def getPageNumber():
+        return ceil(Competition.objects.all().count()/100)
+    
+    @staticmethod
+    def getPagedComps(page):
+        return competitionSerializer(Competition.objects.annotate(RealNumberOfTeams=Count("league"))[100*(page - 1):100*page], many = True).data
+    
+    @staticmethod
+    def getAutocompleteComps(name):
+        return competitionSerializer(Competition.objects.filter(name__icontains=name)[:20], many = True).data
     
     @staticmethod
     def getsingleCompetitionWithLeagueClub(id):
         return competitionSerializer(Competition.objects.get(id=id)).data
     
     @staticmethod
-    def getLeaguesByClubAnnualBudgetQuery():
-        return Competition.objects\
+    def getLeaguesByClubAnnualBudgetPageNumber():
+        return ceil(Competition.objects\
                     .filter(competitionType="League")\
-                    .annotate(avgBudget=Avg("club__annualBudget"))\
+                    .annotate(avgBudget=Avg("league__annualBudget"))\
                     .exclude(avgBudget=None)\
-                    .order_by("-avgBudget")
+                    .order_by("-avgBudget").count()/100)
+    
+    @staticmethod
+    def getLeaguesByClubAnnualBudget(page):
+        return simpleCompetitionSerializer(Competition.objects\
+                    .filter(competitionType="League")\
+                    .annotate(avgBudget=Avg("league__annualBudget"))\
+                    .exclude(avgBudget=None)\
+                    .order_by("-avgBudget")[100*(page - 1):100*page], many=True).data
     
     @staticmethod
     def saveCompetitionWithLeagueClubs(comp):
@@ -173,16 +205,28 @@ class CompetitionLogic:
     
 class MatchesPlayedLogic:
     @staticmethod
-    def getMatchesWithDetail():
-        return matchesPlayedSerializer(MatchesPlayed.objects.all(), many=True).data
+    def getPageNumber():
+        return ceil(MatchesPlayed.objects.all().count()/100)
+    
+    @staticmethod
+    def getPagedMatches(page):
+        return matchesPlayedSerializer(MatchesPlayed.objects.annotate(AvgLeagueBudget=Avg("competition__league__annualBudget"))[100*(page - 1):100*page], many=True).data
     
     @staticmethod
     def getSingleMatchPlayedWithDetail(id):
         return matchesPlayedSerializer(MatchesPlayed.objects.get(id=id)).data
     
     @staticmethod
-    def getCompetitionSpecificMatch(id):
-        return matchesPlayedSerializer(MatchesPlayed.objects.get(competition=id)).data
+    def getAutocompleteDates(date):
+        return matchesPlayedSerializer(MatchesPlayed.objects.filter(date__regex=date)[:20], many = True).data
+    
+    @staticmethod
+    def getCompetitionSpecificMatch(id, page):
+        return matchesPlayedSerializer(MatchesPlayed.objects.filter(competition=id)[100*(page - 1):100*page], many=True).data
+    
+    @staticmethod
+    def getCompetitionSpecificPageNumber(id):
+        return ceil(MatchesPlayed.objects.filter(competition=id).count()/100)
     
     @staticmethod
     def saveCompetitionSpecificMatch(data, id):
@@ -195,8 +239,27 @@ class MatchesPlayedLogic:
         return False
     
     @staticmethod
-    def getClubSpecificMatch(id):
-        return matchesPlayedSerializer(MatchesPlayed.objects.get(club1=id)).data
+    def updateCompetitionSpecificMatch(data):
+        mat = MatchesPlayed.objects.get(id=data["id"])
+        serializer = simpleMatchesPlayedSerializer(instance=mat, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else: return True
+        
+        return False
+    
+    @staticmethod
+    def deleteCompetitionSpecificMatch(ID):
+        mat = MatchesPlayed.objects.get(id=ID)
+        mat.delete()
+    
+    @staticmethod
+    def getClubSpecificMatch(id, page):
+        return matchesPlayedSerializer(MatchesPlayed.objects.filter(club1=id)[100*(page - 1):100*page], many=True).data
+    
+    @staticmethod
+    def getClubSpecificPageNumber(id):
+        return ceil(MatchesPlayed.objects.filter(club1=id).count()/100)
     
     @staticmethod
     def saveClubSpecificMatch(data, id):
@@ -207,6 +270,21 @@ class MatchesPlayedLogic:
         else: return True
         
         return False
+    
+    @staticmethod
+    def updateClubSpecificMatch(data):
+        mat = MatchesPlayed.objects.get(id=data["id"])
+        serializer = simpleMatchesPlayedSerializer(instance=mat, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else: return True
+        
+        return False
+    
+    @staticmethod
+    def deleteClubSpecificMatch(id):
+        mat = MatchesPlayed.objects.get(id=id)
+        mat.delete()
     
     @staticmethod
     def getClubAndCompetitionSpecificMatch(clubId, compId):

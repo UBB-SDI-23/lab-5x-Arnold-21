@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Stadium, Club, Competition, MatchesPlayed
+import re
 
 class StadiumSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,13 +38,30 @@ class simpleCompetitionSerializer(serializers.ModelSerializer):
 
 
 class competitionSerializer(serializers.ModelSerializer):
-    clubs = simpleClubSerializer(source='club_set', many=True)
+    clubs = serializers.SerializerMethodField()
+    RealNumberOfTeams = serializers.IntegerField(read_only=True)
+
+    def get_clubs(self, obj):
+        query = obj.league.all()[:30]
+        serializer = clubSerializer(query, many=True)
+        return serializer.data
+
     class Meta:
         model = Competition
         fields = "__all__"
 
+    def validate(self, data):
+        if data["numberOfTeams"] < 0:
+            raise serializers.ValidationError({"error": "The number of teams should be higher than 0"})
+        if data["prizeMoney"] < 0:
+            raise serializers.ValidationError({"error": "You can't take money for participation"})
+        
+        return data
+
 class clubSerializer(serializers.ModelSerializer):
     league = simpleCompetitionSerializer(read_only=True)
+    stadium = StadiumSerializer(read_only=True)
+    matchesPlayed = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Club
@@ -55,13 +73,30 @@ class matchesPlayedSerializer(serializers.ModelSerializer):
     club2 = simpleClubSerializer()
     competition = simpleCompetitionSerializer()
     stadium = StadiumSerializer()
+    AvgLeagueBudget = serializers.FloatField(read_only=True)
 
     class Meta:
         model = MatchesPlayed
         fields = "__all__"
+
+    def validate(self, data):
+        if data["club1"] == data["club2"]:
+            raise serializers.ValidationError({"error": "The club cannot play against itself"})
+        if (re.search("^[0-9]{1,2}-[0-9]{1,2}$", data["score"]) == None):
+            raise serializers.ValidationError({"error": "Incorrect/Impossible score"})
+        
+        return data
 
 
 class simpleMatchesPlayedSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchesPlayed
         fields = "__all__"
+
+    def validate(self, data):
+        if data["club1"] == data["club2"]:
+            raise serializers.ValidationError({"error": "The club cannot play against itself"})
+        if (re.search("^[0-9]{1,2}-[0-9]{1,2}$", data["score"]) == None):
+            raise serializers.ValidationError({"error": "Incorrect/Impossible score"})
+        
+        return data

@@ -28,7 +28,7 @@ class Club(models.Model):
     numberOfStadd = models.IntegerField()
     foundedDate = models.DateField()
     stadium = models.ForeignKey(Stadium, on_delete=models.SET_NULL, null=True)
-    league = models.ForeignKey(Competition, on_delete=models.SET_NULL, null = True)
+    league = models.ForeignKey(Competition, related_name="league", on_delete=models.SET_NULL, null = True)
 
     def __str__(self):
         return self.name

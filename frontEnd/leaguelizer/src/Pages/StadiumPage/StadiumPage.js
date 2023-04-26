@@ -1,15 +1,15 @@
 import { React, useEffect, useCallback, useRef, useState } from "react";
-import { Container, Autocomplete, TextField, Button, Table } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import CustomForm from "./CustomForm";
-import TableHeader from "./Table/TableHeader";
-import TableContent from "./Table/TableContent";
+import CustomTable from "../../Layouts/PageLayout/Table/CustomTable"
+import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
 import URL_BASE from "./constants";
 import { debounce } from "lodash";
 
 
 
 const initialStadiumValue = {
-    "name": "asd",
+    "name": "",
     "capacity": "",
     "buildDate": "",
     "renovationDate": "",
@@ -33,7 +33,6 @@ export default function StadiumPage(){
     }, []);
     
     var getUrlForStadiums = useCallback(() => {
-        // var URL = "SArnold-sdi-22-23.chickenkiller.com/stadiums/";
         return URL_BASE + "?page=" + String(pageNumber);
     }, [pageNumber])
 
@@ -62,7 +61,7 @@ export default function StadiumPage(){
 
         var varStadiumList = stadiumList;
         varStadiumList.sort((a,b) => {
-            if (property !== "capacity"){
+            if (property !== "capacity" & property !== "id"){
                 if (isAscending){
                     return a[property].localeCompare(b[property]);
                 }
@@ -103,14 +102,20 @@ export default function StadiumPage(){
 
     const debouncedHandler = useRef(debounce(fetchSuggestion, 500)).current;
 
+    const getHeadings = () => {
+        if(stadiumList.length === 0)
+            return [];
+        return Object.keys(stadiumList[0])
+    }
+
     return (
-        <Container>
+        <MainLayout>
             <CustomForm value = {stadiumValue} refresh={refresh}/>
             <Autocomplete sx={{mt:10, width: "100%"}}
                 options={autoCompleteNames}
                 getOptionLabel={(option) => option.name}
                 label="Search Stadium name"
-                renderInput={(params) => <TextField {...params} label="Teacher" variant="outlined"></TextField>}
+                renderInput={(params) => <TextField {...params} label="Stadium" variant="outlined"></TextField>}
                 filterOptions={(x) => x}
                 onInputChange={debouncedHandler}
                 onChange={(event, value) => {
@@ -119,16 +124,16 @@ export default function StadiumPage(){
                     }
                 }}
             />
-            <Button variant="contained" onClick={pageDown} sx={{mt:3, mr:10}}>Previous Page</Button>
-            <Button variant="contained" onClick={pageUp} sx={{mt:3}}>Next Page</Button>
-            <Table sx={{mt: 5}}>
-                <TableHeader 
-                    orderValue = {orderValue}
-                    orderDirection = {orderDirection}
-                    sortHandler={sortingHandler}
-                />
-                <TableContent stadiumList={stadiumList} handler={rowClickHandler}/>
-            </Table>
-        </Container>
+            <CustomTable
+                orderValue = {orderValue}
+                orderDirection = {orderDirection}
+                sortingHandler = {sortingHandler}
+                headerList = {getHeadings()}
+                objectList = {stadiumList}
+                rowClickHandler = {rowClickHandler}
+                pageDown = {pageDown}
+                pageUp = {pageUp}
+            ></CustomTable>
+        </MainLayout>
     );
 }

@@ -1,6 +1,7 @@
 from faker import Faker
 from random import randint, choice
 from threading import Thread
+from datetime import datetime, timedelta
 
 fake = Faker()
 
@@ -8,6 +9,10 @@ competitionTypeList = ["League", "Knockout"]
 roundOfPlayList = ["G", "R16", "QF", "SM", "F", "L"]
 
 sqlText = "\c leaguelizer;\n"
+
+with open("lab/SQLQueries/data3.sql", "w") as file:
+    print("Writing")
+    file.write(sqlText)
 
 stadiumText = ""
 compText = ""
@@ -67,9 +72,8 @@ def addStadiums():
 
         stadiumText += insertText
 
-    # with open("lab/SQL Queries/data.sql", "a") as file:
-    #     print("Writing Stadium")
-    #     file.write(stadiumText)
+    with open("lab/SQLQueries/data3.sql", "a") as file:
+        file.write(stadiumText)
 
 def addCompetition():
     global compText
@@ -83,9 +87,8 @@ def addCompetition():
 
         compText += insertText
 
-    # with open("lab/SQL Queries/data.sql", "a") as file:
-    #     print("Writing Competition")
-    #     file.write(compText)
+    with open("lab/SQLQueries/data3.sql", "a") as file:
+        file.write(compText)
 
 def addClub():
     global clubText
@@ -99,27 +102,24 @@ def addClub():
 
         clubText += insertText
 
-    # with open("lab/SQL Queries/data.sql", "a") as file:
-    #     print("Writing Club")
-    #     file.write(clubText)
+    with open("lab/SQLQueries/data3.sql", "a") as file:
+        file.write(clubText)
 
 def addMatches():
     global matchText
-    varText = ""
     print("matches")
     
     for i in range(int(int(NUM_MANY/NUM_BATCH))):
-        insertText = "INSERT INTO lab1_api_matchesplayed(\"club1_id\", \"club2_id\", \"competition_id\", \"stadium_id\", \"roundOfPlay\", \"score\", \"date\") values "
-        for _ in range(NUM_BATCH - 1):
-            insertText += insertMatches() + ", "
-        insertText += insertMatches() + ";\n"
+        matchText = "INSERT INTO lab1_api_matchesplayed(\"club1_id\", \"club2_id\", \"competition_id\", \"stadium_id\", \"roundOfPlay\", \"score\", \"date\") values "
+        for j in range(NUM_BATCH - 1):
+            matchText += insertMatches() + ", "
+        matchText += insertMatches() + ";\n"
 
-        varText += insertText
+        if int((i + 1) % 500) == 0:
+            with open("lab/SQLQueries/data3.sql", "a") as file:
+                file.write(matchText)
 
-        if int((i + 1) % 1_000) == 0:
-            print("asd")
-            matchText += varText
-            varText = ""
+            matchText = ""
 
     # with open("lab/SQL Queries/data.sql", "a") as file:
     #     print("Writing Club")
@@ -129,6 +129,8 @@ stadiumThread = Thread(target=addStadiums)
 compThread = Thread(target=addCompetition)
 clubThread = Thread(target=addClub)
 matchThread = Thread(target=addMatches)
+
+start = datetime.now()
 
 stadiumThread.start()
 compThread.start()
@@ -140,13 +142,16 @@ compThread.join()
 clubThread.join()
 matchThread.join()
 
-sqlText += stadiumText + compText + clubText + matchText
+end = datetime.now()
+print(end-start)
+
+# sqlText += stadiumText + compText + clubText + matchText
 
 # addStadiums()
 # addCompetition()
 # addClub()
 # addMatches()
 
-with open("lab/SQLQueries/data.sql", "w") as file:
-    print("Writing")
-    file.write(sqlText)
+# with open("lab/SQLQueries/data2.sql", "w") as file:
+#     print("Writing")
+#     file.write(sqlText)

@@ -1,14 +1,15 @@
 import { React, useEffect, useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
 import URL_BASE from "./constants";
+import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 
 export default function CustomForm(props) {
     const [stadiumNameValue, setStadiumNameValue] = useState(props.value.name);
-    const [stadiumBDateValue, setStadiumBDateValue] = useState(props.value.name);
-    const [stadiumRDateValue, setStadiumRDateValue] = useState(props.value.name);
-    const [stadiumCityValue, setStadiumCityValue] = useState(props.value.name);
-    const [stadiumCapacityValue, setStadiumCapacityValue] = useState(props.value.name);
-    const [stadiumDescription, setStadiumDescription] = useState(props.value.name);
+    const [stadiumBDateValue, setStadiumBDateValue] = useState(props.value.buildDate);
+    const [stadiumRDateValue, setStadiumRDateValue] = useState(props.value.renovationDate);
+    const [stadiumCityValue, setStadiumCityValue] = useState(props.value.city);
+    const [stadiumCapacityValue, setStadiumCapacityValue] = useState(props.value.capacity);
+    const [stadiumDescription, setStadiumDescription] = useState(props.value.description);
 
     useEffect(() => {
         setStadiumNameValue(props.value.name)
@@ -19,7 +20,18 @@ export default function CustomForm(props) {
         setStadiumDescription(props.value.description)
     }, [props]);
 
+    function validateStadium() {
+        if (!/^[0-9]+$/.test(stadiumCapacityValue) | parseInt(stadiumCapacityValue) < 0){
+            ToasterError("Stadium capacity must be positive");
+            return false;
+        }
+        return true;
+    }
+
     const postButtonHandler = () => {
+        if (!validateStadium())
+            return;
+
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -34,10 +46,19 @@ export default function CustomForm(props) {
         };
 
         fetch(URL_BASE, requestOptions)
-            .then((stadium) => {props.refresh();})
+            .then(message => message.json())
+            .then((message) => {
+                if (message.error !== undefined)
+                    ToasterError(message.error[0]);
+                else
+                    props.refresh();
+            })
     }
 
     const putButtonHandler = () => {
+        if (!validateStadium())
+            return;
+
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -54,7 +75,13 @@ export default function CustomForm(props) {
         const URL = URL_BASE + String(props.value.id) + "/"
 
         fetch(URL, requestOptions)
-            .then((stadium) => {props.refresh();})
+            .then(message => message.json())
+            .then((message) => {
+                if (message.error !== undefined)
+                    ToasterError(message.error[0]);
+                else
+                    props.refresh();
+            })
     }
 
     const deleteButtonHandler = () => {
@@ -65,7 +92,13 @@ export default function CustomForm(props) {
         const URL = URL_BASE + String(props.value.id)
 
         fetch(URL, requestOptions)
-            .then((stadium) => {props.refresh();})
+            .then(message => message.json())
+            .then((message) => {
+                if (message.error !== undefined)
+                    ToasterError(message.error[0]);
+                else
+                    props.refresh();
+            })
     }
 
     return (
