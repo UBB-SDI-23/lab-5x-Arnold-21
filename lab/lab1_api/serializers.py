@@ -2,6 +2,13 @@ from rest_framework import serializers
 from .models import Stadium, Club, Competition, MatchesPlayed
 import re
 
+class EstimateSerializer(serializers.ModelSerializer):
+    estimate = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Stadium
+        fields = ["estimate"]
+
 class StadiumSerializer(serializers.ModelSerializer):
     NumberOfClubs = serializers.IntegerField(read_only=True)
 
