@@ -41,7 +41,8 @@ class ClubLogic:
     
     @staticmethod
     def getAutocompleteClub(name):
-        return clubSerializer(Club.objects.filter(name__icontains=name)[:20], many = True).data
+        # return clubSerializer(Club.objects.filter(name__icontains=name)[:20], many = True).data
+        return StadiumSerializer(Stadium.objects.raw('select * from "lab1_api_club" where search @@ plainto_tsquery(%s) limit 20;', (name,))[:20], many = True).data
     
     @staticmethod
     def getStadiumCapacityStatisticsPageNumber(row):
@@ -124,7 +125,8 @@ class CompetitionLogic:
     
     @staticmethod
     def getAutocompleteComps(name):
-        return competitionSerializer(Competition.objects.filter(name__icontains=name)[:20], many = True).data
+        # return competitionSerializer(Competition.objects.filter(name__icontains=name)[:20], many = True).data
+        return StadiumSerializer(Stadium.objects.raw('select * from "lab1_api_competition" where search @@ plainto_tsquery(%s) limit 20;', (name,))[:20], many = True).data
     
     @staticmethod
     def getsingleCompetitionWithLeagueClub(id):
