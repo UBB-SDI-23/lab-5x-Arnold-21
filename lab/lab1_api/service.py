@@ -145,8 +145,7 @@ class CompetitionLogic:
         return simpleCompetitionSerializer(Competition.objects\
                     .filter(competitionType="League")\
                     .annotate(avgBudget=Avg("league__annualBudget"))\
-                    .exclude(avgBudget=None)\
-                    .order_by("-avgBudget")[row*(page - 1):row*page], many=True).data
+                    .exclude(avgBudget=None)[row*(page - 1):row*page], many=True).data
     
     @staticmethod
     def saveCompetitionWithLeagueClubs(comp):
