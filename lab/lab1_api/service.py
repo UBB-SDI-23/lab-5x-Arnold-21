@@ -15,7 +15,7 @@ class StadiumLogic:
     
     @staticmethod
     def getPageNumber(row):
-        return ceil(Stadium.objects.all().count()/row)
+        return ceil(Stadium.objects.raw("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_stadium');")/row)
         
 
 class ClubLogic:
