@@ -46,8 +46,10 @@ class ClubLogic:
     
     @staticmethod
     def getStadiumCapacityStatisticsPageNumber(row):
-        return ceil(Club.objects.annotate(stadiumCapacity=Avg('stadium__capacity'))\
-                                        .order_by("stadiumCapacity").count()/row)
+        cursor = connection.cursor()
+        cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_club');")
+        fetchedRow = cursor.fetchone()
+        return ceil(fetchedRow[0]/row)
 
     @staticmethod
     def getStadiumCapacityStatistics(page, row):
@@ -146,7 +148,7 @@ class CompetitionLogic:
                     .filter(competitionType="League")\
                     .annotate(avgBudget=Avg("league__annualBudget"))\
                     .exclude(avgBudget=None)\
-                    .order_by("-avgBudget").filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
+                    .order_by("-avgBudget")[row*(page - 1):row*page], many=True).data
     
     @staticmethod
     def saveCompetitionWithLeagueClubs(comp):
