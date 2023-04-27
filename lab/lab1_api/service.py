@@ -1,6 +1,8 @@
 from .serializers import *
 from .models import *
 from django.db.models import Count, Q, Avg
+from django.db.models.expressions import RawSQL
+from django.db import connection
 from math import ceil
 
 class StadiumLogic:
@@ -11,11 +13,14 @@ class StadiumLogic:
     @staticmethod
     def getAutocompleteStadium(name):
         # return StadiumSerializer(Stadium.objects.filter(name__icontains=name)[:20], many = True).data
-        return StadiumSerializer(Stadium.objects.raw('select * from "lab1_api_stadium" where search @@ plainto_tsquery(\'' + name + '\') limit 20;')[:20], many = True).data
+        return StadiumSerializer(Stadium.objects.raw(RawSQL('select * from "lab1_api_stadium" where search @@ plainto_tsquery(%s) limit 20;', (name,)))[:20], many = True).data
     
     @staticmethod
     def getPageNumber(row):
-        return ceil(Stadium.objects.all().count()/row)
+        cursor = connection.cursor()
+        cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_stadium');")
+        fetchedRow = cursor.fetchone()
+        return ceil(fetchedRow/row)
         
 
 class ClubLogic:
