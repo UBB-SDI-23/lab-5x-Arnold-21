@@ -52,7 +52,7 @@ class ClubLogic:
     @staticmethod
     def getStadiumCapacityStatistics(page, row):
         return simpleClubSerializer(Club.objects.annotate(stadiumCapacity=Avg('stadium__capacity'))\
-                                        .order_by("stadiumCapacity")[row*(page - 1):row*page], many=True).data
+                                        .order_by("stadiumCapacity").filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
     
     @staticmethod
     def getSingleClubWithLeague(id):
@@ -145,7 +145,8 @@ class CompetitionLogic:
         return simpleCompetitionSerializer(Competition.objects\
                     .filter(competitionType="League")\
                     .annotate(avgBudget=Avg("league__annualBudget"))\
-                    .exclude(avgBudget=None)[row*(page - 1):row*page], many=True).data
+                    .exclude(avgBudget=None)\
+                    .order_by("-avgBudget").filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
     
     @staticmethod
     def saveCompetitionWithLeagueClubs(comp):
