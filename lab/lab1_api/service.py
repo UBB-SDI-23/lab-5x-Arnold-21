@@ -146,7 +146,8 @@ class CompetitionLogic:
                     .filter(competitionType="League")\
                     .annotate(avgBudget=Avg("league__annualBudget"))\
                     .exclude(avgBudget=None)\
-                    .order_by("-avgBudget").filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
+                    .filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))\
+                    .order_by("-avgBudget")[:row], many=True).data
     
     @staticmethod
     def saveCompetitionWithLeagueClubs(comp):
