@@ -20,7 +20,7 @@ class StadiumLogic:
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_stadium');")
         fetchedRow = cursor.fetchone()
-        return ceil(fetchedRow[1]/row)
+        return ceil(fetchedRow[0]/row)
         
 
 class ClubLogic:
