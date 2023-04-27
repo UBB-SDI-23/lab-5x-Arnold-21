@@ -32,20 +32,23 @@ export default function StadiumPage(){
     const [ paginationValue, setPaginationValue ] = useState(12);
 
     useEffect(() => {
-        fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
-            .then(number => number.json())
-            .then(number => setPageMax(number["pageNumber"]));
-    }, [paginationValue]);
-    
-    var getUrlForClubs = useCallback(() => {
-        let URL = URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
         if (budgetFilter !== null){
-            fetch(URL_BASE + "&pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
+            fetch(URL_BASE + "?pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
 
             setPageNumber(1)
-
+        }
+        else{
+            fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
+                .then(number => number.json())
+                .then(number => setPageMax(number["pageNumber"]));
+        }
+    }, [paginationValue, budgetFilter]);
+    
+    var getUrlForClubs = useCallback(() => {
+        let URL = URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+        if (budgetFilter !== null){
             URL += "&budgetFilter=" + String(budgetFilter);
         }
         return URL;
