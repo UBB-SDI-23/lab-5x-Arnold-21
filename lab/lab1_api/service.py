@@ -8,7 +8,7 @@ from math import ceil
 class StadiumLogic:
     @staticmethod
     def getPagedStadiums(page, row):
-        return StadiumSerializer(Stadium.objects.annotate(NumberOfClubs=Count("stadium")).filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 10)))[:row*page], many = True).data
+        return StadiumSerializer(Stadium.objects.annotate(NumberOfClubs=Count("stadium")).filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many = True).data
     
     @staticmethod
     def getAutocompleteStadium(name):
@@ -34,7 +34,7 @@ class ClubLogic:
     
     @staticmethod
     def getPagedClubs(page, row):
-        return clubSerializer(Club.objects.annotate(matchesPlayed=Count("related_club1"))[row*(page - 1):row*page], many = True).data
+        return clubSerializer(Club.objects.annotate(matchesPlayed=Count("related_club1")).filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many = True).data
     
     @staticmethod
     def getAutocompleteClub(name):
@@ -48,7 +48,7 @@ class ClubLogic:
     @staticmethod
     def getStadiumCapacityStatistics(page, row):
         return simpleClubSerializer(Club.objects.annotate(stadiumCapacity=Avg('stadium__capacity'))\
-                                        .order_by("stadiumCapacity")[row*(page - 1):row*page], many=True).data
+                                        .order_by("stadiumCapacity").filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
     
     @staticmethod
     def getSingleClubWithLeague(id):
@@ -56,7 +56,7 @@ class ClubLogic:
     
     @staticmethod
     def filterClubByAnnualBudget(budget, page, row):
-        return clubSerializer(Club.objects.filter(annualBudget__gt=budget)[row*(page - 1):row*page], many=True).data
+        return clubSerializer(Club.objects.filter(annualBudget__gt=budget).filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
     
     @staticmethod
     def saveClubWithLeague(club):
@@ -114,7 +114,7 @@ class CompetitionLogic:
     
     @staticmethod
     def getPagedComps(page, row):
-        return competitionSerializer(Competition.objects.annotate(RealNumberOfTeams=Count("league"))[row*(page - 1):row*page], many = True).data
+        return competitionSerializer(Competition.objects.annotate(RealNumberOfTeams=Count("league")).filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many = True).data
     
     @staticmethod
     def getAutocompleteComps(name):
@@ -138,7 +138,7 @@ class CompetitionLogic:
                     .filter(competitionType="League")\
                     .annotate(avgBudget=Avg("league__annualBudget"))\
                     .exclude(avgBudget=None)\
-                    .order_by("-avgBudget")[row*(page - 1):row*page], many=True).data
+                    .order_by("-avgBudget").filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
     
     @staticmethod
     def saveCompetitionWithLeagueClubs(comp):
@@ -216,7 +216,7 @@ class MatchesPlayedLogic:
     
     @staticmethod
     def getPagedMatches(page, row):
-        return matchesPlayedSerializer(MatchesPlayed.objects.raw('select *, (select AVG("annualBudget") from lab1_api_club where "league_id" = "competition_id") as AvgLeagueBudget from lab1_api_matchesplayed limit ' + str(row*page) + ' offset ' + str(row*(page - 1))), many=True).data
+        return matchesPlayedSerializer(MatchesPlayed.objects.annotate(avgleaguebudget=Avg("competition__league_annualBudget")).filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many=True).data
     
     @staticmethod
     def getSingleMatchPlayedWithDetail(id):
