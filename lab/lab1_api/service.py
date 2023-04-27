@@ -26,7 +26,10 @@ class StadiumLogic:
 class ClubLogic:
     @staticmethod
     def getPageNumber(row):
-        return ceil(Club.objects.all().count()/row)
+        cursor = connection.cursor()
+        cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_club');")
+        fetchedRow = cursor.fetchone()
+        return ceil(fetchedRow[0]/row)
     
     @staticmethod
     def getBudgetFilteredPageNumber(budget, row):
@@ -110,7 +113,10 @@ class ClubLogic:
 class CompetitionLogic:
     @staticmethod
     def getPageNumber(row):
-        return ceil(Competition.objects.all().count()/row)
+        cursor = connection.cursor()
+        cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_competition');")
+        fetchedRow = cursor.fetchone()
+        return ceil(fetchedRow[0]/row)
     
     @staticmethod
     def getPagedComps(page, row):
@@ -212,7 +218,10 @@ class CompetitionLogic:
 class MatchesPlayedLogic:
     @staticmethod
     def getPageNumber(row):
-        return ceil(MatchesPlayed.objects.all().count()/row)
+        cursor = connection.cursor()
+        cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_matchesplayed');")
+        fetchedRow = cursor.fetchone()
+        return ceil(fetchedRow[0]/row)
     
     @staticmethod
     def getPagedMatches(page, row):
