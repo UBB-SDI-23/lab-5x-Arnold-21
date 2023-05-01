@@ -1,6 +1,11 @@
 from django.urls import path
 from .views import *
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 urlpatterns = [
     path('api/stadiums/', stadiumList.as_view()),
     path('api/stadiums/<int:id>/', stadiumDetail.as_view()),
@@ -19,5 +24,7 @@ urlpatterns = [
     path('api/competitions/<int:compId>/clubs/', specificCompetitionMatchesDetail.as_view()),
     path('api/leaguesByAnnualBudget/', leaguesByAverage.as_view()),
     path('api/clubsByStadiumCapacity/', clubStadiumCapacity.as_view()),
-    path('api/updateClubLeagues/<int:compID>/', UpdateClubLeagues.as_view())
+    path('api/updateClubLeagues/<int:compID>/', UpdateClubLeagues.as_view()),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]
