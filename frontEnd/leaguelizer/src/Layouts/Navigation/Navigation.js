@@ -14,6 +14,7 @@ function Navigation() {
                 <Link to="/competition"><Button variant='text'>Competition</Button></Link>
                 <Link to="/matches"><Button variant='text'>Matches</Button></Link>
                 <Link to="/statistics"><Button variant='text'>Statistics</Button></Link>
+                <Link to="/login"><Button variant='text'>Login</Button></Link>
             </div>
         </div>
     )

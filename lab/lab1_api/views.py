@@ -1,9 +1,17 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from django.db.models import Avg
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from .service import *
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+#Views for the user authentification
+
+class myTokenObtainPariView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 #Crud functionalities for the models--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -11,6 +19,7 @@ from .service import *
 class stadiumList(generics.ListCreateAPIView):
     queryset = Stadium.objects.all()
     serializer_class = StadiumSerializer
+    permission_classes=[IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
