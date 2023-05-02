@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button } from '@mui/material'
 import { Link } from "react-router-dom"
+import authContext from '../../Context/Context';
 
 function Navigation() {
+    let {user} = useContext(authContext);
+
     return (
         <div style={{display:"flex", flexDirection:"row", borderBottom:"2px solid gray", paddingBottom:"10px", paddingTop:"10px", background:"black"}}>
             <div style={{width:"30%"}}>
@@ -14,7 +17,9 @@ function Navigation() {
                 <Link to="/competition"><Button variant='text'>Competition</Button></Link>
                 <Link to="/matches"><Button variant='text'>Matches</Button></Link>
                 <Link to="/statistics"><Button variant='text'>Statistics</Button></Link>
-                <Link to="/login"><Button variant='text'>Login</Button></Link>
+                {user ? <Link to="/logout"><Button variant='text'>Logout</Button></Link> : 
+                    <Link to="/login"><Button variant='text'>Login</Button></Link>
+                }
             </div>
         </div>
     )

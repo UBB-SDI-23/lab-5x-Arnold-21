@@ -19,7 +19,6 @@ class myTokenObtainPariView(TokenObtainPairView):
 class stadiumList(generics.ListCreateAPIView):
     queryset = Stadium.objects.all()
     serializer_class = StadiumSerializer
-    permission_classes=[IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")

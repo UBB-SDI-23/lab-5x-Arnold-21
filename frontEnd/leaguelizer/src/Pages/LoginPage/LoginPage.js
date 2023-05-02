@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import MainLayout from '../../Layouts/PageLayout/MainLayout/MainLayout'
 import { Container, Grid, TextField, Button } from '@mui/material'
 import authContext from '../../Context/Context'
@@ -15,6 +15,11 @@ function LoginPage() {
         navigate("/");
     }
 
+    useEffect(() => {
+        if (user)
+            navigate("/");
+    }, [user, navigate])
+
     return (
         <MainLayout>
             <Container sx={{display:"flex", justifyContent:"center", alignContent:"center"}}>
@@ -25,7 +30,6 @@ function LoginPage() {
                 <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
                     <Button variant="contained" onClick={loginHandler}>Post</Button>
                 </Grid>
-                {user ? <p>Hello{user.user_id}</p> : ""}
             </Container>
         </MainLayout>
     )
