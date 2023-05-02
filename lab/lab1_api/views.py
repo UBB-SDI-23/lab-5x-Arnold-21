@@ -3,15 +3,30 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
-
 from .service import *
-
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 #Views for the user authentification
 
 class myTokenObtainPariView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+class RegisterView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        error = UserLogic.saveUser(data)
+
+        if error:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({}, status=status.HTTP_200_OK)
+
+class RegisterConfirmView(APIView):
+    def get(self, request, code, *args, **kwargs):
+        error = UserLogic.confirmRegistration(code)
+        if error:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({}, status=status.HTTP_200_OK)
 
 #Crud functionalities for the models--------------------------------------------------------------------------------------------------------------------------------------
 

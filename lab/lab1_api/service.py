@@ -3,7 +3,39 @@ from .models import *
 from django.db.models import Count, Q, Avg
 from django.db.models.expressions import RawSQL
 from django.db import connection
+from django.contrib.auth import get_user_model
 from math import ceil
+import random
+from datetime import datetime
+
+User = get_user_model()
+
+class UserLogic:
+    @staticmethod
+    def saveUser(data):
+        username = data["username"]
+        password = data["password"]
+        email = data["email"]
+
+        random.seed(datetime.today)
+        confirmationCode = str(random.randint(a=100000, b=999999))
+        confirmationTime = datetime.today()
+
+        user = User.objects.create(username=username, password=password, email=email, confirmation_code=confirmationCode, confirmation_start=confirmationTime, is_vlaid=False)
+        data['userName'] = user
+
+        userSerializer = UserDetailSerializer(data=data)
+        if userSerializer.is_valid():
+            userSerializer.save()
+        else:
+            user.delete()
+            return True
+        
+        return False
+    
+    @staticmethod
+    def confirmRegistration(code):
+        pass
 
 class StadiumLogic:
     @staticmethod

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Stadium, Club, Competition, MatchesPlayed
+from .models import Stadium, Club, Competition, MatchesPlayed, UserDetail
 import re
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -12,6 +12,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['id'] = user.id
 
         return token
+    
+#UserDetail Serializer
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserDetail
+        fields = "__all__"
 
 class StadiumSerializer(serializers.ModelSerializer):
     NumberOfClubs = serializers.IntegerField(read_only=True)
