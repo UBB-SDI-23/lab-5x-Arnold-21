@@ -18,7 +18,10 @@ function Navigation() {
                 <Link to="/matches"><Button variant='text'>Matches</Button></Link>
                 <Link to="/statistics"><Button variant='text'>Statistics</Button></Link>
                 {user ? <Link to="/logout"><Button variant='text'>Logout</Button></Link> : 
-                    <Link to="/login"><Button variant='text'>Login</Button></Link>
+                    <>
+                        <Link to="/login"><Button variant='text'>Login</Button></Link>
+                        <Link to="/register"><Button variant='text'>Register</Button></Link>
+                    </>
                 }
             </div>
         </div>

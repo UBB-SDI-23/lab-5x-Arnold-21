@@ -25,7 +25,7 @@ class RegisterConfirmView(APIView):
     def get(self, request, code, *args, **kwargs):
         error = UserLogic.confirmRegistration(code)
         if error:
-            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'Message': "Confirmation Unsuccessful!"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({}, status=status.HTTP_200_OK)
 
 #Crud functionalities for the models--------------------------------------------------------------------------------------------------------------------------------------

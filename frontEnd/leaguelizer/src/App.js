@@ -10,6 +10,8 @@ import StatisticsPage from "./Pages/StatisticsPage/StatisticsPage"
 import LoginPage from "./Pages/LoginPage/LoginPage";
 import LogoutPage from "./Pages/LogoutPage/LogoutPage";
 import { AuthProvider } from "./Context/Context";
+import RegisterPage from "./Pages/RegisterPage/RegisterPage";
+import ActivationPage from "./Pages/RegisterPage/RegisterActivation";
 
 
 export default function App(){
@@ -24,6 +26,8 @@ export default function App(){
         <Route path="/statistics" element={<StatisticsPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/logout" element={<LogoutPage />}></Route>
+        <Route path="/register" element={<RegisterPage />}></Route>
+        <Route path="/activation" element={<ActivationPage />}></Route>
       </Routes>
     </AuthProvider>
   );

@@ -24,12 +24,12 @@ class UserDetail(models.Model):
         ('S', 'Single')
     ]
 
-    userName = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.CharField(max_length=200, blank=True, null=True)
-    location = models.CharField(max_length=100, blank=True, null=True)
-    birthday = models.DateField(blank=True, null=True)
-    gender = models.CharField(max_length=2, choices=genderChoices, blank=True, null=True)
-    marital = models.CharField(max_length=2, choices=maritalChoices, blank=True, null=True)
+    userName = models.ForeignKey(User, related_name="user", on_delete=models.CASCADE, null=True)
+    bio = models.CharField(max_length=200, null=True)
+    location = models.CharField(max_length=100, null=True)
+    birthday = models.DateField(null=True)
+    gender = models.CharField(max_length=2, choices=genderChoices, null=True)
+    marital = models.CharField(max_length=2, choices=maritalChoices, null=True)
 
 
 # Create your models here.

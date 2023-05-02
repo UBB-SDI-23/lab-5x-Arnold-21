@@ -1,12 +1,14 @@
 from .serializers import *
 from .models import *
 from django.db.models import Count, Q, Avg
-from django.db.models.expressions import RawSQL
 from django.db import connection
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils import timezone
 from math import ceil
 import random
-from datetime import datetime
+import hashlib
 
 User = get_user_model()
 
@@ -17,25 +19,51 @@ class UserLogic:
         password = data["password"]
         email = data["email"]
 
-        random.seed(datetime.today)
+        random.seed(timezone.now().timestamp())
         confirmationCode = str(random.randint(a=100000, b=999999))
-        confirmationTime = datetime.today()
+        confirmationTime = timezone.now()
 
-        user = User.objects.create(username=username, password=password, email=email, confirmation_code=confirmationCode, confirmation_start=confirmationTime, is_vlaid=False)
-        data['userName'] = user
+        user = User(username=username)
+        user.set_password(password)
+        user.email=email
+        user.confirmation_code=confirmationCode
+        user.confirmation_start=confirmationTime
+        user.is_active=False
+        user.save()
 
-        userSerializer = UserDetailSerializer(data=data)
-        if userSerializer.is_valid():
-            userSerializer.save()
-        else:
-            user.delete()
-            return True
-        
+        UserDetail.objects.create(userName=user, bio=data['bio'], location=data['location'], birthday=data['day'], gender=data['gender'], marital=data['marital'])
+
+        send_mail(
+            "Account Activation",
+            "Your account's activation code: " + confirmationCode,
+            'noreply@leaguelizer.com',
+            [user.email],
+            fail_silently=False,
+        )
+
         return False
     
     @staticmethod
     def confirmRegistration(code):
-        pass
+        try:
+            user = User.objects.get(confirmation_code=code)
+        except:
+            return True
+        if user is None:
+            return True
+        
+        currentTime = timezone.now()
+        if (currentTime - user.confirmation_start).total_seconds()/60 >= 10:
+            userDetail = UserDetail.objects.get(userName=user)
+            userDetail.delete()
+            user.delete()
+            return True
+        
+        user.confirmation_code = None
+        user.confirmation_start = None
+        user.is_active = True
+        user.save()
+        return False
 
 class StadiumLogic:
     @staticmethod
