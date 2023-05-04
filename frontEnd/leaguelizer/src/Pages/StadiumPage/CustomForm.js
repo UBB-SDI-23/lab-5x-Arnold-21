@@ -1,9 +1,11 @@
-import { React, useEffect, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
 import URL_BASE from "./constants";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
+import authContext from "../../Context/Context";
 
 export default function CustomForm(props) {
+    let {user} = useContext(authContext);
     const [stadiumNameValue, setStadiumNameValue] = useState(props.value.name);
     const [stadiumBDateValue, setStadiumBDateValue] = useState(props.value.buildDate);
     const [stadiumRDateValue, setStadiumRDateValue] = useState(props.value.renovationDate);
@@ -41,7 +43,8 @@ export default function CustomForm(props) {
                 "capacity": stadiumCapacityValue,
                 "buildDate": stadiumBDateValue,
                 "renovationDate": stadiumRDateValue,
-                "description": stadiumDescription
+                "description": stadiumDescription,
+                "user":(!user) ? user.user_id : null
             })
         };
 
@@ -86,7 +89,7 @@ export default function CustomForm(props) {
 
     const deleteButtonHandler = () => {
         const requestOptions = {
-            method: 'DELETE'
+            method: 'DELETE',
         };
 
         const URL = URL_BASE + String(props.value.id)

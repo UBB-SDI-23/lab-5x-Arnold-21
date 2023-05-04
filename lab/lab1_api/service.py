@@ -77,6 +77,7 @@ class StadiumLogic:
     
     @staticmethod
     def getPageNumber(row):
+        return Stadium.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_stadium');")
         fetchedRow = cursor.fetchone()

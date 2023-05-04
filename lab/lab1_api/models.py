@@ -40,6 +40,7 @@ class Stadium(models.Model):
     capacity = models.IntegerField()
     buildDate = models.DateField()
     renovationDate = models.DateField()
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
@@ -50,6 +51,7 @@ class Competition(models.Model):
     foundedDate = models.DateField()
     prizeMoney = models.IntegerField()
     competitionType = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     
     def __str__(self):
         return self.name
@@ -61,6 +63,7 @@ class Club(models.Model):
     foundedDate = models.DateField()
     stadium = models.ForeignKey(Stadium, related_name="stadium", on_delete=models.SET_NULL, null=True)
     league = models.ForeignKey(Competition, related_name="league", on_delete=models.SET_NULL, null = True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
@@ -70,6 +73,7 @@ class MatchesPlayed(models.Model):
     club2 = models.ForeignKey(Club, related_name="related_club2", on_delete=models.CASCADE)
     competition = models.ForeignKey(Competition, on_delete=models.CASCADE)
     stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     roundOfPlay = models.CharField(max_length=100)
     score = models.CharField(max_length=100)
