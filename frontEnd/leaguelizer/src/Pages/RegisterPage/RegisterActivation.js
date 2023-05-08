@@ -12,7 +12,7 @@ function ActivationPage() {
     const navigate = useNavigate()
     
     let activationHandler = async () => {
-        let response = await fetch(URL_BASE + "confirm/" + code, {
+        let response = await fetch(URL_BASE + "confirm/" + code + "/", {
             method: 'GET',
             headers: {
                 'Content-Type':'application/json'

@@ -30,10 +30,15 @@ class RegisterConfirmView(APIView):
 
 #Crud functionalities for the models--------------------------------------------------------------------------------------------------------------------------------------
 
+#User
+class userDetailList(APIView):
+    def get(self, request, id, *args, **kwargs):
+        return Response(UserLogic.getUserDetail(id))
+
 #Stadium-------------------------------------------------------------------------------
 class stadiumList(generics.ListCreateAPIView):
     queryset = Stadium.objects.all()
-    serializer_class = StadiumSerializer
+    serializer_class = simpleStadiumSerializer
 
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")

@@ -9,6 +9,7 @@ export default authContext;
 export const AuthProvider = ({children}) => {
     let [ tokens, setTokens ] = useState(localStorage.getItem('tokens') ? JSON.parse(localStorage.getItem('tokens')) : null);
     let [ user, setUser ] = useState(localStorage.getItem('tokens') ? jwt_decode(JSON.parse(localStorage.getItem('tokens')) .access) : null);
+    let [ userLookup, setUserLookup ] = useState(-1);
 
     let login = async (username, password) => {
         let response = await fetch(URL, {
@@ -38,7 +39,9 @@ export const AuthProvider = ({children}) => {
         tokens: tokens,
         user: user,
         login: login,
-        logout: logout
+        logout: logout,
+        userLookup: userLookup,
+        setUserLookup: setUserLookup
     }
 
     return (

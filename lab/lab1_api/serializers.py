@@ -23,6 +23,12 @@ class UserSerializer(serializers.ModelSerializer):
     
 #UserDetail Serializer
 class UserDetailSerializer(serializers.ModelSerializer):
+    NumberOfClubs = serializers.IntegerField(read_only=True)
+    NumberOfStadiums = serializers.IntegerField(read_only=True)
+    NumberOfCompetitions = serializers.IntegerField(read_only=True)
+    NumberOfMatches = serializers.IntegerField(read_only=True)
+    userName = UserSerializer(read_only=True)
+
     class Meta:
         model = UserDetail
         fields = "__all__"
@@ -30,6 +36,18 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class StadiumSerializer(serializers.ModelSerializer):
     NumberOfClubs = serializers.IntegerField(read_only=True)
     user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Stadium
+        fields = "__all__"
+        
+    def validate(self, data):
+        if data["capacity"] < 0:
+            raise serializers.ValidationError({"error": "Stadium capacity should be higher than 0"})
+        return data
+    
+class simpleStadiumSerializer(serializers.ModelSerializer):
+    NumberOfClubs = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Stadium

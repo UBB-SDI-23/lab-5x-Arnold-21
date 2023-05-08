@@ -34,6 +34,8 @@ export default function CustomForm(props) {
         if (!validateStadium())
             return;
 
+        console.log((user) ? user.user_id : null)
+
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

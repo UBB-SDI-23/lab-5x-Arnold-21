@@ -19,7 +19,7 @@ export default function TableContent(props){
                         ((typeof object[header] !== "object") ?
                             <TableCell key={header}>{object[header]}</TableCell> : (object[header].name !== undefined) ?
                                 <TableCell key={header}>{object[header].name}</TableCell> : (object[header].username !== undefined) ?
-                                <TableCell key={header} onClick={() => {userClickHandler()}}>{object[header].username}</TableCell>:
+                                <TableCell key={header} onClick={() => userClickHandler(object)}>{object[header].username}</TableCell>:
                                 <TableCell key={header}></TableCell>) :
                                 <TableCell key={header}></TableCell>
                     ))}

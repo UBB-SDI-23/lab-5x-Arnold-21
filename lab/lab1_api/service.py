@@ -64,6 +64,13 @@ class UserLogic:
         user.is_active = True
         user.save()
         return False
+    
+    @staticmethod
+    def getUserDetail(id):
+        return UserDetailSerializer(UserDetail.objects.filter(userName__id=id).annotate(NumberOfClubs=Count("userName__club"))\
+                                    .annotate(NumberOfStadiums=Count("userName__stadium"))\
+                                    .annotate(NumberOfCompetitions=Count("userName__competition"))\
+                                    .annotate(NumberOfMatches=Count("userName__match")), many=True).data
 
 class StadiumLogic:
     @staticmethod
