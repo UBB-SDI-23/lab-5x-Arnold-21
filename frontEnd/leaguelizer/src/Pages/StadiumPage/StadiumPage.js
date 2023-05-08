@@ -107,6 +107,10 @@ export default function StadiumPage(){
         return Object.keys(stadiumList[0])
     }, [stadiumList]);
 
+    const userClickHandler = () => {
+        console.log("Asd");
+    };
+
     return (
         <MainLayout>
             <CustomForm value = {stadiumValue} refresh={refresh}/>
@@ -137,6 +141,7 @@ export default function StadiumPage(){
                 setPageNumber = {setPageNumber}
                 paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
+                userClickHandler = {userClickHandler}
             ></CustomTable>
         </MainLayout>
     );

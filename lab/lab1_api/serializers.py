@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import Stadium, Club, Competition, MatchesPlayed, UserDetail
 import re
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 #Token serializer
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -13,6 +16,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token
     
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username')
+    
 #UserDetail Serializer
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,6 +29,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 class StadiumSerializer(serializers.ModelSerializer):
     NumberOfClubs = serializers.IntegerField(read_only=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Stadium

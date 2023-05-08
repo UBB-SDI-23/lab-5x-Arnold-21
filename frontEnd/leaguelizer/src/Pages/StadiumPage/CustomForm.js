@@ -44,7 +44,7 @@ export default function CustomForm(props) {
                 "buildDate": stadiumBDateValue,
                 "renovationDate": stadiumRDateValue,
                 "description": stadiumDescription,
-                "user":(!user) ? user.user_id : null
+                "user":(user) ? user.user_id : null
             })
         };
 
@@ -90,18 +90,13 @@ export default function CustomForm(props) {
     const deleteButtonHandler = () => {
         const requestOptions = {
             method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
         };
 
-        const URL = URL_BASE + String(props.value.id)
+        const URL = URL_BASE + String(props.value.id) + "/"
 
         fetch(URL, requestOptions)
-            .then(message => message.json())
-            .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
-                else
-                    props.refresh();
-            })
+            .then(() => {props.refresh();});
     }
 
     return (
