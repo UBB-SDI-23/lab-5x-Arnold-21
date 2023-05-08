@@ -19,7 +19,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username')
+        fields = ("id", "username")
     
 #UserDetail Serializer
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -33,6 +33,15 @@ class UserDetailSerializer(serializers.ModelSerializer):
         model = UserDetail
         fields = "__all__"
 
+    def validate(self, data):
+        if not re.search("^[a-zA-Z0-9 ]*$",data["bio"]) and data["bio"] is not None:
+            raise serializers.ValidationError({"error": "Bio can only contain numbers and letters"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["location"]) and data["location"] is not None:
+            raise serializers.ValidationError({"error": "Location can only contain numbers and letters"})
+        if not re.search("^[0-9]{4}-[0-9]{2}-[0-9]{2}$",data["birthday"]) and data["birthday"] is not None:
+            raise serializers.ValidationError({"error": "Birthday has to have the following format: yyyy-mm-dd"})
+        return data
+
 class StadiumSerializer(serializers.ModelSerializer):
     NumberOfClubs = serializers.IntegerField(read_only=True)
     user = UserSerializer(read_only=True)
@@ -42,8 +51,14 @@ class StadiumSerializer(serializers.ModelSerializer):
         fields = "__all__"
         
     def validate(self, data):
-        if data["capacity"] < 0:
-            raise serializers.ValidationError({"error": "Stadium capacity should be higher than 0"})
+        if type(data["capacity"]) is not int or data["capacity"] < 0:
+            raise serializers.ValidationError({"error": "Stadium capacity must be a positive integer"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["name"]):
+            raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["city"]):
+            raise serializers.ValidationError({"error": "City can only contain numbers and letters"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["description"]):
+            raise serializers.ValidationError({"error": "Description can only contain numbers and letters"})
         return data
     
 class simpleStadiumSerializer(serializers.ModelSerializer):
@@ -54,8 +69,14 @@ class simpleStadiumSerializer(serializers.ModelSerializer):
         fields = "__all__"
         
     def validate(self, data):
-        if data["capacity"] < 0:
-            raise serializers.ValidationError({"error": "Stadium capacity should be higher than 0"})
+        if type(data["capacity"]) is not int or data["capacity"] < 0:
+            raise serializers.ValidationError({"error": "Stadium capacity must be a positive integer"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["name"]):
+            raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["city"]):
+            raise serializers.ValidationError({"error": "City can only contain numbers and letters"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["description"]):
+            raise serializers.ValidationError({"error": "Description can only contain numbers and letters"})
         return data
 
 
@@ -66,6 +87,15 @@ class simpleClubSerializer(serializers.ModelSerializer):
         model = Club
         fields = "__all__"
 
+    def validate(self, data):
+        if not re.search("^[a-zA-Z0-9 ]*$",data["name"]):
+            raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
+        if type(data["annualBudget"]) is not int or data["annualBudget"] < 0:
+            raise serializers.ValidationError({"error": "Annual Budget must be a positive integer"})
+        if type(data["numberOfStadd"]) is not int or data["numberOfStadd"] < 0:
+            raise serializers.ValidationError({"error": "Number of Staff must be a positive integer"})
+        return data
+
 
 class simpleCompetitionSerializer(serializers.ModelSerializer):
     avgBudget = serializers.FloatField(read_only=True)
@@ -75,11 +105,14 @@ class simpleCompetitionSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, data):
-        if data["numberOfTeams"] < 0:
-            raise serializers.ValidationError({"error": "The number of teams should be higher than 0"})
-        if data["prizeMoney"] < 0:
-            raise serializers.ValidationError({"error": "You can't take money for participation"})
-        
+        if type(data["numberOfTeams"]) is not int or data["numberOfTeams"] < 0:
+            raise serializers.ValidationError({"error": "Number of Teams must be a positive integer"})
+        if type(data["prizeMoney"]) is not int or data["prizeMoney"] < 0:
+            raise serializers.ValidationError({"error": "Prize Money must be a positive integer"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["name"]):
+            raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["competitionType"]):
+            raise serializers.ValidationError({"error": "Competition Type can only contain numbers and letters"})
         return data
 
 
@@ -97,11 +130,14 @@ class competitionSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, data):
-        if data["numberOfTeams"] < 0:
-            raise serializers.ValidationError({"error": "The number of teams should be higher than 0"})
-        if data["prizeMoney"] < 0:
-            raise serializers.ValidationError({"error": "You can't take money for participation"})
-        
+        if type(data["numberOfTeams"]) is not int or data["numberOfTeams"] < 0:
+            raise serializers.ValidationError({"error": "Number of Teams must be a positive integer"})
+        if type(data["prizeMoney"]) is not int or data["prizeMoney"] < 0:
+            raise serializers.ValidationError({"error": "Prize Money must be a positive integer"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["name"]):
+            raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
+        if not re.search("^[a-zA-Z0-9 ]*$",data["competitionType"]):
+            raise serializers.ValidationError({"error": "Competition Type can only contain numbers and letters"})
         return data
 
 class clubSerializer(serializers.ModelSerializer):
@@ -112,6 +148,15 @@ class clubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
         fields = "__all__"
+
+    def validate(self, data):
+        if not re.search("^[a-zA-Z0-9 ]*$",data["name"]):
+            raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
+        if type(data["annualBudget"]) is not int or data["annualBudget"] < 0:
+            raise serializers.ValidationError({"error": "Annual Budget must be a positive integer"})
+        if type(data["numberOfStadd"]) is not int or data["numberOfStadd"] < 0:
+            raise serializers.ValidationError({"error": "Number of Staff must be a positive integer"})
+        return data
 
 
 class matchesPlayedSerializer(serializers.ModelSerializer):
@@ -128,9 +173,10 @@ class matchesPlayedSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data["club1"] == data["club2"]:
             raise serializers.ValidationError({"error": "The club cannot play against itself"})
-        if (re.search("^[0-9]{1,2}-[0-9]{1,2}$", data["score"]) == None):
+        if not re.search("^[0-9]{1,2}-[0-9]{1,2}$", data["score"]):
             raise serializers.ValidationError({"error": "Incorrect/Impossible score"})
-        
+        if not re.search("^[a-zA-Z0-9 ]*$",data["roundOfPlay"]):
+            raise serializers.ValidationError({"error": "Round Of Play can only contain numbers and letters"})
         return data
 
 
@@ -142,7 +188,8 @@ class simpleMatchesPlayedSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data["club1"] == data["club2"]:
             raise serializers.ValidationError({"error": "The club cannot play against itself"})
-        if (re.search("^[0-9]{1,2}-[0-9]{1,2}$", data["score"]) == None):
+        if not re.search("^[0-9]{1,2}-[0-9]{1,2}$", data["score"]):
             raise serializers.ValidationError({"error": "Incorrect/Impossible score"})
-        
+        if not re.search("^[a-zA-Z0-9 ]*$",data["roundOfPlay"]):
+            raise serializers.ValidationError({"error": "Round Of Play can only contain numbers and letters"})
         return data

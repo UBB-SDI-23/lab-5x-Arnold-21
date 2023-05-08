@@ -19,6 +19,13 @@ class UserLogic:
         password = data["password"]
         email = data["email"]
 
+        if re.search("^[a-zA-Z0-9]*$", username):
+            return True
+        if re.search("^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", email):
+            return True
+        if re.search("^.*[a-z].*[A-Z].*[0-9].*[\.,\$\+\\]", password) or len(password) < 8:
+            return True
+
         random.seed(timezone.now().timestamp())
         confirmationCode = str(random.randint(a=100000, b=999999))
         confirmationTime = timezone.now()
