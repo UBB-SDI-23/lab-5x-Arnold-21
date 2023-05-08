@@ -3,14 +3,21 @@ import MainLayout from '../../Layouts/PageLayout/MainLayout/MainLayout'
 import { Grid, TextField, Button } from '@mui/material'
 import authContext from '../../Context/Context'
 import { useNavigate } from 'react-router-dom';
+import ToasterError from '../../Layouts/ErrorLayout/ToasterError';
 
 function LoginPage() {
     let {user,login} = useContext(authContext);
     let [username, setUsername] = useState("");
     let [password, setPassword] = useState("");
     const navigate = useNavigate()
+
     
     let loginHandler = () => {
+        if (!/^[a-zA-Z0-9 ]+$/.test(username)){
+            ToasterError("Username can only contain numbers and letters");
+            return;
+        }
+
         login(username, password);
         navigate("/");
     }

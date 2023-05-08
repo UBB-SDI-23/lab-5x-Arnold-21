@@ -67,6 +67,18 @@ export default function CustomForm(props) {
             ToasterError("There must be a positive prize");
             return false;
         }
+        if (!/^[a-zA-Z0-9 ]+$/.test(compNameValue)){
+            ToasterError("Competition Name can only contain numbers and letters");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]+$/.test(compTypeValue)){
+            ToasterError("Competition type can only contain numbers and letters");
+            return false;
+        }
+        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(compDateValue)){
+            ToasterError("Date needs to have the following format: yyyy-mm-dd");
+            return false;
+        }
         return true;
     }
 
@@ -79,12 +91,61 @@ export default function CustomForm(props) {
             ToasterError("The team cannot play with itself!");
             return false;
         }
+        if (!/^[0-9]+$/.test(club1Value)){
+            ToasterError("Invalid club1 id");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(club2Value)){
+            ToasterError("Invalid club2 id");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(stadiumValue)){
+            ToasterError("Invalid stadium id");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]*$/.test(roundValue)){
+            ToasterError("Invalid Round of play");
+            return false;
+        }
+        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(dateValue)){
+            ToasterError("Date needs to have the following format: yyyy-mm-dd");
+            return false;
+        }
+        return true;
+    }
+
+    function validateClub() {
+        if (!/^[0-9]+$/.test(clubAnnualBudgetValue) | parseInt(clubAnnualBudgetValue) < 0){
+            ToasterError("Annual Budget must be a positive integer");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(clubStaffValue) | parseInt(clubStaffValue) < 0){
+            ToasterError("Number of staff must be a positive integer");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]+$/.test(clubNameValue)){
+            ToasterError("Club Name can only contain numbers and letters");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(clubStadiumValue)){
+            ToasterError("Club stadium incorrect!");
+            return false;
+        }
+        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(clubDateValue)){
+            ToasterError("Date needs to have the following format: yyyy-mm-dd");
+            return false;
+        }
         return true;
     }
 
     const getPageMax = useCallback(() => {
         if (props.value.id === undefined)
             return;
+
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
     
         fetch(URL_BASE + String(props.value.id) + "/clubs/?pageNumber=0")
             .then(number => number.json())
@@ -105,6 +166,11 @@ export default function CustomForm(props) {
         if (props.value.id === undefined)
             return "";
 
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return "";
+        }
+
         return URL_BASE + String(props.value.id) + "/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, props.value.id, paginationValue])
 
@@ -116,6 +182,11 @@ export default function CustomForm(props) {
     }, [getUrlForMatches])
 
     useEffect(() => {
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+        
         if (specificLeagueVisible && compNameValue !== ""){
             fetch(URL_BASE + String(props.value.id))
                 .then(clubs => clubs.json())
@@ -219,6 +290,11 @@ export default function CustomForm(props) {
         if (!validateCompetition())
             return;
 
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -244,6 +320,11 @@ export default function CustomForm(props) {
     }
 
     const deleteButtonHandler = () => {
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+
         const requestOptions = {
             method: 'DELETE'
         };
@@ -288,6 +369,10 @@ export default function CustomForm(props) {
     }
 
     const addClubHandler = () => {
+        if (!validateClub()){
+            return;
+        }
+
         let varLeagueCLubList = leagueClubs;
         const newCLub = {
             "name": clubNameValue,
@@ -296,6 +381,7 @@ export default function CustomForm(props) {
             "foundedDate": clubDateValue,
             "stadium": clubStadiumValue
         }
+
         varLeagueCLubList.push(newCLub);
         setLeagueClubs(varLeagueCLubList);
     }
@@ -310,6 +396,11 @@ export default function CustomForm(props) {
     const postMatchButtonHandler = () => {
         if (!validateMatch())
             return;
+
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
 
         const requestOptions = {
             method: 'POST',
@@ -338,6 +429,11 @@ export default function CustomForm(props) {
         if (!validateMatch())
             return;
 
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -365,6 +461,11 @@ export default function CustomForm(props) {
     }
 
     const deleteMatchButtonHandler = () => {
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+
         const requestOptions = {
             method: 'DELETE'
         };

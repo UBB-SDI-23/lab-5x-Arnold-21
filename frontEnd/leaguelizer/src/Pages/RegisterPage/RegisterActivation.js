@@ -4,6 +4,7 @@ import { Grid, TextField, Button } from '@mui/material'
 import authContext from '../../Context/Context'
 import { useNavigate } from 'react-router-dom';
 import URL_BASE from './constants';
+import ToasterError from '../../Layouts/ErrorLayout/ToasterError';
 
 function ActivationPage() {
     let {user} = useContext(authContext);
@@ -12,6 +13,11 @@ function ActivationPage() {
     const navigate = useNavigate()
     
     let activationHandler = async () => {
+        if (!/^[0-9]+$/.test(code)){
+            ToasterError("Invalid code");
+            return;
+        }
+
         let response = await fetch(URL_BASE + "confirm/" + code + "/", {
             method: 'GET',
             headers: {
@@ -22,7 +28,7 @@ function ActivationPage() {
         if (response.status === 200){
             setMessage("Activation Successfull!")
         } else {
-            alert("Activation Failed!");
+            ToasterError("Activation Failed!");
         }
     }
 

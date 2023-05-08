@@ -27,6 +27,26 @@ export default function CustomForm(props) {
             ToasterError("Stadium capacity must be positive");
             return false;
         }
+        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(stadiumBDateValue)){
+            ToasterError("Build Date needs to have the following format: yyyy-mm-dd");
+            return false;
+        }
+        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(stadiumRDateValue)){
+            ToasterError("Renovation Date needs to have the following format: yyyy-mm-dd");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]+$/.test(stadiumNameValue)){
+            ToasterError("Stadium Name can only contain numbers and letters");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]+$/.test(stadiumCityValue)){
+            ToasterError("Stadium City can only contain numbers and letters");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]+$/.test(stadiumDescription)){
+            ToasterError("Stadium Description can only contain numbers and letters");
+            return false;
+        }
         return true;
     }
 
@@ -63,6 +83,10 @@ export default function CustomForm(props) {
     const putButtonHandler = () => {
         if (!validateStadium())
             return;
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
 
         const requestOptions = {
             method: 'PUT',
@@ -90,6 +114,11 @@ export default function CustomForm(props) {
     }
 
     const deleteButtonHandler = () => {
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+        
         const requestOptions = {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },

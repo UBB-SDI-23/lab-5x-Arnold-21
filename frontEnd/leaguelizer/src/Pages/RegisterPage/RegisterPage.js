@@ -4,6 +4,7 @@ import { Grid, TextField, Button, Select, InputLabel, MenuItem } from '@mui/mate
 import { useNavigate } from 'react-router-dom';
 import authContext from '../../Context/Context';
 import URL_BASE from './constants';
+import ToasterError from '../../Layouts/ErrorLayout/ToasterError';
 
 function RegisterPage() {
     let {user} = useContext(authContext);
@@ -16,8 +17,47 @@ function RegisterPage() {
     let [gender, setGender] = useState("O");
     let [marital, setMarital] = useState("S");
     const navigate = useNavigate()
+
+    function validateRegister() {
+        if (!/^[a-zA-Z0-9 ]+$/.test(username)){
+            ToasterError("Username can only contain numbers and letters");
+            return false;
+        }
+        if (!/^.*[a-z].*[A-Z].*[0-9].*[.,$+\\]/.test(password)){
+            ToasterError("Password isn't strong enough! (special characters allowed: .,$+\\)");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)){
+            ToasterError("Invalid email!");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]+$/.test(bio)){
+            ToasterError("Bio can only contain numbers and letters");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]+$/.test(location)){
+            ToasterError("Location can only contain numbers and letters");
+            return false;
+        }
+        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(birthday)){
+            ToasterError("Birthday needs to have the following format: yyyy-mm-dd");
+            return false;
+        }
+        if (gender !== 'O' && gender !== 'M' && gender !== 'F'){
+            ToasterError("Invalid gender");
+            return false;
+        }
+        if (marital !== 'M' && marital !== 'S' && marital !== 'R'){
+            ToasterError("Invalid marital");
+            return false;
+        }
+        return true;
+    }
     
     let registerHandler = async () => {
+        if (!validateRegister())
+            return;
+
         let response = await fetch(URL_BASE, {
             method: 'POST',
             headers: {
