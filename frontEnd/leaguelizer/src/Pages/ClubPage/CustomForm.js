@@ -152,7 +152,7 @@ export default function CustomForm(props) {
         fetch(URL_BASE + String(props.value.id) + "/competitions/?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, [props.value.id]);
+    }, [props.value.id, paginationValue]);
 
     useEffect(() => {
         setClubNameValue(props.value.name)
@@ -374,14 +374,6 @@ export default function CustomForm(props) {
 
         fetch(URL, requestOptions)
             .then(() => props.refresh());
-    }
-
-    const refresh = () => {
-        changeMatchValues(initialMatchValue);
-        setMatchList([]);
-        fetch(getUrlForMatches())
-            .then(match => match.json())
-            .then(match => setMatchList(match));
     }
 
     const postMatchButtonHandler = () => {

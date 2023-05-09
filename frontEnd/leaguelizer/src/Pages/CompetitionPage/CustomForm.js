@@ -389,13 +389,6 @@ export default function CustomForm(props) {
         setLeagueClubs(varLeagueCLubList);
     }
 
-    const refresh = () => {
-        changeMatchValues(initialMatchValue);
-        fetch(getUrlForMatches())
-            .then(match => match.json())
-            .then(match => setMatchList(match));
-    }
-
     const postMatchButtonHandler = () => {
         if (!validateMatch())
             return;
