@@ -80,11 +80,21 @@ class stadiumList(generics.ListCreateAPIView):
             return Response(StadiumLogic.getPagedStadiums(pageNumber, rowParam))
 
         return Response({}, status=status.HTTP_501_NOT_IMPLEMENTED)
+    
+    def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().post(request,*args,**kwargs)
 
 class stadiumDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Stadium.objects.all()
     serializer_class = StadiumSerializer
     lookup_field = 'id'
+
+    def put(self, request, *args, **kwargs):
+        if "user" in request.data:
+            return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().put(request,*args,**kwargs)
 
 #Club----------------------------------------------------------------------------------------------------------------------
 class clubList(generics.ListCreateAPIView):
@@ -126,6 +136,11 @@ class clubList(generics.ListCreateAPIView):
             return Response(ClubLogic.filterClubByAnnualBudget(budgetFilterParam, pageNumber, rowParam))
         
         return Response({}, status=status.HTTP_501_NOT_IMPLEMENTED)
+    
+    def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().post(request,*args,**kwargs)
 
 class clubDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Club.objects.all()
@@ -137,8 +152,15 @@ class clubDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(ClubLogic.getSingleClubWithLeague(id))
     
+    def put(self, request, *args, **kwargs):
+        if "user" in request.data:
+            return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().put(request,*args,**kwargs)
+    
 class clubWithLeague(APIView):
     def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         club = request.data
         error = ClubLogic.saveClubWithLeague(club)
 
@@ -149,6 +171,8 @@ class clubWithLeague(APIView):
     
 class clubsWithCompetitionMatches(APIView):
     def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         club = request.data
         error = ClubLogic.saveClubWithCompetitions(club)
         
@@ -209,6 +233,11 @@ class competitionList(generics.ListCreateAPIView):
             return Response(CompetitionLogic.getPagedComps(pageNumber, rowParam))
 
         return Response({}, status=status.HTTP_501_NOT_IMPLEMENTED)
+    
+    def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().post(request,*args,**kwargs)
         
 class competitionDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Competition.objects.all()
@@ -220,8 +249,15 @@ class competitionDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(CompetitionLogic.getsingleCompetitionWithLeagueClub(id))
     
+    def put(self, request, *args, **kwargs):
+        if "user" in request.data:
+            return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().put(request,*args,**kwargs)
+    
 class competitionWithLeagueClubs(APIView):
     def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         comp = request.data
         error = CompetitionLogic.saveCompetitionWithLeagueClubs(comp)
 
@@ -231,6 +267,8 @@ class competitionWithLeagueClubs(APIView):
     
 class CompetitionWithClubMatches(APIView):
     def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         comp = request.data
         error = CompetitionLogic.saveCompetitionWithClubMatcehs(comp)
         
@@ -282,6 +320,11 @@ class matchesPlayedList(generics.ListCreateAPIView):
             return Response(MatchesPlayedLogic.getPagedMatches(pageNumber, rowParam))
 
         return Response({}, status=status.HTTP_501_NOT_IMPLEMENTED)
+    
+    def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().post(request,*args,**kwargs)
 
 
 class matchesPlayedDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -293,6 +336,11 @@ class matchesPlayedDetail(generics.RetrieveUpdateDestroyAPIView):
         if id < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(MatchesPlayedLogic.getSingleMatchPlayedWithDetail(id))
+    
+    def put(self, request, *args, **kwargs):
+        if "user" in request.data:
+            return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().put(request,*args,**kwargs)
 
 class specificCompetitionMatchesDetail(APIView):
     def get(self, request, compId, *args, **kwargs):
@@ -316,6 +364,8 @@ class specificCompetitionMatchesDetail(APIView):
     def post(self, request, compId,*args, **kwargs):
         if compId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data
         error = MatchesPlayedLogic.saveCompetitionSpecificMatch(data, compId)
@@ -326,6 +376,8 @@ class specificCompetitionMatchesDetail(APIView):
     def put(self, request, compId, *args, **kwargs):
         if compId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
+        if "user" in request.data:
+            return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data
         error = MatchesPlayedLogic.updateCompetitionSpecificMatch(data)
@@ -347,7 +399,7 @@ class specificClubMatchesDetail(APIView):
         rowParam = request.query_params.get("pageNumber")
         pageNumber = request.query_params.get("page")
 
-        if rowParam is not None and pageNumber is None and checkNumber(rowParam) and rowParam > 0:
+        if rowParam is not None and pageNumber is None and checkNumber(rowParam):
             rowParam = int(rowParam)
             rowNumber = MatchesPlayedLogic.getClubSpecificPageNumber(clubId, rowParam)
             return Response({"pageNumber": rowNumber}, status=status.HTTP_200_OK)
@@ -364,6 +416,8 @@ class specificClubMatchesDetail(APIView):
     def post(self, request, clubId,*args, **kwargs):
         if clubId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data
         error = MatchesPlayedLogic.saveClubSpecificMatch(data, clubId)
@@ -375,9 +429,11 @@ class specificClubMatchesDetail(APIView):
     def put(self, request, clubId, *args, **kwargs):
         if clubId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
+        if "user" in request.data:
+            return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data
-        error = MatchesPlayedLogic.updateClubSpecificMatch(data)
+        error = MatchesPlayedLogic.updateClubSpecificMatch(data, clubId)
 
         if error:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)

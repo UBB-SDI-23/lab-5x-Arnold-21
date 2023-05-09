@@ -23,10 +23,10 @@ class UserSerializer(serializers.ModelSerializer):
     
 #UserDetail Serializer
 class UserDetailSerializer(serializers.ModelSerializer):
-    NumberOfClubs = serializers.IntegerField(read_only=True)
-    NumberOfStadiums = serializers.IntegerField(read_only=True)
-    NumberOfCompetitions = serializers.IntegerField(read_only=True)
-    NumberOfMatches = serializers.IntegerField(read_only=True)
+    NumberOfClubs = serializers.SerializerMethodField("getNumberOfClubs")
+    NumberOfStadiums = serializers.SerializerMethodField("getNumberOfStadium")
+    NumberOfCompetitions = serializers.SerializerMethodField("getNumberOfCompetitions")
+    NumberOfMatches = serializers.SerializerMethodField("getNumberOfMatches")
     userName = UserSerializer(read_only=True)
 
     class Meta:
@@ -41,6 +41,15 @@ class UserDetailSerializer(serializers.ModelSerializer):
         if not re.search("^[0-9]{4}-[0-9]{2}-[0-9]{2}$",data["birthday"]) and data["birthday"] is not None:
             raise serializers.ValidationError({"error": "Birthday has to have the following format: yyyy-mm-dd"})
         return data
+    
+    def getNumberOfClubs(self, userDetail):
+        return userDetail.userName.club.count()
+    def getNumberOfStadium(self, userDetail):
+        return userDetail.userName.stadium.count()
+    def getNumberOfCompetitions(self, userDetail):
+        return userDetail.userName.competition.count()
+    def getNumberOfMatches(self, userDetail):
+        return userDetail.userName.match.count()
 
 class StadiumSerializer(serializers.ModelSerializer):
     NumberOfClubs = serializers.IntegerField(read_only=True)
@@ -57,7 +66,7 @@ class StadiumSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
         if not re.search("^[a-zA-Z0-9 ]*$",data["city"]):
             raise serializers.ValidationError({"error": "City can only contain numbers and letters"})
-        if not re.search("^[a-zA-Z0-9 ]*$",data["description"]):
+        if not re.search("^[a-zA-Z0-9 .,!?;:]*$",data["description"]):
             raise serializers.ValidationError({"error": "Description can only contain numbers and letters"})
         return data
     
@@ -75,7 +84,7 @@ class simpleStadiumSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error": "Name can only contain numbers and letters"})
         if not re.search("^[a-zA-Z0-9 ]*$",data["city"]):
             raise serializers.ValidationError({"error": "City can only contain numbers and letters"})
-        if not re.search("^[a-zA-Z0-9 ]*$",data["description"]):
+        if not re.search("^[a-zA-Z0-9 .,!?;:]*$",data["description"]):
             raise serializers.ValidationError({"error": "Description can only contain numbers and letters"})
         return data
 
@@ -119,6 +128,7 @@ class simpleCompetitionSerializer(serializers.ModelSerializer):
 class competitionSerializer(serializers.ModelSerializer):
     clubs = serializers.SerializerMethodField()
     RealNumberOfTeams = serializers.IntegerField(read_only=True)
+    user = UserSerializer(read_only=True)
 
     def get_clubs(self, obj):
         query = obj.league.all()[:30]
@@ -144,6 +154,7 @@ class clubSerializer(serializers.ModelSerializer):
     league = simpleCompetitionSerializer(read_only=True)
     stadium = StadiumSerializer(read_only=True)
     matchesPlayed = serializers.IntegerField(read_only=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Club
@@ -165,6 +176,7 @@ class matchesPlayedSerializer(serializers.ModelSerializer):
     competition = simpleCompetitionSerializer()
     stadium = StadiumSerializer()
     avgleaguebudget = serializers.FloatField(read_only=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = MatchesPlayed

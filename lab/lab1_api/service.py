@@ -74,10 +74,7 @@ class UserLogic:
     
     @staticmethod
     def getUserDetail(id):
-        return UserDetailSerializer(UserDetail.objects.filter(userName__id=id).annotate(NumberOfClubs=Count("userName__club"))\
-                                    .annotate(NumberOfStadiums=Count("userName__stadium"))\
-                                    .annotate(NumberOfCompetitions=Count("userName__competition"))\
-                                    .annotate(NumberOfMatches=Count("userName__match")), many=True).data
+        return UserDetailSerializer(UserDetail.objects.get(userName__id=id)).data
 
 class StadiumLogic:
     @staticmethod
@@ -101,6 +98,7 @@ class StadiumLogic:
 class ClubLogic:
     @staticmethod
     def getPageNumber(row):
+        return Club.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_club');")
         fetchedRow = cursor.fetchone()
@@ -142,6 +140,7 @@ class ClubLogic:
     @staticmethod
     def saveClubWithLeague(club):
         league = club.get("league")
+        league['user'] = club.get("user")
         leagueSerializer = simpleCompetitionSerializer(data=league)
         obj = None
         if leagueSerializer.is_valid():
@@ -170,6 +169,7 @@ class ClubLogic:
         clubId = obj.id
 
         for comp in comps:
+            comp['user'] = obj.user.id
             compSerializer = simpleCompetitionSerializer(data=comp)
             obj = None
             if compSerializer.is_valid():
@@ -180,6 +180,7 @@ class ClubLogic:
             matchDetails = comp["matchDetails"]
             matchDetails["competition"] = compId
             matchDetails["club1"] = clubId
+            matchDetails["user"] = obj.user.id
             
             matchSerializer = simpleMatchesPlayedSerializer(data=matchDetails)
             if matchSerializer.is_valid():
@@ -191,6 +192,7 @@ class ClubLogic:
 class CompetitionLogic:
     @staticmethod
     def getPageNumber(row):
+        return Competition.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_competition');")
         fetchedRow = cursor.fetchone()
@@ -230,14 +232,17 @@ class CompetitionLogic:
         clubs = comp.get('clubs')
 
         compSerializer = simpleCompetitionSerializer(data=comp)
+        obj = None
         if compSerializer.is_valid():
-            compSerializer.save()
+            obj = compSerializer.save()
         else: return True
         
         newCompId = Competition.objects.last().id
 
         for club in clubs:
             club['league'] = newCompId
+            club['user'] = obj.user.id
+            print(club)
             clubSerializer = simpleClubSerializer(data=club)
             if clubSerializer.is_valid():
                 clubSerializer.save()
@@ -257,6 +262,7 @@ class CompetitionLogic:
         compId = obj.id
 
         for club in clubs:
+            club['user'] = obj.user.id
             clubSerializer = simpleClubSerializer(data=club)
             obj = None
             if clubSerializer.is_valid():
@@ -266,6 +272,7 @@ class CompetitionLogic:
             matchDetails = club["matchDetails"]
             matchDetails["competition"] = compId
             matchDetails["club1"] = clubId
+            matchDetails["user"] = obj.user.id
             
             matchSerializer = simpleMatchesPlayedSerializer(data=matchDetails)
             if matchSerializer.is_valid():
@@ -297,6 +304,7 @@ class CompetitionLogic:
 class MatchesPlayedLogic:
     @staticmethod
     def getPageNumber(row):
+        return MatchesPlayed.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_matchesplayed');")
         fetchedRow = cursor.fetchone()
@@ -325,6 +333,7 @@ class MatchesPlayedLogic:
     @staticmethod
     def saveCompetitionSpecificMatch(data, id):
         data["competition"] = id
+        print(data)
         serializer = simpleMatchesPlayedSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -366,8 +375,10 @@ class MatchesPlayedLogic:
         return False
     
     @staticmethod
-    def updateClubSpecificMatch(data):
+    def updateClubSpecificMatch(data, clubId):
         mat = MatchesPlayed.objects.get(id=data["id"])
+        data["club1"] = clubId
+        print(data)
         serializer = simpleMatchesPlayedSerializer(instance=mat, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()

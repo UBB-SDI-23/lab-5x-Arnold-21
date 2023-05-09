@@ -1,8 +1,9 @@
-import { React, useEffect, useState, useCallback } from "react";
+import { React, useEffect, useState, useCallback, useContext } from "react";
 import { Button, Container, Grid, TextField } from "@mui/material";
 import URL_BASE from "./constants";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
+import authContext from "../../Context/Context";
 
 const initialMatchValue = {
     "club1": {
@@ -27,6 +28,7 @@ const initialMatchValue = {
 }
 
 export default function CustomForm(props) {
+    let {user} = useContext(authContext);
     const [clubNameValue, setClubNameValue] = useState(props.value.name);
     const [clubAnnualBudgetValue, setClubAnnualBudgetValue] = useState(props.value.annualBudget);
     const [clubStaffValue, setClubStaffValue] = useState(props.value.numberOfStadd);
@@ -56,7 +58,7 @@ export default function CustomForm(props) {
     const [ orderDirection, setOrderDirection ] = useState("asc");
     const [ pageNumber, setPageNumber ] = useState(1);
     const [ pageMax, setPageMax ] = useState(1);
-    const [ paginationValue, setPaginationValue ] = useState(12);
+    const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
 
     function validateMatch(){
         if (!/^[0-9]{1,2}-[0-9]{1,2}$/.test(scoreValue)){
@@ -67,11 +69,15 @@ export default function CustomForm(props) {
             ToasterError("The team cannot play with itself!");
             return false;
         }
-        if (!/^[0-9]+$/.test(club2Value)){
+        if (!/^[0-9]+$/.test(club2Value) && matchValue.club2.id === ""){
             ToasterError("Invalid club2 id");
             return false;
         }
-        if (!/^[0-9]+$/.test(stadiumValue)){
+        if (!/^[0-9]+$/.test(stadiumValue) && matchValue.stadium.id === ""){
+            ToasterError("Invalid stadium id");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(compValue) && matchValue.competition.id === ""){
             ToasterError("Invalid stadium id");
             return false;
         }
@@ -143,7 +149,7 @@ export default function CustomForm(props) {
             return;
         }
     
-        fetch(URL_BASE + String(props.value.id) + "/competitions/?pageNumber=0")
+        fetch(URL_BASE + String(props.value.id) + "/competitions/?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
     }, [props.value.id]);
@@ -256,7 +262,8 @@ export default function CustomForm(props) {
                 "numberOfStadd": clubStaffValue,
                 "foundedDate": clubDateValue,
                 "stadium": clubStadiumValue,
-                "league": clubLeagueValue
+                "league": clubLeagueValue,
+                "user":(user) ? user.user_id : null
             })
         };
 
@@ -284,21 +291,29 @@ export default function CustomForm(props) {
                 "numberOfStadd": clubStaffValue,
                 "foundedDate": clubDateValue,
                 "stadium": clubStadiumValue,
+                "user":(user) ? user.user_id : null,
                 "league": {
                     "name": leagueName,
                     "numberOfTeams": teamNumber,
                     "prizeMoney": prizeMoney,
                     "foundedDate": foundedDate,
-                    "competitionType": compType
+                    "competitionType": compType,
+                    "user":(user) ? user.user_id : null
                 }
             })
         };
 
-        fetch(URL_BASE + "league", requestOptions)
+        fetch(URL_BASE + "league/", requestOptions)
             .then(message => message.json())
             .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                if (message.stadium !== undefined)
+                    ToasterError(message.stadium[0]);
+                else if (message.league !== undefined)
+                    ToasterError(message.league[0]);
+                else if (message.user !== undefined)
+                    ToasterError(message.user[0]);
+                else if (message.error !== undefined)
+                    ToasterError(message.error);
                 else
                     props.refresh();
             })
@@ -332,8 +347,14 @@ export default function CustomForm(props) {
         fetch(URL, requestOptions)
             .then(message => message.json())
             .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                if (message.stadium !== undefined)
+                    ToasterError(message.stadium[0]);
+                else if (message.league !== undefined)
+                    ToasterError(message.league[0]);
+                else if (message.user !== undefined)
+                    ToasterError(message.user[0]);
+                else if (message.error !== undefined)
+                    ToasterError(message.error);
                 else
                     props.refresh();
             })
@@ -352,13 +373,7 @@ export default function CustomForm(props) {
         const URL = URL_BASE + String(props.value.id)
 
         fetch(URL, requestOptions)
-            .then(message => message.json())
-            .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
-                else
-                    props.refresh();
-            })
+            .then(() => props.refresh());
     }
 
     const refresh = () => {
@@ -382,17 +397,28 @@ export default function CustomForm(props) {
                 "stadium": (/^[0-9]+$/.test(stadiumValue)) ? stadiumValue : matchValue.stadium.id,
                 "roundOfPlay": roundValue,
                 "score": scoreValue,
-                "date": dateValue
+                "date": dateValue,
+                "user":(user) ? user.user_id : null
             })
         };
 
         fetch(URL_BASE + String(props.value.id) + "/competitions/" , requestOptions)
             .then(message => message.json())
             .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                if (message.club1 !== undefined)
+                    ToasterError(message.club1[0]);
+                else if (message.club2 !== undefined)
+                    ToasterError(message.club2[0]);
+                else if (message.stadium !== undefined)
+                    ToasterError(message.stadium[0]);
+                else if (message.competition !== undefined)
+                    ToasterError(message.competition[0]);
+                else if (message.error !== undefined)
+                    ToasterError(message.error);
+                else if (message.user !== undefined)
+                    ToasterError(message.user);
                 else
-                    refresh();
+                    props.refresh();
             })
     }
 
@@ -424,10 +450,20 @@ export default function CustomForm(props) {
         fetch(URL, requestOptions)
             .then(message => message.json())
             .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                if (message.club1 !== undefined)
+                    ToasterError(message.club1[0]);
+                else if (message.club2 !== undefined)
+                    ToasterError(message.club2[0]);
+                else if (message.stadium !== undefined)
+                    ToasterError(message.stadium[0]);
+                else if (message.competition !== undefined)
+                    ToasterError(message.competition[0]);
+                else if (message.error !== undefined)
+                    ToasterError(message.error);
+                else if (message.user !== undefined)
+                    ToasterError(message.user);
                 else
-                    refresh();
+                    props.refresh();
             })
     }
 
@@ -444,13 +480,7 @@ export default function CustomForm(props) {
         const URL = URL_BASE + String(matchValue.id) + "/competitions/"
 
         fetch(URL, requestOptions)
-            .then(message => message.json())
-            .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
-                else
-                    refresh();
-            })
+            .then(() => props.refresh());
     }
 
     return (

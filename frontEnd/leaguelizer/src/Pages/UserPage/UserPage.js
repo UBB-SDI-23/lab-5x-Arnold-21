@@ -1,30 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Grid, TextField, InputLabel, Select, MenuItem } from '@mui/material';
 import authContext from '../../Context/Context';
 import URL_BASE from './constants';
 import MainLayout from '../../Layouts/PageLayout/MainLayout/MainLayout';
 
-const initialUserDetailValue ={
-    "id":-1,
-    "NumberOfClubs":0,
-    "NumberOfStadiums":0,
-    "NumberOfCompetitions":0,
-    "NumberOfMatches":0,
-    "bio":"",
-    "location":"",
-    "birthday":"",
-    "gender":'O',
-    "marital":'S',
-    "userName":{
-        "id":-1,
-        "username":""
-    }
-}
+// const initialUserDetailValue ={
+//     "id":-1,
+//     "NumberOfClubs":0,
+//     "NumberOfStadiums":0,
+//     "NumberOfCompetitions":0,
+//     "NumberOfMatches":0,
+//     "bio":"",
+//     "location":"",
+//     "birthday":"",
+//     "gender":'O',
+//     "marital":'S',
+//     "userName":{
+//         "id":-1,
+//         "username":""
+//     }
+// }
 
 function UserPage(props) {
     const {userLookup, user} = useContext(authContext);
-    const [ userLook, setUserLook ] = useState(initialUserDetailValue);
     const [ bio, setBio ] = useState("");
     const [ location, setLocation ] = useState("");
     const [ birthday, setBirthday ] = useState("");
@@ -38,17 +37,7 @@ function UserPage(props) {
     const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
     let navigate = useNavigate();
 
-    useEffect(() => {
-        if (userLookup === -1)
-            navigate("/");
-        else {
-            fetch(URL_BASE + userLookup + "/")
-                .then(uesrDetail => uesrDetail.json())
-                .then(uesrDetail => setUserLook(uesrDetail[0]));
-        }
-    }, [navigate, setUserLook, userLookup])
-
-    useEffect(() => {
+    const fillText = useCallback((userLook) => {
         if (userLook !== null && userLook !== undefined){
             setBio(userLook.bio);
             setLocation(userLook.location);
@@ -61,7 +50,17 @@ function UserPage(props) {
             setNumberOfMatches(userLook.NumberOfMatches);
             setUserName(userLook.userName.username);
         }
-    }, [userLook])
+    }, [])
+
+    useEffect(() => {
+        if (userLookup === -1)
+            navigate("/");
+        else {
+            fetch(URL_BASE + userLookup + "/")
+                .then(uesrDetail => uesrDetail.json())
+                .then(uesrDetail => fillText(uesrDetail));
+        }
+    }, [navigate, fillText, userLookup])
 
     const paginationHandler = (value) => {
         setPaginationValue(value);

@@ -7,7 +7,7 @@ import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
 export default function StadiumPage(){
     const [leagueStatVisible, setLeagueStatVisible] = useState(false);
     const [clubStatVisible, setClubStatVisible] = useState(false);
-    const [ paginationValue, setPaginationValue ] = useState(12);
+    const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
 
     const [ leagueList, setLeagueList ] = useState([]);
     const [ leagueOrderValue, setLeagueOrderValue ] = useState("name");

@@ -43,7 +43,7 @@ export default function CustomForm(props) {
             ToasterError("Stadium City can only contain numbers and letters");
             return false;
         }
-        if (!/^[a-zA-Z0-9 ]+$/.test(stadiumDescription)){
+        if (!/^[a-zA-Z0-9 .,!?;:]+$/.test(stadiumDescription)){
             ToasterError("Stadium Description can only contain numbers and letters");
             return false;
         }
@@ -74,7 +74,7 @@ export default function CustomForm(props) {
             .then(message => message.json())
             .then((message) => {
                 if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                    ToasterError(message.error);
                 else
                     props.refresh();
             })
@@ -107,7 +107,7 @@ export default function CustomForm(props) {
             .then(message => message.json())
             .then((message) => {
                 if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                    ToasterError(message.error);
                 else
                     props.refresh();
             })
