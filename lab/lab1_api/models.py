@@ -8,7 +8,7 @@ class User(AbstractUser):
         MODERATOR = "Moderator", 'Moderator'
         Admin = "Admin", 'Admin'
 
-    role = models.CharField(max_length=30, choices=Role.choices, default='R')
+    role = models.CharField(max_length=30, choices=Role.choices, default='Regular')
     confirmation_code = models.CharField(max_length=20, blank=True, null=True, unique=True)
     confirmation_start = models.DateTimeField(blank=True, null=True)
 

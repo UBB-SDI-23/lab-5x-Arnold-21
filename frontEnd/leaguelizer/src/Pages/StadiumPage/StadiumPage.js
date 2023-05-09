@@ -27,14 +27,14 @@ export default function StadiumPage(){
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
     const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
 
-    const {setUserLookup} = useContext(authContext);
+    const {setUserLookup, tokens} = useContext(authContext);
     let navigate = useNavigate();
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, [paginationValue]);
+    }, [paginationValue, tokens]);
     
     var getUrlForStadiums = useCallback(() => {
         return URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
@@ -43,8 +43,8 @@ export default function StadiumPage(){
     useEffect(() => {
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
-            .then(stadium => setStadiumList(stadium));
-    }, [getUrlForStadiums])
+            .then(stadium => setStadiumList((stadium.detail === undefined) ? stadium : []));
+    }, [getUrlForStadiums, tokens])
 
     const rowClickHandler = (stadium) => {
         setStadiumValue(stadium);
@@ -54,7 +54,7 @@ export default function StadiumPage(){
         setStadiumValue(initialStadiumValue);
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
-            .then(stadium => setStadiumList(stadium));
+            .then(stadium => setStadiumList((stadium.detail === undefined) ? stadium : []));
     }
 
     const sortingHandler = (property) => {

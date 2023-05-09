@@ -23,8 +23,12 @@ function RegisterPage() {
             ToasterError("Username can only contain numbers and letters");
             return false;
         }
-        if (!/^.*[a-z].*[A-Z].*[0-9].*[.,$+\\]/.test(password)){
+        if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[.,$+\\]/.test(password)){
             ToasterError("Password isn't strong enough! (special characters allowed: .,$+\\)");
+            return false;
+        }
+        if (password.length < 8){
+            ToasterError("Password must be at least 8 characters");
             return false;
         }
         if (!/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)){

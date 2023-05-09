@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .service import *
 from rest_framework_simplejwt.views import TokenObtainPairView
 import re
+from .permissions import *
 
 #Validation functions
 def checkNumber(number):
@@ -53,6 +54,13 @@ class userDetailList(APIView):
 class stadiumList(generics.ListCreateAPIView):
     queryset = Stadium.objects.all()
     serializer_class = simpleStadiumSerializer
+    
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
 
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
@@ -90,6 +98,15 @@ class stadiumDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Stadium.objects.all()
     serializer_class = StadiumSerializer
     lookup_field = 'id'
+
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        if self.request.method == 'DELETE': 
+            permissions_list.append(isModerator)
+        return [permission() for permission in permissions_list]
 
     def put(self, request, *args, **kwargs):
         if "user" in request.data:

@@ -5,7 +5,7 @@ import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
 
 export default function CustomForm(props) {
-    let {user} = useContext(authContext);
+    let {user, tokens} = useContext(authContext);
     const [stadiumNameValue, setStadiumNameValue] = useState(props.value.name);
     const [stadiumBDateValue, setStadiumBDateValue] = useState(props.value.buildDate);
     const [stadiumRDateValue, setStadiumRDateValue] = useState(props.value.renovationDate);
@@ -58,7 +58,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "name": stadiumNameValue,
                 "city": stadiumCityValue,
@@ -90,7 +90,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "name": stadiumNameValue,
                 "city": stadiumCityValue,
@@ -121,7 +121,7 @@ export default function CustomForm(props) {
         
         const requestOptions = {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
         };
 
         const URL = URL_BASE + String(props.value.id) + "/"

@@ -11,7 +11,7 @@ export const AuthProvider = ({children}) => {
     let [ tokens, setTokens ] = useState(localStorage.getItem('tokens') ? JSON.parse(localStorage.getItem('tokens')) : null);
     let [ user, setUser ] = useState(localStorage.getItem('tokens') ? jwt_decode(JSON.parse(localStorage.getItem('tokens')).access) : null);
     let [ userLookup, setUserLookup ] = useState(-1);
-    let [ loading, setLoading ] = useState(true);
+    let [ loading, setLoading ] = useState((!user) ? false : true);
 
     let login = async (username, password) => {
         let response = await fetch(URL, {
@@ -39,6 +39,9 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const updateToken = async () => {
+            if (!user)
+                return;
+
             let response = await fetch(URL + "refresh/", {
                 method: 'POST',
                 headers: {
@@ -66,7 +69,7 @@ export const AuthProvider = ({children}) => {
                 updateToken();
         }, 1000*60*4)
         return () => clearInterval(interval);
-    }, [tokens, loading, setLoading]);
+    }, [tokens, loading, setLoading, user]);
 
     let contextData ={
         tokens: tokens,

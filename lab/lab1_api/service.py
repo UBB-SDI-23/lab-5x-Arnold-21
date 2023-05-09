@@ -19,11 +19,11 @@ class UserLogic:
         password = data["password"]
         email = data["email"]
 
-        if re.search("^[a-zA-Z0-9]*$", username):
+        if not re.search("^[a-zA-Z0-9]*$", username):
             return True
-        if re.search("^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", email):
+        if not re.search("^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$", email):
             return True
-        if re.search("^.*[a-z].*[A-Z].*[0-9].*[\.,\$\+\\]", password) or len(password) < 8:
+        if not re.search("[a-z]", password) or not re.search("[A-Z]", password) or not re.search("[0-9]", password) or not re.search("[\.,\$\+]", password) or len(password) < 8:
             return True
 
         random.seed(timezone.now().timestamp())
