@@ -752,4 +752,5 @@ class updateUserPagination(APIView):
             Response({"error": "Invalid ip"}, status=status.HTTP_400_BAD_REQUEST)
 
         UserLogic.updatePagination(id, request.data)
+        
         return Response({"res": "Pagination Updated"}, status=status.HTTP_200_OK)

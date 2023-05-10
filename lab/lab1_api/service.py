@@ -108,6 +108,7 @@ class UserLogic:
     def updatePagination(id, value):
         user = UserDetail.objects.get(userName__id=id)
         user.paginationValue = value.get("paginationValue")
+        user.save()
         
         return False
 
