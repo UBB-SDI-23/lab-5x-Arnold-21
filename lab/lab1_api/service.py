@@ -87,7 +87,7 @@ class StadiumLogic:
     
     @staticmethod
     def getPageNumber(row):
-        return Stadium.objects.count()/row
+        # return Stadium.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_stadium');")
         fetchedRow = cursor.fetchone()
@@ -97,7 +97,7 @@ class StadiumLogic:
 class ClubLogic:
     @staticmethod
     def getPageNumber(row):
-        return Club.objects.count()/row
+        # return Club.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_club');")
         fetchedRow = cursor.fetchone()
@@ -191,7 +191,7 @@ class ClubLogic:
 class CompetitionLogic:
     @staticmethod
     def getPageNumber(row):
-        return Competition.objects.count()/row
+        # return Competition.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_competition');")
         fetchedRow = cursor.fetchone()
@@ -305,7 +305,7 @@ class CompetitionLogic:
 class MatchesPlayedLogic:
     @staticmethod
     def getPageNumber(row):
-        return MatchesPlayed.objects.count()/row
+        # return MatchesPlayed.objects.count()/row
         cursor = connection.cursor()
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_matchesplayed');")
         fetchedRow = cursor.fetchone()
