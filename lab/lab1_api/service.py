@@ -125,7 +125,7 @@ class StadiumLogic:
     @staticmethod
     def bulkDelete(data):
         for item in data:
-            obj = Stadium.objects.get(id=item["id"])
+            obj = Stadium.objects.get(id=item.get("id"))
             obj.delete()
     
 
