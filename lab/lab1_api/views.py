@@ -713,7 +713,7 @@ class bulkStadium(APIView):
 
     def post(self, request, *args, **kwargs):
         self.check_permissions(request=request)
-        StadiumLogic.bulkDelete(request.data)
+        StadiumLogic.bulkDelete(request.data.get("stadiums"))
         return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
     
 class bulkClub(APIView):
