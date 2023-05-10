@@ -30,5 +30,9 @@ urlpatterns = [
     path('api/register/confirm/<int:code>/', RegisterConfirmView.as_view()),
     path('api/user/<int:id>/', userDetailList.as_view()),
     path('api/admin/user/', userList.as_view()),
-    path('api/admin/user/<int:id>/', userDetail.as_view())
+    path('api/admin/user/<int:id>/', userDetail.as_view()),
+    path('api/admin/stadiums/', bulkStadium.as_view()),
+    path('api/admin/clubs/', bulkClub.as_view()),
+    path('api/admin/competitions/', bulkCompetition.as_view()),
+    path('api/admin/matchs/', bulkMatch.as_view())
 ]

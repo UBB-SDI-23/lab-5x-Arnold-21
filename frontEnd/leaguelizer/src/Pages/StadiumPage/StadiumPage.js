@@ -90,7 +90,6 @@ export default function StadiumPage(){
     }
 
     const pageDown = () => {
-        console.log(pageNumber);
         if (pageNumber > 1) {
             const newPageNumber = pageNumber - 1;
             setPageNumber(newPageNumber);

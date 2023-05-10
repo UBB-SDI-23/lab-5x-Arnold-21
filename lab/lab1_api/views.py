@@ -705,3 +705,38 @@ class leaguesByAverage(APIView):
         pageNumber = int(pageNumber)
         rowParam = int(rowParam)
         return Response(CompetitionLogic.getLeaguesByClubAnnualBudget(pageNumber, rowParam))
+    
+
+#Admin-----------------------------------------------------------------------------------------------------------------------------------
+class bulkStadium(APIView):
+    permission_classes = [IsAuthenticated, isAdmin]
+
+    def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+        StadiumLogic.bulkDelete(request.data)
+        return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
+    
+class bulkClub(APIView):
+    permission_classes = [IsAuthenticated, isAdmin]
+
+    def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+        ClubLogic.bulkDelete(request.data)
+        return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
+    
+class bulkCompetition(APIView):
+    permission_classes = [IsAuthenticated, isAdmin]
+
+    def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+        CompetitionLogic.bulkDelete(request.data)
+        return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
+    
+class bulkMatch(APIView):
+    permission_classes = [IsAuthenticated, isAdmin]
+
+    def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+        MatchesPlayedLogic.bulkDelete(request.data)
+        return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
+

@@ -121,6 +121,15 @@ class StadiumLogic:
         cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_stadium');")
         fetchedRow = cursor.fetchone()
         return ceil(fetchedRow[0]/row)
+    
+    @staticmethod
+    def bulkDelete(data):
+        for item in data:
+            try:
+                obj = Stadium.objects.get(id=item.id)
+                obj.delete
+            except:
+                continue
         
 
 class ClubLogic:
@@ -216,6 +225,15 @@ class ClubLogic:
             else: return True
         
         return False
+    
+    @staticmethod
+    def bulkDelete(data):
+        for item in data:
+            try:
+                obj = Stadium.objects.get(id=item.id)
+                obj.delete
+            except:
+                continue
         
 class CompetitionLogic:
     @staticmethod
@@ -328,6 +346,14 @@ class CompetitionLogic:
             
         return False
             
+    @staticmethod
+    def bulkDelete(data):
+        for item in data:
+            try:
+                obj = Stadium.objects.get(id=item.id)
+                obj.delete
+            except:
+                continue
 
     
 class MatchesPlayedLogic:
@@ -450,3 +476,12 @@ class MatchesPlayedLogic:
     def deleteClubAndCompetitionSpecificMatch(clubId, compId):
         mat = MatchesPlayed.objects.get(Q(club1=clubId) & Q(competition=compId))
         mat.delete()
+
+    @staticmethod
+    def bulkDelete(data):
+        for item in data:
+            try:
+                obj = Stadium.objects.get(id=item.id)
+                obj.delete
+            except:
+                continue

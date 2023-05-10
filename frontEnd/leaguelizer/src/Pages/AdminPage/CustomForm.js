@@ -1,5 +1,5 @@
 import { React, useContext, useEffect, useState } from "react";
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField, InputLabel, Select, MenuItem } from "@mui/material";
 import URL_BASE from "./constants";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
@@ -54,7 +54,21 @@ export default function CustomForm(props) {
         <form className="stadiumForm">
             <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
                 <TextField variant="outlined" id="username" value={userName} label="UserName" aria-readonly>UserName</TextField>
-                <TextField variant="outlined" id="role" value={userRole} label="UserRole" onChange={(e) => {setUserRole(e.target.value)}}>UserRole</TextField>
+                <Grid container sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pt: 5}}>
+                        <InputLabel id="roleLabel">Role Status</InputLabel>
+                        <Select
+                            labelId="maritalLabel"
+                            id="role"
+                            value={userRole}
+                            label="User Role"
+                            onChange={(e) => setUserRole(e.target.value)}
+                            sx={{width:"30%"}}
+                        >
+                            <MenuItem value={'Admin'}>Admin</MenuItem>
+                            <MenuItem value={'Moderator'}>Moderator</MenuItem>
+                            <MenuItem value={'Regular'}>Regular</MenuItem>
+                        </Select>
+                    </Grid>
             </Grid>
             {(user !== null) ? (user.role === "Admin") ?
                 <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
