@@ -95,6 +95,10 @@ class userDetail(generics.RetrieveUpdateAPIView):
     lookup_field = 'id'
     permission_classes = [IsAuthenticated, isAdmin]
 
+    def put(self, request, id, *args, **kwargs):
+        self.check_permissions(request=request)
+        return Response(UserLogic.updateUserRole(id, request.data))
+
 #Stadium-------------------------------------------------------------------------------
 class stadiumList(generics.ListCreateAPIView):
     queryset = Stadium.objects.all()

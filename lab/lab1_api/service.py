@@ -90,6 +90,19 @@ class UserLogic:
     @staticmethod
     def getAutocompleteUser(name):
         return UserSerializer(User.objects.filter(username__icontains=name)[:20], many = True).data
+    
+    @staticmethod
+    def updateUserRole(id, role):
+        user = User.objects.get(id=id)
+        if role["role"] != "Admin" and role["role"] != "Moderator" and role["role"] != "Regular":
+            return True 
+
+        serializer = UserSerializer(instance=user, data=role, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else: return True
+        
+        return False
 
 class StadiumLogic:
     @staticmethod
@@ -257,7 +270,6 @@ class CompetitionLogic:
         for club in clubs:
             club['league'] = newCompId
             club['user'] = obj.user.id
-            print(club)
             clubSerializer = simpleClubSerializer(data=club)
             if clubSerializer.is_valid():
                 clubSerializer.save()
@@ -350,7 +362,6 @@ class MatchesPlayedLogic:
     @staticmethod
     def saveCompetitionSpecificMatch(data, id):
         data["competition"] = id
-        print(data)
         serializer = simpleMatchesPlayedSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -397,7 +408,6 @@ class MatchesPlayedLogic:
         mat = MatchesPlayed.objects.get(id=data["id"])
         view.check_object_permissions(request, mat)
         data["club1"] = clubId
-        print(data)
         serializer = simpleMatchesPlayedSerializer(instance=mat, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()

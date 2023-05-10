@@ -15,7 +15,7 @@ export default function CustomForm(props) {
     }, [props]);
 
     function validateUser() {
-        if (userRole !== "Admin" || userRole !== "Moderator" || userRole !== "Regular"){
+        if (userRole !== "Admin" && userRole !== "Moderator" && userRole !== "Regular"){
             ToasterError("Incorrect User Role!");
             return false;
         }

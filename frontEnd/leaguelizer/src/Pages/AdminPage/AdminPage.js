@@ -39,18 +39,22 @@ export default function AdminPage(){
     }, [user, navigate]);
 
     useEffect(() => {
-        fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
-            .then(number => number.json())
+        fetch(URL_BASE + "?pageNumber=" + String(paginationValue), {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
+        }).then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, [paginationValue]);
+    }, [paginationValue, tokens]);
     
     var getUrlForStadiums = useCallback(() => {
         return URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
 
     useEffect(() => {
-        fetch(getUrlForStadiums())
-            .then(user => user.json())
+        fetch(getUrlForStadiums(), {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
+        }).then(user => user.json())
             .then(user => setUserList((user.detail === undefined) ? user : []));
     }, [getUrlForStadiums, tokens])
 
@@ -60,8 +64,10 @@ export default function AdminPage(){
 
     const refresh = () => {
         setUserValue(initialUserValue);
-        fetch(getUrlForStadiums())
-            .then(user => user.json())
+        fetch(getUrlForStadiums(), {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
+        }).then(user => user.json())
             .then(user => setUserList((user.detail === undefined) ? user : []));
     }
 
