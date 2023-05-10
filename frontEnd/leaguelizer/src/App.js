@@ -13,6 +13,7 @@ import { AuthProvider } from "./Context/Context";
 import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import ActivationPage from "./Pages/RegisterPage/RegisterActivation";
 import UserPage from "./Pages/UserPage/UserPage";
+import AdminPage from "./Pages/AdminPage/AdminPage";
 
 
 export default function App(){
@@ -30,6 +31,7 @@ export default function App(){
         <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/activation" element={<ActivationPage />}></Route>
         <Route path="/user" element={<UserPage />}></Route>
+        <Route path="/admin" element={<AdminPage />}></Route>
       </Routes>
     </AuthProvider>
   );

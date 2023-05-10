@@ -1,12 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .service import *
 from rest_framework_simplejwt.views import TokenObtainPairView
 import re
 from .permissions import *
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 #Validation functions
 def checkNumber(number):
@@ -49,6 +51,49 @@ class userDetailList(APIView):
         if id < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(UserLogic.getUserDetail(id))
+    
+class userList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, isAdmin]
+
+    def get(self, request, *args, **kwargs):
+        rowParam = request.query_params.get("pageNumber")
+        pageNumber = request.query_params.get("page")
+        nameParam = request.query_params.get("name")
+
+        if rowParam is not None and pageNumber is None and checkNumber(rowParam):
+            rowParam = int(rowParam)
+            rowNumber = UserLogic.getPageNumber(rowParam)
+            return Response({"pageNumber": rowNumber}, status=status.HTTP_200_OK)
+
+        if pageNumber is None and nameParam is None:
+            return Response({"response": "No page recieved"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if pageNumber is None and nameParam != "" and checkName(nameParam):
+            return Response(UserLogic.getAutocompleteUser(nameParam))
+        elif pageNumber is None:
+            return Response([{}], status=status.HTTP_200_OK)     
+        
+        if not checkNumber(pageNumber) or not checkNumber(rowParam):
+            return Response({"error": "Invalid arguments"}, status=status.HTTP_400_BAD_REQUEST)
+        pageNumber = int(pageNumber)
+        rowParam = int(rowParam)
+        if nameParam is None:
+            return Response(UserLogic.getPagedUsers(pageNumber, rowParam))
+
+        return Response({}, status=status.HTTP_501_NOT_IMPLEMENTED)
+    
+    def post(self, request, *args, **kwargs):
+        if "user" not in request.data or request.data["user"] is None:
+            return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
+        return super().post(request,*args,**kwargs)
+    
+class userDetail(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'id'
+    permission_classes = [IsAuthenticated, isAdmin]
 
 #Stadium-------------------------------------------------------------------------------
 class stadiumList(generics.ListCreateAPIView):

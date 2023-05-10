@@ -74,6 +74,22 @@ class UserLogic:
     @staticmethod
     def getUserDetail(id):
         return UserDetailSerializer(UserDetail.objects.get(userName__id=id)).data
+    
+    @staticmethod
+    def getPageNumber(row):
+        # return Stadium.objects.count()/row
+        cursor = connection.cursor()
+        cursor.execute("select reltuples::bigint as estimate from pg_class where oid = to_regclass('lab1_api_user');")
+        fetchedRow = cursor.fetchone()
+        return ceil(fetchedRow[0]/row)
+    
+    @staticmethod
+    def getPagedUsers(page, row):
+        return UserSerializer(User.objects.filter(Q(id__gt=row*(page - 1)) & Q(id__lt=row*(page + 100)))[:row], many = True).data
+    
+    @staticmethod
+    def getAutocompleteUser(name):
+        return UserSerializer(User.objects.filter(username__icontains=name)[:20], many = True).data
 
 class StadiumLogic:
     @staticmethod

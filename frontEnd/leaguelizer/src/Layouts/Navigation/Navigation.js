@@ -17,6 +17,9 @@ function Navigation() {
                 <Link to="/competition"><Button variant='text'>Competition</Button></Link>
                 <Link to="/matches"><Button variant='text'>Matches</Button></Link>
                 <Link to="/statistics"><Button variant='text'>Statistics</Button></Link>
+                {(user && user.role === "Admin") ?
+                    <Link to="/admin"><Button variant='text'>AdminPage</Button></Link> : null
+                }
                 {user ? 
                     <>
                         <Link to="/user"><Button variant='text' onClick={() => setUserLookup(user.user_id)}>PersonalPage</Button></Link> 

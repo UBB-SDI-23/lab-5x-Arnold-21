@@ -20,7 +20,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "username")
+        fields = ("id", "username", "role")
     
 #UserDetail Serializer
 class UserDetailSerializer(serializers.ModelSerializer):
