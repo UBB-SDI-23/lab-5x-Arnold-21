@@ -13,7 +13,11 @@ const initialCompValue = {
     "numberOfTeams": "",
     "foundedDate": "",
     "prizeMoney": "",
-    "competitionType": ""
+    "competitionType": "",
+    "user":{
+        "id":"",
+        "username":""
+    }
 }
 
 export default function StadiumPage(){

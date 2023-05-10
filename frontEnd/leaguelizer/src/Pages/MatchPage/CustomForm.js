@@ -106,6 +106,10 @@ export default function CustomForm(props) {
             ToasterError("Id needs to be a positive integer");
             return;
         }
+        if (user.role === "Regular" && user.user_id !== props.value.user.id){
+            ToasterError("It's not your Match!");
+            return;
+        }
 
         const requestOptions = {
             method: 'PUT',
@@ -175,11 +179,13 @@ export default function CustomForm(props) {
                     sx={{width:"40%", mt:3}}
                 >Date</TextField>
             </Grid>
+            {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
             <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
                 <Button variant="contained" onClick={postButtonHandler}>Post</Button>
                 <Button variant="contained" onClick={putButtonHandler}>Put</Button>
-                <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button>
-            </Grid>
+                {((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
+                <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button> : null }
+            </Grid> : null : null }
         </form>
     );
 }

@@ -18,6 +18,10 @@ const initialClubValue = {
     },
     "league": {
         "name": ""
+    },
+    "user":{
+        "id":"",
+        "username":""
     }
 }
 

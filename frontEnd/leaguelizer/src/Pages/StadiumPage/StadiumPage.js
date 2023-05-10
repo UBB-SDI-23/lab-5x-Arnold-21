@@ -14,7 +14,11 @@ const initialStadiumValue = {
     "buildDate": "",
     "renovationDate": "",
     "city": "",
-    "description": ""
+    "description": "",
+    "user":{
+        "id":"",
+        "username":""
+    }
 }
 
 export default function StadiumPage(){

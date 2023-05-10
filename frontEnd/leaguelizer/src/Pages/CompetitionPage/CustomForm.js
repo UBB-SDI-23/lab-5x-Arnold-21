@@ -24,7 +24,11 @@ const initialMatchValue = {
     },
     "roundOfPlay": "",
     "score": "",
-    "date": ""
+    "date": "",
+    "user":{
+        "id":"",
+        "username":""
+    }
 }
 
 export default function CustomForm(props) {
@@ -299,6 +303,10 @@ export default function CustomForm(props) {
             ToasterError("Id needs to be a positive integer");
             return;
         }
+        if (user.role === "Regular" && user.user_id !== props.value.user.id){
+            ToasterError("It's not your Competition!");
+            return;
+        }
 
         const requestOptions = {
             method: 'PUT',
@@ -440,6 +448,10 @@ export default function CustomForm(props) {
             ToasterError("Id needs to be a positive integer");
             return;
         }
+        if (user.role === "Regular" && user.user_id !== matchValue.user.id){
+            ToasterError("It's not your Match!");
+            return;
+        }
 
         const requestOptions = {
             method: 'PUT',
@@ -502,11 +514,13 @@ export default function CustomForm(props) {
                 <TextField variant="outlined" id="prizeMoney" value={compPrizeValue} label="prizeMoney" onChange={(e) => {setCompPrizeValue(e.target.value)}}>Prize Money</TextField>
                 <TextField variant="outlined" id="competitionType" value={compTypeValue} label="competitionType" onChange={(e) => {setCompTypeValue(e.target.value)}}>Competition Type</TextField>
             </Grid>
+            {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
             <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
                 <Button variant="contained" onClick={postButtonHandler}>Post</Button>
                 <Button variant="contained" onClick={putButtonHandler}>Put</Button>
-                <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button>
-            </Grid>
+                {((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
+                <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button> : null }
+            </Grid> : null : null }
             <Button variant="contained" sx={{mt:3}}
                 onClick={() => (setSpecificLeagueVisible((!clubMatchesVisible) ? !specificLeagueVisible : specificLeagueVisible))}
             >See Clubs In League</Button>
@@ -537,10 +551,11 @@ export default function CustomForm(props) {
                         }
                     }}
                 />
+                {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
                 <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5, borderBottom:"solid 2px black", paddingBottom:2}}>
                     <Button variant="contained" onClick={postWithClubsHandler}>Post League With Clubs</Button>
                     <Button variant="contained"  onClick={addClubHandler}>Add Club To League(local)</Button>
-                </Grid>
+                </Grid> : null : null }
                 </>
             }
             {!specificLeagueVisible && clubMatchesVisible &&
@@ -557,11 +572,13 @@ export default function CustomForm(props) {
                             sx={{ width: "45%", mt: 3 }}
                         >Date</TextField>
                     </Grid>
+                    {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
                     <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
                         <Button variant="contained" onClick={postMatchButtonHandler}>Post</Button>
                         <Button variant="contained" onClick={putMatchButtonHandler}>Put</Button>
-                        <Button variant="contained" sx={{ bgcolor: "red" }} onClick={deleteMatchButtonHandler}>Delete</Button>
-                    </Grid>
+                        {((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
+                        <Button variant="contained" sx={{ bgcolor: "red" }} onClick={deleteMatchButtonHandler}>Delete</Button> : null }
+                    </Grid> : null : null }
 
                     <CustomTable
                         orderValue = {orderValue}
