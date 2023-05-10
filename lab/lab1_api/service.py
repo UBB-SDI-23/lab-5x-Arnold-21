@@ -125,12 +125,9 @@ class StadiumLogic:
     @staticmethod
     def bulkDelete(data):
         for item in data:
-            try:
-                obj = Stadium.objects.get(id=item.id)
-                obj.delete()
-            except:
-                continue
-        
+            obj = Stadium.objects.get(id=item.id)
+            obj.delete()
+    
 
 class ClubLogic:
     @staticmethod
@@ -229,8 +226,11 @@ class ClubLogic:
     @staticmethod
     def bulkDelete(data):
         for item in data:
-            obj = Club.objects.get(id=item.id)
-            obj.delete()
+            try:
+                obj = Club.objects.get(id=item.id)
+                obj.delete()
+            except:
+                continue
         
 class CompetitionLogic:
     @staticmethod
