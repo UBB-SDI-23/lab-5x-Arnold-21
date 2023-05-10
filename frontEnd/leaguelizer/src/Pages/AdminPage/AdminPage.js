@@ -161,6 +161,45 @@ export default function AdminPage(){
             .then(user => setUserList((user.detail === undefined) ? user : []));
     }
 
+    const refreshPages = () => {
+        if (stadiumListVisible){
+            setDeleteClubList([]);
+            setDeleteCompetitionList([]);
+            setDeleteMatchList([]);
+            setDeleteStadiumList([]);
+            fetch(getUrlForStadiums())
+                .then(stadium => stadium.json())
+                .then(stadium => setStadiumList((stadium.detail === undefined) ? stadium : []));
+        }
+        if (clubListVisible){
+            setDeleteClubList([]);
+            setDeleteCompetitionList([]);
+            setDeleteMatchList([]);
+            setDeleteStadiumList([]);
+            fetch(getUrlForClubs())
+                .then(club => club.json())
+                .then(club => setClubList((club.detail === undefined) ? club : []));
+        }
+        if (competitionListVisible){
+            setDeleteClubList([]);
+            setDeleteCompetitionList([]);
+            setDeleteMatchList([]);
+            setDeleteStadiumList([]);
+            fetch(getUrlForCompetitions())
+                .then(comp => comp.json())
+                .then(comp => setCompetitionList((comp.detail === undefined) ? comp : []));
+        }
+        if (matchListVisible){
+            setDeleteClubList([]);
+            setDeleteCompetitionList([]);
+            setDeleteMatchList([]);
+            setDeleteStadiumList([]);
+            fetch(getUrlForMatches())
+                .then(match => match.json())
+                .then(match => setMatchList((match.detail === undefined) ? match : []));
+        }
+    }
+
     const sortingHandler = (property) => {
         const isAscending = orderDirection === "asc";
         setOrderValue(property);
@@ -279,7 +318,7 @@ export default function AdminPage(){
         };
         const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/stadiums/";
         fetch(URL, requestOptions)
-            .then(() => {refresh();});
+            .then(() => {refreshPages();});
     }
 
     const clubDeleteButtonHandler = () => {
@@ -296,7 +335,7 @@ export default function AdminPage(){
         };
         const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/clubs/";
         fetch(URL, requestOptions)
-            .then(() => {refresh();});
+            .then(() => {refreshPages();});
     }
 
     const competitionDeleteButtonHandler = () => {
@@ -313,7 +352,7 @@ export default function AdminPage(){
         };
         const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/competitions/";
         fetch(URL, requestOptions)
-            .then(() => {refresh();});
+            .then(() => {refreshPages();});
     }
 
     const matchDeleteButtonHandler = () => {
@@ -330,7 +369,7 @@ export default function AdminPage(){
         };
         const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/matches/";
         fetch(URL, requestOptions)
-            .then(() => {refresh();});
+            .then(() => {refreshPages();});
     }
 
     return (

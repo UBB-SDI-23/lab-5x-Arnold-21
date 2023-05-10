@@ -721,7 +721,7 @@ class bulkClub(APIView):
 
     def post(self, request, *args, **kwargs):
         self.check_permissions(request=request)
-        ClubLogic.bulkDelete(request.data)
+        ClubLogic.bulkDelete(request.data.get("clubs"))
         return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
     
 class bulkCompetition(APIView):
@@ -729,7 +729,7 @@ class bulkCompetition(APIView):
 
     def post(self, request, *args, **kwargs):
         self.check_permissions(request=request)
-        CompetitionLogic.bulkDelete(request.data)
+        CompetitionLogic.bulkDelete(request.data.get("competitions"))
         return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
     
 class bulkMatch(APIView):
@@ -737,6 +737,6 @@ class bulkMatch(APIView):
 
     def post(self, request, *args, **kwargs):
         self.check_permissions(request=request)
-        MatchesPlayedLogic.bulkDelete(request.data)
+        MatchesPlayedLogic.bulkDelete(request.data.get("matches"))
         return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
 
