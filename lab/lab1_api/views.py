@@ -740,3 +740,9 @@ class bulkMatch(APIView):
         MatchesPlayedLogic.bulkDelete(request.data.get("matches"))
         return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
 
+
+class updateUserPagination(generics.UpdateAPIView):
+    queryset = UserDetail.objects.all()
+    serializer_class = UserDetailSerializer
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated, isAdmin]

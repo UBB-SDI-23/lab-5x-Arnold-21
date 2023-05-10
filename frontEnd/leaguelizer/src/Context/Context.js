@@ -5,6 +5,7 @@ import ToasterError from "../Layouts/ErrorLayout/ToasterError";
 const authContext = createContext();
 // const URL = "http://localhost:8000/api/token/";
 const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/token/";
+const URL_DETAIL = "https://SArnold-sdi-22-23.chickenkiller.com/api/user/";
 
 export default authContext;
 
@@ -27,6 +28,20 @@ export const AuthProvider = ({children}) => {
             setTokens(data);
             setUser(jwt_decode(data.access));
             localStorage.setItem('tokens', JSON.stringify(data));
+
+            let detailResponse = await fetch(URL_DETAIL + String(jwt_decode(data.access).user_id) + "/", {
+                method: 'GET',
+                headers: {
+                    'Content-Type':'application/json'
+                }
+            });
+            let detailData = await detailResponse.json();
+            if (response.status === 200){
+                localStorage.setItem('paginationValue', detailData.paginationValue)
+            } else {
+                ToasterError("Detail Failed!");
+            }
+            
         } else {
             ToasterError("Authentication Failed!");
         }
