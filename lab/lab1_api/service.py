@@ -107,10 +107,7 @@ class UserLogic:
     @staticmethod
     def updatePagination(id, value):
         user = UserDetail.objects.get(userName__id=id)
-        serializer = UserDetailSerializer(instance=user, data=value, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-        else: return True
+        user.paginationValue = value.get("paginationValue")
         
         return False
 
