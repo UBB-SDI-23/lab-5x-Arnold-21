@@ -28,7 +28,7 @@ const initialMatchValue = {
 }
 
 export default function CustomForm(props) {
-    let {user} = useContext(authContext);
+    let {user, tokens} = useContext(authContext);
     const [clubNameValue, setClubNameValue] = useState(props.value.name);
     const [clubAnnualBudgetValue, setClubAnnualBudgetValue] = useState(props.value.annualBudget);
     const [clubStaffValue, setClubStaffValue] = useState(props.value.numberOfStadd);
@@ -255,7 +255,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "name": clubNameValue,
                 "annualBudget": clubAnnualBudgetValue,
@@ -284,7 +284,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "name": clubNameValue,
                 "annualBudget": clubAnnualBudgetValue,
@@ -331,7 +331,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "name": clubNameValue,
                 "annualBudget": clubAnnualBudgetValue,
@@ -367,7 +367,8 @@ export default function CustomForm(props) {
         }
 
         const requestOptions = {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) }
         };
 
         const URL = URL_BASE + String(props.value.id)
@@ -382,7 +383,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "club2": (/^[0-9]+$/.test(club2Value)) ? club2Value : matchValue.club2.id,
                 "competition": (/^[0-9]+$/.test(compValue)) ? compValue : matchValue.competition.id,
@@ -425,7 +426,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "id": matchValue.id,
                 "club2": (/^[0-9]+$/.test(club2Value)) ? club2Value : matchValue.club2.id,
@@ -466,7 +467,8 @@ export default function CustomForm(props) {
         }
 
         const requestOptions = {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) }
         };
 
         const URL = URL_BASE + String(matchValue.id) + "/competitions/"

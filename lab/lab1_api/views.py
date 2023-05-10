@@ -118,6 +118,13 @@ class clubList(generics.ListCreateAPIView):
     queryset = Club.objects.all()
     serializer_class = simpleClubSerializer
 
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
+
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
         budgetFilterParam = request.query_params.get("budgetFilter")
@@ -164,6 +171,15 @@ class clubDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = simpleClubSerializer
     lookup_field = 'id'
 
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        if self.request.method == 'DELETE': 
+            permissions_list.append(isModerator)
+        return [permission() for permission in permissions_list]
+
     def get(self, request, id,*args, **kwargs):
         if id < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
@@ -175,7 +191,16 @@ class clubDetail(generics.RetrieveUpdateDestroyAPIView):
         return super().put(request,*args,**kwargs)
     
 class clubWithLeague(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
+    
     def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+        
         if "user" not in request.data or request.data["user"] is None:
             return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         club = request.data
@@ -187,7 +212,16 @@ class clubWithLeague(APIView):
         return Response({}, status=status.HTTP_201_CREATED)
     
 class clubsWithCompetitionMatches(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
+    
     def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if "user" not in request.data or request.data["user"] is None:
             return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         club = request.data
@@ -222,6 +256,13 @@ class clubStadiumCapacity(APIView):
 class competitionList(generics.ListCreateAPIView):
     queryset = Competition.objects.all()
     serializer_class = simpleCompetitionSerializer
+
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
 
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
@@ -261,6 +302,15 @@ class competitionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = simpleCompetitionSerializer
     lookup_field = 'id'
 
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        if self.request.method == 'DELETE': 
+            permissions_list.append(isModerator)
+        return [permission() for permission in permissions_list]
+
     def get(self, request, id, *args, **kwargs):
         if id < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
@@ -272,7 +322,16 @@ class competitionDetail(generics.RetrieveUpdateDestroyAPIView):
         return super().put(request,*args,**kwargs)
     
 class competitionWithLeagueClubs(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
+    
     def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if "user" not in request.data or request.data["user"] is None:
             return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         comp = request.data
@@ -283,7 +342,16 @@ class competitionWithLeagueClubs(APIView):
         return Response({}, status=status.HTTP_201_CREATED)
     
 class CompetitionWithClubMatches(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
+    
     def post(self, request, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if "user" not in request.data or request.data["user"] is None:
             return Response({"error": "User not given"}, status=status.HTTP_400_BAD_REQUEST)
         comp = request.data
@@ -294,12 +362,21 @@ class CompetitionWithClubMatches(APIView):
         return Response({}, status=status.HTTP_201_CREATED)
     
 class UpdateClubLeagues(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
+    
     def put(self, request, compID, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if compID < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         
         clubs = request.data
-        error = CompetitionLogic.updateClubLeagues(clubs, compID)
+        error = CompetitionLogic.updateClubLeagues(self, request, clubs, compID)
 
         if error:
             return Response({}, status=status.HTTP_424_FAILED_DEPENDENCY)
@@ -310,6 +387,13 @@ class UpdateClubLeagues(APIView):
 class matchesPlayedList(generics.ListCreateAPIView):
     queryset = MatchesPlayed.objects.all()
     serializer_class = simpleMatchesPlayedSerializer
+
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        return [permission() for permission in permissions_list]
 
     def get(self, request, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
@@ -349,6 +433,15 @@ class matchesPlayedDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = simpleMatchesPlayedSerializer
     lookup_field = 'id'
 
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        if self.request.method == 'DELETE': 
+            permissions_list.append(isModerator)
+        return [permission() for permission in permissions_list]
+
     def get(self, request, id, *args, **kwargs):
         if id < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
@@ -360,6 +453,15 @@ class matchesPlayedDetail(generics.RetrieveUpdateDestroyAPIView):
         return super().put(request,*args,**kwargs)
 
 class specificCompetitionMatchesDetail(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT' or self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        if self.request.method == 'DELETE': 
+            permissions_list.append(isModerator)
+        return [permission() for permission in permissions_list]
+    
     def get(self, request, compId, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
         pageNumber = request.query_params.get("page")
@@ -379,6 +481,8 @@ class specificCompetitionMatchesDetail(APIView):
         return Response(MatchesPlayedLogic.getCompetitionSpecificMatch(compId, pageNumber, rowParam))
     
     def post(self, request, compId,*args, **kwargs):
+        self.check_permissions(request=request)
+
         if compId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         if "user" not in request.data or request.data["user"] is None:
@@ -391,19 +495,23 @@ class specificCompetitionMatchesDetail(APIView):
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
     
     def put(self, request, compId, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if compId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         if "user" in request.data:
             return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data
-        error = MatchesPlayedLogic.updateCompetitionSpecificMatch(data)
+        error = MatchesPlayedLogic.updateCompetitionSpecificMatch(self, request, data)
 
         if error:
             return Response({}, status=status.HTTP_201_CREATED)
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, compId, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if compId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -412,6 +520,15 @@ class specificCompetitionMatchesDetail(APIView):
     
 
 class specificClubMatchesDetail(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT' or self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        if self.request.method == 'DELETE': 
+            permissions_list.append(isModerator)
+        return [permission() for permission in permissions_list]
+    
     def get(self, request, clubId, *args, **kwargs):
         rowParam = request.query_params.get("pageNumber")
         pageNumber = request.query_params.get("page")
@@ -431,6 +548,8 @@ class specificClubMatchesDetail(APIView):
         return Response(MatchesPlayedLogic.getClubSpecificMatch(clubId, pageNumber, rowParam))
     
     def post(self, request, clubId,*args, **kwargs):
+        self.check_permissions(request=request)
+
         if clubId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         if "user" not in request.data or request.data["user"] is None:
@@ -444,19 +563,23 @@ class specificClubMatchesDetail(APIView):
         return Response({}, status=status.HTTP_201_CREATED)
     
     def put(self, request, clubId, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if clubId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         if "user" in request.data:
             return Response({"error": "User given"}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data
-        error = MatchesPlayedLogic.updateClubSpecificMatch(data, clubId)
+        error = MatchesPlayedLogic.updateClubSpecificMatch(self, request, data, clubId)
 
         if error:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
         return Response({}, status=status.HTTP_201_CREATED)
     
     def delete(self, request, clubId, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if clubId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -464,6 +587,15 @@ class specificClubMatchesDetail(APIView):
         return Response({"res": "club deleted"}, status=status.HTTP_200_OK)
     
 class verySpecificMatchesDetail(APIView):
+    def get_permissions(self):
+        permissions_list = []
+        if self.request.method == 'PUT' or self.request.method == 'POST': 
+            permissions_list.append(IsAuthenticated)
+            permissions_list.append(isRegular)
+        if self.request.method == 'DELETE': 
+            permissions_list.append(isModerator)
+        return [permission() for permission in permissions_list]
+    
     def get(self, request, compSpecId, clubSpecId, *args, **kwargs):
         if compSpecId < 0 or clubSpecId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
@@ -471,6 +603,8 @@ class verySpecificMatchesDetail(APIView):
         return Response(MatchesPlayedLogic.getClubAndCompetitionSpecificMatch(clubSpecId, compSpecId))
     
     def post(self, request, compSpecId, clubSpecId, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if compSpecId < 0 or clubSpecId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -482,17 +616,21 @@ class verySpecificMatchesDetail(APIView):
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
     
     def put(self, request, compSpecId, clubSpecId, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if compSpecId < 0 or clubSpecId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data
-        error = MatchesPlayedLogic.updateClubAndCompetitionSpecificMatch(data, clubSpecId, compSpecId)
+        error = MatchesPlayedLogic.updateClubAndCompetitionSpecificMatch(self, request, data, clubSpecId, compSpecId)
 
         if error:
             return Response({}, status=status.HTTP_201_CREATED)
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, compSpecId, clubSpecId, *args, **kwargs):
+        self.check_permissions(request=request)
+
         if compSpecId < 0 or clubSpecId < 0:
             return Response({"error": "Invalid id"}, status=status.HTTP_400_BAD_REQUEST)
         

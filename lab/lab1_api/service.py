@@ -8,7 +8,6 @@ from django.conf import settings
 from django.utils import timezone
 from math import ceil
 import random
-import hashlib
 
 User = get_user_model()
 
@@ -282,12 +281,14 @@ class CompetitionLogic:
         return False
     
     @staticmethod
-    def updateClubLeagues(clubs, compID):
+    def updateClubLeagues(view, request, clubs, compID):
         clubs = clubs.get("clubs")
 
         currentComp = Competition.objects.filter(id=compID).first()
         if currentComp is None:
             return True
+        
+        view.check_object_permissions(request, currentComp)
 
         for clubID in clubs:
             currentClub = Club.objects.filter(id=clubID).first()
@@ -342,8 +343,9 @@ class MatchesPlayedLogic:
         return False
     
     @staticmethod
-    def updateCompetitionSpecificMatch(data):
+    def updateCompetitionSpecificMatch(view, request, data):
         mat = MatchesPlayed.objects.get(id=data["id"])
+        view.check_object_permissions(request, mat)
         serializer = simpleMatchesPlayedSerializer(instance=mat, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -375,8 +377,9 @@ class MatchesPlayedLogic:
         return False
     
     @staticmethod
-    def updateClubSpecificMatch(data, clubId):
+    def updateClubSpecificMatch(view, request, data, clubId):
         mat = MatchesPlayed.objects.get(id=data["id"])
+        view.check_object_permissions(request, mat)
         data["club1"] = clubId
         print(data)
         serializer = simpleMatchesPlayedSerializer(instance=mat, data=data, partial=True)
@@ -407,8 +410,9 @@ class MatchesPlayedLogic:
         return False
     
     @staticmethod
-    def updateClubAndCompetitionSpecificMatch(data, clubId, compId):
+    def updateClubAndCompetitionSpecificMatch(view, request, data, clubId, compId):
         mat = MatchesPlayed.objects.get(Q(club1=clubId) & Q(competition=compId))
+        view.check_object_permissions(request, mat)
         serializer = simpleMatchesPlayedSerializer(instance=mat, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()

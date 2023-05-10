@@ -5,7 +5,7 @@ import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
 
 export default function CustomForm(props) {
-    let {user} = useContext(authContext);
+    let {user, tokens} = useContext(authContext);
     const [club1Value, setClub1Value] = useState(props.value.club1.name);
     const [club2Value, setClub2Value] = useState(props.value.club2.name);
     const [compValue, setCompValue] = useState(props.value.competition.name);
@@ -66,7 +66,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "club1": club1Value,
                 "club2": club2Value,
@@ -109,7 +109,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "club1": (/^[0-9]+$/.test(club1Value)) ? club1Value : props.value.club1.id,
                 "club2": (/^[0-9]+$/.test(club2Value)) ? club2Value : props.value.club2.id,
@@ -150,7 +150,8 @@ export default function CustomForm(props) {
         }
 
         const requestOptions = {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) }
         };
 
         const URL = URL_BASE + String(props.value.id)

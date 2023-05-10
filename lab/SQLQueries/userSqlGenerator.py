@@ -56,7 +56,7 @@ def updateStadium():
     insertText = ""
 
     for i in range(int(int(NUM_TABLE/100))):
-        insertText += f"update lab1_api_stadium set user = {i+3} where id >= {100*i} and id < {100*(i+1)}\n"
+        insertText += f"update lab1_api_stadium set user_id = {i+3} where id >= {100*i} and id < {100*(i+1)};\n"
 
     with open("lab/SQLQueries/data6.sql", "a") as file:
             file.write(insertText)
@@ -65,7 +65,7 @@ def updateClub():
     insertText = ""
 
     for i in range(int(int(NUM_TABLE/100))):
-        insertText += f"update lab1_api_club set user = {i+3} where id >= {100*i} and id < {100*(i+1)}\n"
+        insertText += f"update lab1_api_club set user_id = {i+3} where id >= {100*i} and id < {100*(i+1)};\n"
 
     with open("lab/SQLQueries/data6.sql", "a") as file:
             file.write(insertText)
@@ -74,7 +74,7 @@ def updateCompetition():
     insertText = ""
 
     for i in range(int(int(NUM_TABLE/100))):
-        insertText += f"update lab1_api_competition set user = {i+3} where id >= {100*i} and id < {100*(i+1)}\n"
+        insertText += f"update lab1_api_competition set user_id = {i+3} where id >= {100*i} and id < {100*(i+1)};\n"
 
     with open("lab/SQLQueries/data6.sql", "a") as file:
             file.write(insertText)
@@ -83,7 +83,7 @@ def updateMatches():
     insertText = ""
 
     for i in range(int(int(NUM_MANY/1000))):
-        insertText += f"update lab1_api_matchesplayed set user = {i+3} where id >= {100*i} and id < {100*(i+1)}\n"
+        insertText += f"update lab1_api_matchesplayed set user_id = {i+3} where id >= {100*i} and id < {100*(i+1)};\n"
 
     with open("lab/SQLQueries/data6.sql", "a") as file:
             file.write(insertText)
