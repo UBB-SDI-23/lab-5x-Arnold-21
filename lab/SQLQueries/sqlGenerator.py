@@ -110,10 +110,12 @@ def addMatches():
     print("matches")
     
     for i in range(int(int(NUM_MANY/NUM_BATCH))):
-        matchText = "INSERT INTO lab1_api_matchesplayed(\"club1_id\", \"club2_id\", \"competition_id\", \"stadium_id\", \"roundOfPlay\", \"score\", \"date\") values "
+        insertText = "INSERT INTO lab1_api_matchesplayed(\"club1_id\", \"club2_id\", \"competition_id\", \"stadium_id\", \"roundOfPlay\", \"score\", \"date\") values "
         for j in range(NUM_BATCH - 1):
-            matchText += insertMatches() + ", "
-        matchText += insertMatches() + ";\n"
+            insertText += insertMatches() + ", "
+        insertText += insertMatches() + ";\n"
+
+        matchText += insertText
 
         if int((i + 1) % 500) == 0:
             with open("lab/SQLQueries/data3.sql", "a") as file:
