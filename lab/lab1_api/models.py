@@ -30,6 +30,7 @@ class UserDetail(models.Model):
     birthday = models.DateField(null=True)
     gender = models.CharField(max_length=2, choices=genderChoices, null=True)
     marital = models.CharField(max_length=2, choices=maritalChoices, null=True)
+    paginationValue = models.IntegerField(default=12)
 
 
 # Create your models here.
