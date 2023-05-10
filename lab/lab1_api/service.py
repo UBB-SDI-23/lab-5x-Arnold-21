@@ -230,7 +230,7 @@ class ClubLogic:
     def bulkDelete(data):
         for item in data:
             try:
-                obj = Stadium.objects.get(id=item.id)
+                obj = Club.objects.get(id=item.id)
                 obj.delete()
             except:
                 continue
@@ -350,7 +350,7 @@ class CompetitionLogic:
     def bulkDelete(data):
         for item in data:
             try:
-                obj = Stadium.objects.get(id=item.id)
+                obj = Competition.objects.get(id=item.id)
                 obj.delete
             except:
                 continue
@@ -481,7 +481,7 @@ class MatchesPlayedLogic:
     def bulkDelete(data):
         for item in data:
             try:
-                obj = Stadium.objects.get(id=item.id)
+                obj = MatchesPlayed.objects.get(id=item.id)
                 obj.delete()
             except:
                 continue
