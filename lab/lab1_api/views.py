@@ -741,8 +741,15 @@ class bulkMatch(APIView):
         return Response({"res": "Stadiums deleted"}, status=status.HTTP_200_OK)
 
 
-class updateUserPagination(generics.UpdateAPIView):
-    queryset = UserDetail.objects.all()
-    serializer_class = UserDetailSerializer
-    lookup_field = "id"
+class updateUserPagination(APIView):
     permission_classes = [IsAuthenticated, isAdmin]
+
+    def put(self, request, id, *args, **kwargs):
+        self.check_permissions(request=request)
+        if (request.data.get("pagination") != 12 and request.data.get("pagination") != 20 and request.data.get("pagination") != 40):
+            Response({"error": "Wrong pagination"}, status=status.HTTP_400_BAD_REQUEST)
+        if id < 0:
+            Response({"error": "Invalid ip"}, status=status.HTTP_400_BAD_REQUEST)
+
+        UserLogic.updatePagination(id, request.data)
+        return Response({"res": "Pagination Updated"}, status=status.HTTP_200_OK)

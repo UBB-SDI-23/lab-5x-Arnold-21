@@ -103,6 +103,16 @@ class UserLogic:
         else: return True
         
         return False
+    
+    @staticmethod
+    def updatePagination(id, value):
+        user = UserDetail.objects.get(userName__id=id)
+        serializer = UserDetailSerializer(instance=user, data=value, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else: return True
+        
+        return False
 
 class StadiumLogic:
     @staticmethod
