@@ -127,7 +127,7 @@ class StadiumLogic:
         for item in data:
             try:
                 obj = Stadium.objects.get(id=item.id)
-                obj.delete
+                obj.delete()
             except:
                 continue
         
@@ -231,7 +231,7 @@ class ClubLogic:
         for item in data:
             try:
                 obj = Stadium.objects.get(id=item.id)
-                obj.delete
+                obj.delete()
             except:
                 continue
         
@@ -482,6 +482,6 @@ class MatchesPlayedLogic:
         for item in data:
             try:
                 obj = Stadium.objects.get(id=item.id)
-                obj.delete
+                obj.delete()
             except:
                 continue

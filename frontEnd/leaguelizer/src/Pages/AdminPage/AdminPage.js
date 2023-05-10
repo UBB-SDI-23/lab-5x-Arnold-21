@@ -401,7 +401,7 @@ export default function AdminPage(){
                                 renderInput={(params) => <TextField {...params} label="Stadiums" variant="outlined"></TextField>}
                                 filterOptions={(x) => x}
                             />
-                            <Button variant="contained" sx={{bgcolor: "red"}} onClick={stadiumDeleteButtonHandler}>Delete</Button>
+                            <Button variant="contained" sx={{bgcolor: "red", mt:2}} onClick={stadiumDeleteButtonHandler}>Delete</Button>
                             <CustomTable
                                 orderValue = {orderValue}
                                 orderDirection = {orderDirection}
@@ -429,7 +429,7 @@ export default function AdminPage(){
                                 renderInput={(params) => <TextField {...params} label="Clubs" variant="outlined"></TextField>}
                                 filterOptions={(x) => x}
                             />
-                            <Button variant="contained" sx={{bgcolor: "red"}} onClick={clubDeleteButtonHandler}>Delete</Button>
+                            <Button variant="contained" sx={{bgcolor: "red", mt:2}} onClick={clubDeleteButtonHandler}>Delete</Button>
                             <CustomTable
                                 orderValue = {orderValue}
                                 orderDirection = {orderDirection}
@@ -457,7 +457,7 @@ export default function AdminPage(){
                                 renderInput={(params) => <TextField {...params} label="Competitions" variant="outlined"></TextField>}
                                 filterOptions={(x) => x}
                             />
-                            <Button variant="contained" sx={{bgcolor: "red"}} onClick={competitionDeleteButtonHandler}>Delete</Button>
+                            <Button variant="contained" sx={{bgcolor: "red", mt:2}} onClick={competitionDeleteButtonHandler}>Delete</Button>
                             <CustomTable
                                 orderValue = {orderValue}
                                 orderDirection = {orderDirection}
@@ -485,7 +485,7 @@ export default function AdminPage(){
                                 renderInput={(params) => <TextField {...params} label="Matches" variant="outlined"></TextField>}
                                 filterOptions={(x) => x}
                             />
-                            <Button variant="contained" sx={{bgcolor: "red"}} onClick={matchDeleteButtonHandler}>Delete</Button>
+                            <Button variant="contained" sx={{bgcolor: "red", mt:2}} onClick={matchDeleteButtonHandler}>Delete</Button>
                             <CustomTable
                                 orderValue = {orderValue}
                                 orderDirection = {orderDirection}
