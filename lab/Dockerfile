@@ -5,8 +5,8 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apk-get update \
-    && apk-get add postgresql-dev gcc python3-dev musl-dev
+RUN apt-get update \
+    && apt-get install postgresql-dev gcc python3-dev musl-dev
 
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
