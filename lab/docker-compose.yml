@@ -19,12 +19,35 @@ services:
       - POSTGRES_USER=db_user
       - POSTGRES_PASSWORD=db_user_123
       - POSTGRES_DB=leaguelizer
-  nginx:
-    build: ./nginx
+  nginx-proxy:
+    container_name: nginx-proxy
+    build: nginx
+    restart: always
     ports:
       - 80:80
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
       - web
+  nginx-proxy-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    env_file:
+      - ./.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost:/etc/nginx/vhost.d
+      - acme:/etc/acme.sh
+    depends_on:
+      - nginx-proxy
 
 volumes:
   postgres_data:
+  certs:
+  html:
+  vhost:
+  acme:
