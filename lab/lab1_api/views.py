@@ -460,7 +460,7 @@ class matchesPlayedList(generics.ListCreateAPIView):
         if pageNumber is None and nameParam != "" and checkName(nameParam):
             return Response(MatchesPlayedLogic.getAutocompleteDates(nameParam))
         elif pageNumber is None:
-            return Response([{}], status=status.HTTP_200_OK) 
+            return Response([{"test": pageNumber}], status=status.HTTP_200_OK) 
         
         if not checkNumber(pageNumber) or not checkNumber(rowParam):
             return Response({"error": "Invalid arguments"}, status=status.HTTP_400_BAD_REQUEST)
