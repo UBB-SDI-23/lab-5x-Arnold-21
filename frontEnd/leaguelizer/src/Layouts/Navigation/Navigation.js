@@ -44,7 +44,7 @@ function Navigation() {
                             <Link to="/logout"><Button variant='text'>Logout</Button></Link>
                         </> :
                         <>
-                            <Link to="/login"><Button variant='text'>Login</Button></Link>
+                            <Link to="/login"><Button variant='text' id="login">Login</Button></Link>
                             <Link to="/register"><Button variant='text'>Register</Button></Link>
                         </>
                     }
