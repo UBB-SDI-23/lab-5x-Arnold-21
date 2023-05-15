@@ -30,7 +30,8 @@ def insertStadium():
     capacity = randint(10000, 120000)
     buildDate = fake.date()
     rennovationDate = fake.date()
-    return f"(\'{name}\', \'{city}\', \'{description}\', {capacity}, \'{buildDate}\', \'{rennovationDate}\')"
+    user = randint(3, 10002)
+    return f"(\'{name}\', \'{city}\', \'{description}\', {capacity}, \'{buildDate}\', \'{rennovationDate}\', {user})"
 
 def insertCompetition():
     name = fake.last_name()
@@ -38,7 +39,8 @@ def insertCompetition():
     foundedDate = fake.date()
     prizeMoney = randint(10000, 10000000)
     competitionType = choice(competitionTypeList)
-    return f"(\'{name}\', {numberOfTeams}, \'{foundedDate}\', {prizeMoney}, \'{competitionType}\')"
+    user = randint(3, 10002)
+    return f"(\'{name}\', {numberOfTeams}, \'{foundedDate}\', {prizeMoney}, \'{competitionType}\', {user})"
 
 def insertClub():
     name = fake.first_name()
@@ -47,7 +49,8 @@ def insertClub():
     foundedDate = fake.date()
     stadium = randint(1,1000000)
     league = randint(1,1000000)
-    return f"(\'{name}\', {annualBudget}, {numberOfStadd}, \'{foundedDate}\', {stadium}, {league})"
+    user = randint(3, 10002)
+    return f"(\'{name}\', {annualBudget}, {numberOfStadd}, \'{foundedDate}\', {stadium}, {league}, {user})"
 
 def insertMatches():
     club1 = randint(1,1000000)
@@ -58,14 +61,15 @@ def insertMatches():
     score1 = randint(0,8)
     score2 = randint(0,8)
     date = fake.date()
-    return f"({club1}, {club2}, {competition}, {stadium}, \'{roundOfPlay}\', \'{score1}-{score2}\', \'{date}\')"
+    user = randint(3, 10002)
+    return f"({club1}, {club2}, {competition}, {stadium}, \'{roundOfPlay}\', \'{score1}-{score2}\', \'{date}\', {user})"
 
 def addStadiums():
     global stadiumText
     print("Stadiums")
 
     for _ in range(int(NUM_TABLE/NUM_BATCH)):
-        insertText = "INSERT INTO lab1_api_stadium(\"name\", \"city\", \"description\", \"capacity\", \"buildDate\", \"renovationDate\") values "
+        insertText = "INSERT INTO lab1_api_stadium(\"name\", \"city\", \"description\", \"capacity\", \"buildDate\", \"renovationDate\", \"user_id\") values "
         for _ in range(NUM_BATCH - 1):
             insertText += insertStadium() + ", "
         insertText += insertStadium() + ";\n"
@@ -80,7 +84,7 @@ def addCompetition():
     print("Competitions")
 
     for _ in range(int(NUM_TABLE/NUM_BATCH)):
-        insertText = "INSERT INTO lab1_api_competition(\"name\", \"numberOfTeams\", \"foundedDate\", \"prizeMoney\", \"competitionType\") values "
+        insertText = "INSERT INTO lab1_api_competition(\"name\", \"numberOfTeams\", \"foundedDate\", \"prizeMoney\", \"competitionType\", \"user_id\") values "
         for _ in range(NUM_BATCH - 1):
             insertText += insertCompetition() + ", "
         insertText += insertCompetition() + ";\n"
@@ -95,7 +99,7 @@ def addClub():
     print("Clubs")
 
     for _ in range(int(NUM_TABLE/NUM_BATCH)):
-        insertText = "INSERT INTO lab1_api_club(\"name\", \"annualBudget\", \"numberOfStadd\", \"foundedDate\", \"stadium_id\", \"league_id\") values "
+        insertText = "INSERT INTO lab1_api_club(\"name\", \"annualBudget\", \"numberOfStadd\", \"foundedDate\", \"stadium_id\", \"league_id\", \"user_id\") values "
         for _ in range(NUM_BATCH - 1):
             insertText += insertClub() + ", "
         insertText += insertClub() + ";\n"
@@ -110,10 +114,12 @@ def addMatches():
     print("matches")
     
     for i in range(int(int(NUM_MANY/NUM_BATCH))):
-        matchText = "INSERT INTO lab1_api_matchesplayed(\"club1_id\", \"club2_id\", \"competition_id\", \"stadium_id\", \"roundOfPlay\", \"score\", \"date\") values "
+        insertText = "INSERT INTO lab1_api_matchesplayed(\"club1_id\", \"club2_id\", \"competition_id\", \"stadium_id\", \"roundOfPlay\", \"score\", \"date\", \"user_id\") values "
         for j in range(NUM_BATCH - 1):
-            matchText += insertMatches() + ", "
-        matchText += insertMatches() + ";\n"
+            insertText += insertMatches() + ", "
+        insertText += insertMatches() + ";\n"
+
+        matchText += insertText
 
         if int((i + 1) % 500) == 0:
             with open("lab/SQLQueries/data3.sql", "a") as file:

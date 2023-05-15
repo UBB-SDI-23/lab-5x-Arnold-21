@@ -1,10 +1,12 @@
-import { React, useEffect, useCallback, useRef, useState } from "react";
+import { React, useEffect, useCallback, useRef, useState, useContext } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import CustomForm from "./CustomForm";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
 import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
 import URL_BASE from "./constants";
 import { debounce } from "lodash";
+import authContext from "../../Context/Context";
+import { useNavigate } from "react-router-dom";
 
 const initialClubValue = {
     "name": "",
@@ -16,10 +18,15 @@ const initialClubValue = {
     },
     "league": {
         "name": ""
+    },
+    "user":{
+        "id":"",
+        "username":""
     }
 }
 
 export default function StadiumPage(){
+    let {setUserLookup} = useContext(authContext)
     const [ clubList, setclubList ] = useState([]);
     const [ clubValue, setclubValue ] = useState(initialClubValue);
     const [ orderValue, setOrderValue ] = useState("name");
@@ -29,7 +36,9 @@ export default function StadiumPage(){
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
     const [ budgetFilter, setBudgetFilter ] = useState(null);
     const [ localBudgetFilter, setLocalBudgetFilter ] = useState(null);
-    const [ paginationValue, setPaginationValue ] = useState(12);
+    const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         if (budgetFilter !== null){
@@ -136,6 +145,11 @@ export default function StadiumPage(){
         debouncedBudgetFetchHandler(value)
     }
 
+    const userClickHandler = (stadium) => {
+        setUserLookup(stadium["user"]["id"]);
+        navigate("/user");
+    };
+
     return (
         <MainLayout>
             <CustomForm value = {clubValue} refresh={refresh}/>
@@ -169,6 +183,7 @@ export default function StadiumPage(){
                 setPageNumber = {setPageNumber}
                 paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
+                userClickHandler = {userClickHandler}
             ></CustomTable>
         </MainLayout>
     );

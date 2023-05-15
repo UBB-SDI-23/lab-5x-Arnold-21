@@ -12,7 +12,7 @@ const buttonStyle ={
 }
 
 function CustomTable(props) {
-    const { orderValue, orderDirection, sortingHandler, headerList, rowClickHandler, objectList, pageDown, pageUp, pageMax, pageNumber, setPageNumber, paginationOptions, paginationHandler } = props;
+    const { orderValue, orderDirection, sortingHandler, headerList, rowClickHandler, objectList, pageDown, pageUp, pageMax, pageNumber, setPageNumber, paginationOptions, paginationHandler, userClickHandler } = props;
 
     const [ buttons, setButtons] = useState([]);
 
@@ -89,7 +89,7 @@ function CustomTable(props) {
                     sortHandler={sortingHandler}
                     headerList={headerList}
                 />
-                <TableContent objectList={objectList} handler={rowClickHandler} headerList={headerList}/>
+                <TableContent objectList={objectList} handler={rowClickHandler} headerList={headerList} userClickHandler={userClickHandler}/>
             </Table>
         </>
     )

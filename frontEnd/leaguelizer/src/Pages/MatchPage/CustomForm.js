@@ -1,9 +1,11 @@
-import { React, useEffect, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
 import URL_BASE from "./constants";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
+import authContext from "../../Context/Context";
 
 export default function CustomForm(props) {
+    let {user, tokens} = useContext(authContext);
     const [club1Value, setClub1Value] = useState(props.value.club1.name);
     const [club2Value, setClub2Value] = useState(props.value.club2.name);
     const [compValue, setCompValue] = useState(props.value.competition.name);
@@ -31,6 +33,30 @@ export default function CustomForm(props) {
             ToasterError("The team cannot play with itself!");
             return false;
         }
+        if (!/^[0-9]+$/.test(club1Value) && (props.value.club1.id === null || props.value.club1.id === undefined)){
+            ToasterError("Invalid club1 id");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(club2Value) && (props.value.club2.id === null || props.value.club2.id === undefined)){
+            ToasterError("Invalid club2 id");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(compValue) && (props.value.competition.id === null || props.value.competition.id === undefined)){
+            ToasterError("Invalid competition id");
+            return false;
+        }
+        if (!/^[0-9]+$/.test(stadiumValue) && (props.value.stadium.id === null || props.value.stadium.id === undefined)){
+            ToasterError("Invalid stadium id");
+            return false;
+        }
+        if (!/^[a-zA-Z0-9 ]*$/.test(roundValue)){
+            ToasterError("Invalid Round of play");
+            return false;
+        }
+        if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(dateValue)){
+            ToasterError("Date needs to have the following format: yyyy-mm-dd");
+            return false;
+        }
         return true;
     }
 
@@ -40,7 +66,7 @@ export default function CustomForm(props) {
 
         const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "club1": club1Value,
                 "club2": club2Value,
@@ -48,15 +74,26 @@ export default function CustomForm(props) {
                 "stadium": stadiumValue,
                 "roundOfPlay": roundValue,
                 "score": scoreValue,
-                "date": dateValue
+                "date": dateValue,
+                "user":(user) ? user.user_id : null
             })
         };
 
         fetch(URL_BASE, requestOptions)
             .then(message => message.json())
             .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                if (message.club1 !== undefined)
+                    ToasterError(message.club1[0]);
+                else if (message.club2 !== undefined)
+                    ToasterError(message.club2[0]);
+                else if (message.stadium !== undefined)
+                    ToasterError(message.stadium[0]);
+                else if (message.competition !== undefined)
+                    ToasterError(message.competition[0]);
+                else if (message.error !== undefined)
+                    ToasterError(message.error);
+                else if (message.user !== undefined)
+                    ToasterError(message.user);
                 else
                     props.refresh();
             })
@@ -65,10 +102,18 @@ export default function CustomForm(props) {
     const putButtonHandler = () => {
         if (!validateMatch())
             return;
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+        if (user.role === "Regular" && user.user_id !== props.value.user.id){
+            ToasterError("It's not your Match!");
+            return;
+        }
 
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             body: JSON.stringify({
                 "club1": (/^[0-9]+$/.test(club1Value)) ? club1Value : props.value.club1.id,
                 "club2": (/^[0-9]+$/.test(club2Value)) ? club2Value : props.value.club2.id,
@@ -85,28 +130,38 @@ export default function CustomForm(props) {
         fetch(URL, requestOptions)
             .then(message => message.json())
             .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
+                if (message.club1 !== undefined)
+                    ToasterError(message.club1[0]);
+                else if (message.club2 !== undefined)
+                    ToasterError(message.club2[0]);
+                else if (message.stadium !== undefined)
+                    ToasterError(message.stadium[0]);
+                else if (message.competition !== undefined)
+                    ToasterError(message.competition[0]);
+                else if (message.error !== undefined)
+                    ToasterError(message.error);
+                else if (message.user !== undefined)
+                    ToasterError(message.user);
                 else
                     props.refresh();
             })
     }
 
     const deleteButtonHandler = () => {
+        if (props.value.id < 0){
+            ToasterError("Id needs to be a positive integer");
+            return;
+        }
+
         const requestOptions = {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) }
         };
 
         const URL = URL_BASE + String(props.value.id)
 
         fetch(URL, requestOptions)
-            .then(message => message.json())
-            .then((message) => {
-                if (message.error !== undefined)
-                    ToasterError(message.error[0]);
-                else
-                    props.refresh();
-            })
+            .then(() => props.refresh());
     }
 
     return (
@@ -124,11 +179,13 @@ export default function CustomForm(props) {
                     sx={{width:"40%", mt:3}}
                 >Date</TextField>
             </Grid>
+            {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
             <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
                 <Button variant="contained" onClick={postButtonHandler}>Post</Button>
                 <Button variant="contained" onClick={putButtonHandler}>Put</Button>
-                <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button>
-            </Grid>
+                {((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
+                <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button> : null }
+            </Grid> : null : null }
         </form>
     );
 }

@@ -1,10 +1,12 @@
-import { React, useEffect, useCallback, useRef, useState } from "react";
+import { React, useEffect, useCallback, useRef, useState, useContext } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import CustomForm from "./CustomForm";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable"
 import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
 import URL_BASE from "./constants";
 import { debounce } from "lodash";
+import authContext from "../../Context/Context";
+import { useNavigate } from "react-router-dom";
 
 const initialStadiumValue = {
     "name": "",
@@ -12,7 +14,11 @@ const initialStadiumValue = {
     "buildDate": "",
     "renovationDate": "",
     "city": "",
-    "description": ""
+    "description": "",
+    "user":{
+        "id":"",
+        "username":""
+    }
 }
 
 export default function StadiumPage(){
@@ -23,13 +29,16 @@ export default function StadiumPage(){
     const [ pageNumber, setPageNumber ] = useState(1);
     const [ pageMax, setPageMax ] = useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
-    const [ paginationValue, setPaginationValue ] = useState(12);
+    const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
+
+    const {setUserLookup, tokens} = useContext(authContext);
+    let navigate = useNavigate();
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, [paginationValue]);
+    }, [paginationValue, tokens]);
     
     var getUrlForStadiums = useCallback(() => {
         return URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
@@ -38,8 +47,8 @@ export default function StadiumPage(){
     useEffect(() => {
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
-            .then(stadium => setStadiumList(stadium));
-    }, [getUrlForStadiums])
+            .then(stadium => setStadiumList((stadium.detail === undefined) ? stadium : []));
+    }, [getUrlForStadiums, tokens])
 
     const rowClickHandler = (stadium) => {
         setStadiumValue(stadium);
@@ -49,7 +58,7 @@ export default function StadiumPage(){
         setStadiumValue(initialStadiumValue);
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
-            .then(stadium => setStadiumList(stadium));
+            .then(stadium => setStadiumList((stadium.detail === undefined) ? stadium : []));
     }
 
     const sortingHandler = (property) => {
@@ -81,7 +90,6 @@ export default function StadiumPage(){
     }
 
     const pageDown = () => {
-        console.log(pageNumber);
         if (pageNumber > 1) {
             const newPageNumber = pageNumber - 1;
             setPageNumber(newPageNumber);
@@ -106,6 +114,11 @@ export default function StadiumPage(){
             return [];
         return Object.keys(stadiumList[0])
     }, [stadiumList]);
+
+    const userClickHandler = (stadium) => {
+        setUserLookup(stadium["user"]["id"]);
+        navigate("/user");
+    };
 
     return (
         <MainLayout>
@@ -137,6 +150,7 @@ export default function StadiumPage(){
                 setPageNumber = {setPageNumber}
                 paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
+                userClickHandler = {userClickHandler}
             ></CustomTable>
         </MainLayout>
     );

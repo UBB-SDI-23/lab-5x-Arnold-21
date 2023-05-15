@@ -1,20 +1,27 @@
-import { React, useEffect, useCallback, useRef, useState } from "react";
+import { React, useEffect, useCallback, useRef, useState, useContext } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import CustomForm from "./CustomForm";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable"
 import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
 import URL_BASE from "./constants";
 import { debounce } from "lodash";
+import authContext from "../../Context/Context";
+import { useNavigate } from "react-router-dom";
 
 const initialCompValue = {
     "name": "",
     "numberOfTeams": "",
     "foundedDate": "",
     "prizeMoney": "",
-    "competitionType": ""
+    "competitionType": "",
+    "user":{
+        "id":"",
+        "username":""
+    }
 }
 
 export default function StadiumPage(){
+    let {setUserLookup} = useContext(authContext);
     const [ compList, setCompList ] = useState([]);
     const [ compValue, setCompValue ] = useState(initialCompValue);
     const [ orderValue, setOrderValue ] = useState("name");
@@ -22,7 +29,9 @@ export default function StadiumPage(){
     const [ pageNumber, setPageNumber ] = useState(1);
     const [ pageMax, setPageMax ] = useState(1);
     const [ autoCompleteNames, setAutoCompleteNames ] = useState([]);
-    const [ paginationValue, setPaginationValue ] = useState(12);
+    const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
@@ -108,9 +117,14 @@ export default function StadiumPage(){
         return headingsMap;
     }
 
+    const userClickHandler = (stadium) => {
+        setUserLookup(stadium["user"]["id"]);
+        navigate("/user");
+    };
+
     return (
         <MainLayout>
-            <CustomForm value = {compValue} refresh={refresh}/>
+            <CustomForm value = {compValue} refresh={refresh} userClickHandler = {userClickHandler}/>
             <Autocomplete sx={{mt:10, width: "100%"}}
                 options={autoCompleteNames}
                 getOptionLabel={(option) => option.name}
@@ -138,6 +152,7 @@ export default function StadiumPage(){
                 setPageNumber = {setPageNumber}
                 paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
+                userClickHandler = {userClickHandler}
             ></CustomTable>
         </MainLayout>
     );
