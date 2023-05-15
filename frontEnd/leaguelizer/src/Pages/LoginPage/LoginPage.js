@@ -35,7 +35,7 @@ function LoginPage() {
                     <TextField type="password" name="password" variant="outlined" id="password" value={password} label="Password" onChange={(e) => { setPassword(e.target.value) }}>Password</TextField>
                 </Grid>
                 <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
-                    <Button variant="contained" onClick={loginHandler}>Post</Button>
+                    <Button variant="contained" onClick={loginHandler} id='loginButton'>Post</Button>
                 </Grid>
             </form>
         </MainLayout>

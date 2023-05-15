@@ -30,22 +30,22 @@ function Navigation() {
                     {direction}
                 </div>
                 <div id='linksHolder'>
-                    <Link to="/stadium"><Button variant='text'>Stadium</Button></Link>
-                    <Link to="/club"><Button variant='text'>Club</Button></Link>
-                    <Link to="/competition"><Button variant='text'>Competition</Button></Link>
-                    <Link to="/matches"><Button variant='text'>Matches</Button></Link>
-                    <Link to="/statistics"><Button variant='text'>Statistics</Button></Link>
+                    <Link to="/stadium"><Button variant='text' id="stadiumNavButton">Stadium</Button></Link>
+                    <Link to="/club"><Button variant='text' id="clubNavButton">Club</Button></Link>
+                    <Link to="/competition"><Button variant='text' id="competitionNavButton">Competition</Button></Link>
+                    <Link to="/matches"><Button variant='text' id="matchNavButton">Matches</Button></Link>
+                    <Link to="/statistics"><Button variant='text' id="statisticsNavButton">Statistics</Button></Link>
                     {(user && user.role === "Admin") ?
-                        <Link to="/admin"><Button variant='text'>AdminPage</Button></Link> : null
+                        <Link to="/admin"><Button variant='text' id="adminNavButton">AdminPage</Button></Link> : null
                     }
                     {user ? 
                         <>
-                            <Link to="/user"><Button variant='text' onClick={() => setUserLookup(user.user_id)}>PersonalPage</Button></Link> 
-                            <Link to="/logout"><Button variant='text'>Logout</Button></Link>
+                            <Link to="/user"><Button variant='text' onClick={() => setUserLookup(user.user_id)} id="personalNavButton">PersonalPage</Button></Link> 
+                            <Link to="/logout"><Button variant='text' id="logoutNavButton">Logout</Button></Link>
                         </> :
                         <>
-                            <Link to="/login"><Button variant='text' id="login">Login</Button></Link>
-                            <Link to="/register"><Button variant='text'>Register</Button></Link>
+                            <Link to="/login"><Button variant='text' id="loginNavButton">Login</Button></Link>
+                            <Link to="/register"><Button variant='text' id="registerNavButton">Register</Button></Link>
                         </>
                     }
                 </div>
