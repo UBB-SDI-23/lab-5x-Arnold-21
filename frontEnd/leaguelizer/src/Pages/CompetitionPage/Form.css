@@ -1,0 +1,41 @@
+#inputHolder, #clubHolder{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 5vw;
+}
+
+#matchContainer{
+    border-bottom: 10px solid gray;
+}
+
+#matchHolder{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 5px;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+#score, #date {
+    width: 40%;
+    margin-top: 3px;
+}
+
+@media only screen and (max-width:1450px){
+    #inputHolder, #clubHolder, #matchHolder{
+        flex-direction: column;
+    }
+    #inputHolder div{
+        margin-bottom: 5px;
+    }
+    #clubHolder div{
+        margin-bottom: 15px;
+    }
+    #matchHolder div{
+        margin-top: 15px;
+    }
+}

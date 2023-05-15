@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import authContext from '../../Context/Context';
 import URL_BASE from './constants';
 import ToasterError from '../../Layouts/ErrorLayout/ToasterError';
+import "./Register.css"
 
 function RegisterPage() {
     let {user} = useContext(authContext);
@@ -94,7 +95,7 @@ function RegisterPage() {
     return (
         <MainLayout>
             <form className="registerForm">
-                <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
+                <Grid container id='inputHolder'>
                     <TextField name="username" variant="outlined" id="username" value={username} label="Username" onChange={(e) => { setUsername(e.target.value) }}>Username</TextField>
                     <TextField type="password" name="password" variant="outlined" id="password" value={password} label="Password" onChange={(e) => { setPassword(e.target.value) }}>Password</TextField>
                     <TextField name="email" variant="outlined" id="email" value={email} label="Email" onChange={(e) => { setEmail(e.target.value) }}>Email</TextField>
@@ -109,7 +110,6 @@ function RegisterPage() {
                             value={gender}
                             label="Gender"
                             onChange={(e) => setGender(e.target.value)}
-                            sx={{width:"30%"}}
                         >
                             <MenuItem value={'M'}>Male</MenuItem>
                             <MenuItem value={'F'}>Female</MenuItem>
@@ -124,7 +124,6 @@ function RegisterPage() {
                             value={marital}
                             label="Marital Status"
                             onChange={(e) => setMarital(e.target.value)}
-                            sx={{width:"30%"}}
                         >
                             <MenuItem value={'M'}>Married</MenuItem>
                             <MenuItem value={'R'}>Relationship</MenuItem>
@@ -132,7 +131,7 @@ function RegisterPage() {
                         </Select>
                     </Grid>
                 </Grid>
-                <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
+                <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5, mb:20 }}>
                     <Button variant="contained" onClick={registerHandler}>Register</Button>
                 </Grid>
             </form>

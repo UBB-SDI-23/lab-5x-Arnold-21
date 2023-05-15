@@ -184,6 +184,7 @@ export default function StadiumPage(){
                 paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
                 userClickHandler = {userClickHandler}
+                aggregateHeader = "matchesPlayed"
             ></CustomTable>
         </MainLayout>
     );

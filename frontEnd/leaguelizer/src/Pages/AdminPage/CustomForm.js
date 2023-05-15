@@ -3,6 +3,7 @@ import { Button, Grid, TextField, InputLabel, Select, MenuItem } from "@mui/mate
 import URL_BASE from "./constants";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
+import "./Form.css"
 
 export default function CustomForm(props) {
     let {user, tokens} = useContext(authContext);
@@ -81,7 +82,7 @@ export default function CustomForm(props) {
 
     return (
         <form className="stadiumForm">
-            <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
+            <Grid container id='inputHolder'>
                 <TextField variant="outlined" id="username" value={userName} label="UserName" aria-readonly>UserName</TextField>
                 <Grid container sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pt: 5}}>
                     <InputLabel id="roleLabel">Role Status</InputLabel>

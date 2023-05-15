@@ -1,0 +1,42 @@
+#navHolder {
+    display: flex;
+    flex-direction: "row";
+    border-bottom: 2px solid gray;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background: black;
+}
+
+#homeHolder{
+    width: 30%;
+}
+
+#linksHolder {
+    width: 70%;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: "row";
+}
+
+@media only screen and (max-width: 750px){
+    #navHolder{
+        flex-direction: column;
+    }
+    #linksHolder{
+        width: 100%;
+        flex-direction: column;
+    }
+    #homeHolder{
+        width: 100%;
+    }
+    a{
+        display: flex;
+        margin-bottom: 20px;
+        justify-content: space-around;
+        text-decoration: none;
+        margin-left: 30%;
+        margin-right: 30%;
+        border-bottom: 2px solid slategrey;
+        border-radius: 2px;
+    }
+}

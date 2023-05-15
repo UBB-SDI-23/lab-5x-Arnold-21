@@ -3,6 +3,7 @@ import { Button, Grid, TextField } from "@mui/material";
 import URL_BASE from "./constants";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
+import "./Form.css"
 
 export default function CustomForm(props) {
     let {user, tokens} = useContext(authContext);
@@ -166,17 +167,17 @@ export default function CustomForm(props) {
 
     return (
         <form className="stadiumForm">
-            <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
+            <Grid container id='inputHolder'>
                 <TextField variant="outlined" id="club1" value={club1Value} label="Club1" onChange={(e) => {setClub1Value(e.target.value)}}>Club1</TextField>
                 <TextField variant="outlined" id="club2" value={club2Value} label="Club2" onChange={(e) => {setClub2Value(e.target.value)}}>Club2</TextField>
                 <TextField variant="outlined" id="comp" value={compValue} label="Competition" onChange={(e) => {setCompValue(e.target.value)}}>Competition</TextField>
                 <TextField variant="outlined" id="stadium" value={stadiumValue} label="Stadium" onChange={(e) => {setStadiumValue(e.target.value)}}>Stadium</TextField>
                 <TextField variant="outlined" id="round" value={roundValue} label="Round Of Play" onChange={(e) => {setRoundValue(e.target.value)}}>Round Of Play</TextField>
                 <TextField variant="outlined" id="score" value={scoreValue} label="Score" onChange={(e) => {setScoreValue(e.target.value)}}
-                    sx={{width:"40%", mt:3}}
+                    
                 >Score</TextField>
                 <TextField variant="outlined" id="date" value={dateValue} label="Date" onChange={(e) => {setDateValue(e.target.value)}}
-                    sx={{width:"40%", mt:3}}
+                    
                 >Date</TextField>
             </Grid>
             {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?

@@ -156,6 +156,7 @@ export default function MatchPage(){
                 paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
                 userClickHandler = {userClickHandler}
+                aggregateHeader = "avgleaguebudget"
             ></CustomTable>
         </MainLayout>
     );

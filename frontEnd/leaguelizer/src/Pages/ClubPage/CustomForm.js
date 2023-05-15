@@ -4,6 +4,7 @@ import URL_BASE from "./constants";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
+import "./Form.css"
 
 const initialMatchValue = {
     "club1": {
@@ -490,7 +491,7 @@ export default function CustomForm(props) {
 
     return (
         <form className="clubForm">
-            <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
+            <Grid container id='inputHolder'>
                 <TextField variant="outlined" id="league" value={clubLeagueValue} label="League" onChange={(e) => { setClubLeagueValue(e.target.value) }}>League</TextField>
                 <TextField variant="outlined" id="annualBudget" value={clubAnnualBudgetValue} label="Annual Budget" onChange={(e) => { setClubAnnualBudgetValue(e.target.value) }}>Annual Budget</TextField>
                 <TextField variant="outlined" id="numberOfStadd" value={clubStaffValue} label="Staff Number" onChange={(e) => { setClubStaffValue(e.target.value) }}>Staff Number</TextField>
@@ -507,15 +508,15 @@ export default function CustomForm(props) {
                 {((user.role === "Moderator" || user.role === "Admin")) ?
                 <Button variant="contained" sx={{ bgcolor: "red" }} onClick={deleteButtonHandler}>Delete</Button> : null }
             </Grid> : null : null }
-            <Button variant="contained" sx={{ mt: 3 }}
+            <Button variant="contained" sx={{ mt: 3, mr: 5, width:200 }}
                 onClick={() => (setSpecificLeagueVisible((!clubMatchesVisible) ? !specificLeagueVisible : specificLeagueVisible))}
             >See League Specifics</Button>
-            <Button variant="contained" sx={{ mt: 3, ml: 5 }}
+            <Button variant="contained" sx={{ mt: 3, width:200}}
                 onClick={() => (setClubMatchesVisible((!specificLeagueVisible) ? !clubMatchesVisible : clubMatchesVisible))}
             >See This Clubs Matches</Button>
             {specificLeagueVisible && !clubMatchesVisible &&
                 <Container>
-                    <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5, mt: 10}}>
+                    <Grid container id='leagueHolder'>
                         <TextField variant="outlined" id="name" value={leagueName} label="Name" onChange={(e) => { setLeagueName(e.target.value) }}>League Name</TextField>
                         <TextField variant="outlined" id="numberOfTeams" value={teamNumber} label="numberOfTeams" onChange={(e) => { setTeamNumber(e.target.value) }}>Number Of Teams</TextField>
                         <TextField variant="outlined" id="prizeMoney" value={prizeMoney} label="prizeMoney" onChange={(e) => { setPrizeMoney(e.target.value) }}>Prize Money</TextField>
@@ -527,17 +528,15 @@ export default function CustomForm(props) {
                 </Container>
             }
             {!specificLeagueVisible && clubMatchesVisible &&
-                <Container sx = {{ borderBottom: "solid 10px gray"}}>
-                    <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5, borderTop:"solid 1px gray", borderBottom:"solid 1px gray", p:5, mt: 10}}>
+                <div id='matchContainer'>
+                    <Grid container id='matchHolder'>
                         <TextField variant="outlined" id="club2" value={club2Value} label="Club2" onChange={(e) => { setClub2Value(e.target.value) }}>Club2</TextField>
                         <TextField variant="outlined" id="comp" value={compValue} label="Competition" onChange={(e) => { setCompValue(e.target.value) }}>Competition</TextField>
                         <TextField variant="outlined" id="stadium" value={stadiumValue} label="Stadium" onChange={(e) => { setStadiumValue(e.target.value) }}>Stadium</TextField>
                         <TextField variant="outlined" id="round" value={roundValue} label="Round Of Play" onChange={(e) => { setRoundValue(e.target.value) }}>Round Of Play</TextField>
                         <TextField variant="outlined" id="score" value={scoreValue} label="Score" onChange={(e) => { setScoreValue(e.target.value) }}
-                            sx={{ width: "45%", mt: 3 }}
                         >Score</TextField>
                         <TextField variant="outlined" id="date" value={dateValue} label="Date" onChange={(e) => { setDateValue(e.target.value) }}
-                            sx={{ width: "45%", mt: 3 }}
                         >Date</TextField>
                     </Grid>
                     {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
@@ -562,8 +561,9 @@ export default function CustomForm(props) {
                         setPageNumber = {setPageNumber}
                         paginationOptions = {paginationValue}
                         paginationHandler = {setPaginationValue}
+                        aggregateHeader = "avgleaguebudget"
                     ></CustomTable>
-                </Container>
+                </div>
             }
         </form>
     );

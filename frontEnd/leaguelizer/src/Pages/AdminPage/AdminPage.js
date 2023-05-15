@@ -418,16 +418,16 @@ export default function AdminPage(){
             {userListVisible && !bulkDeleteVisible && user && user.role === "Admin" &&
                 <>
                     <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
-                        <Button variant="contained" sx={{ mt: 3 }}
+                        <Button variant="contained" sx={{ m: 3 }}
                             onClick={() => (setStadiumListVisible((!clubListVisible && !matchListVisible && !competitionListVisible) ? !stadiumListVisible : stadiumListVisible))}
                         >See Stadium List</Button>
-                        <Button variant="contained" sx={{ mt: 3, ml: 5 }}
+                        <Button variant="contained" sx={{ m: 3 }}
                             onClick={() => (setClubListVisible((!stadiumListVisible && !matchListVisible && !competitionListVisible) ? !clubListVisible : clubListVisible))}
                         >See Club List</Button>
-                        <Button variant="contained" sx={{ mt: 3, ml: 5 }}
+                        <Button variant="contained" sx={{ m: 3 }}
                             onClick={() => (setCompetitionListVisible((!clubListVisible && !matchListVisible && !stadiumListVisible) ? !competitionListVisible : competitionListVisible))}
                         >See Competition List</Button>
-                        <Button variant="contained" sx={{ mt: 3, ml: 5 }}
+                        <Button variant="contained" sx={{ m: 3 }}
                             onClick={() => (setMatchListVisible((!clubListVisible && !stadiumListVisible && !competitionListVisible) ? !matchListVisible : stadiumListVisible))}
                         >See Match List</Button>
                     </Grid>

@@ -165,6 +165,7 @@ export default function StadiumPage(){
                         setPageNumber = {setClubPageNumber}
                         paginationOptions = {paginationValue}
                         paginationHandler = {setPaginationValue}
+                        aggregateHeader = "stadiumCapacity"
                     ></CustomTable>
                 </>
             }
@@ -184,6 +185,7 @@ export default function StadiumPage(){
                         setPageNumber = {setLeaguePageNumber}
                         paginationOptions = {paginationValue}
                         paginationHandler = {setPaginationValue}
+                        aggregateHeader = "avgBudget"
                     ></CustomTable>
                 </>
             }

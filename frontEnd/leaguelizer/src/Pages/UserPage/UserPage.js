@@ -4,6 +4,7 @@ import { Grid, TextField, InputLabel, Select, MenuItem } from '@mui/material';
 import authContext from '../../Context/Context';
 import URL_BASE from './constants';
 import MainLayout from '../../Layouts/PageLayout/MainLayout/MainLayout';
+import "./UserPage.css"
 
 // const initialUserDetailValue ={
 //     "id":-1,
@@ -69,16 +70,16 @@ function UserPage(props) {
     
     return (
         <MainLayout>
-            <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
-                <TextField variant="outlined" id="bio" value={userName} label="Username" sx={{width:"80%"}}>Username</TextField>
+            <Grid container id='inputHolder'>
+                <TextField variant="outlined" id="bio" value={userName} label="Username" sx={{width:"100%"}}>Username</TextField>
                 <TextField variant="outlined" id="bio" value={bio} label="Bio" sx={{width:"100%", mt:2}}>Bio</TextField>
-                <TextField variant="outlined" id="location" value={location} label="Location" sx={{mt:2, width:"45%"}}>Location</TextField>
-                <TextField variant="outlined" id="birthday" value={birthday} label="Birthday" sx={{mt:2, width:"45%"}}>Birthday</TextField>
-                <TextField variant="outlined" id="numberOfStadiums" value={numberOfStadiums} label="NumberOfStadiums" sx={{mt:2, width:"45%"}} aria-readonly>NumberOfStadiums</TextField>
-                <TextField variant="outlined" id="numberOfClubs" value={numberOfClubs} label="NumberOfClubs" sx={{mt:2, width:"45%"}} aria-readonly>NumberOfClubs</TextField>
-                <TextField variant="outlined" id="numberOfCompetitions" value={numberOfCompetitions} label="NumberOfCompetitions" sx={{mt:2, width:"45%"}} aria-readonly>NumberOfCompetitions</TextField>
-                <TextField variant="outlined" id="numberOfMatches" value={numberOfMatches} label="NumberOfMatches" sx={{mt:2, width:"45%"}} aria-readonly>NumberOfMatches</TextField>
-                <Grid container sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pt: 5}}>
+                <TextField variant="outlined" id="location" value={location} label="Location" >Location</TextField>
+                <TextField variant="outlined" id="birthday" value={birthday} label="Birthday" >Birthday</TextField>
+                <TextField variant="outlined" id="numberOfStadiums" value={numberOfStadiums} label="NumberOfStadiums"  aria-readonly>NumberOfStadiums</TextField>
+                <TextField variant="outlined" id="numberOfClubs" value={numberOfClubs} label="NumberOfClubs"  aria-readonly>NumberOfClubs</TextField>
+                <TextField variant="outlined" id="numberOfCompetitions" value={numberOfCompetitions} label="NumberOfCompetitions"  aria-readonly>NumberOfCompetitions</TextField>
+                <TextField variant="outlined" id="numberOfMatches" value={numberOfMatches} label="NumberOfMatches"  aria-readonly>NumberOfMatches</TextField>
+                <Grid container sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pt: 5}} id='genderHolder'>
                     <InputLabel id="genderLabel">Gender</InputLabel>
                     <Select
                         labelId="genderLabel"
@@ -92,7 +93,7 @@ function UserPage(props) {
                         <MenuItem value={'O'}>Other</MenuItem>
                     </Select>
                 </Grid>
-                <Grid container sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pt: 5}}>
+                <Grid container sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pt: 5}} id='maritalHolder'>
                     <InputLabel id="maritalLabel">Marital Status</InputLabel>
                     <Select
                         labelId="maritalLabel"
@@ -106,6 +107,7 @@ function UserPage(props) {
                         <MenuItem value={'S'}>Single</MenuItem>
                     </Select>
                 </Grid>
+                <Grid id='paginationHolder'>
                 {
                     (user) ? (user.user_id === userLookup) ? 
                         <Select
@@ -119,6 +121,7 @@ function UserPage(props) {
                             <MenuItem value={40}>40</MenuItem>
                         </Select> : <></> : <></>
                 }
+                </Grid>
             </Grid>
         </MainLayout>
     )

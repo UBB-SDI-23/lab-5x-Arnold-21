@@ -153,6 +153,7 @@ export default function StadiumPage(){
                 paginationOptions = {paginationValue}
                 paginationHandler = {setPaginationValue}
                 userClickHandler = {userClickHandler}
+                aggregateHeader = "numberOfTeams"
             ></CustomTable>
         </MainLayout>
     );
