@@ -30,22 +30,21 @@ def insertDetail(i):
     marital = choice(maritals)
     return f"(\'{i}\', \'{bio}\', \'{location}\', \'{birthday}\', \'{gender}\', \'{marital}\', 12)"
 
-insertText = "INSERT INTO lab1_api_user(\"email\", \"username\", \"password\", \"is_active\", \"role\", \"is_superuser\", \"first_name\", \"last_name\", \"is_staff\", \"date_joined\") values "
+# insertText = "INSERT INTO lab1_api_user(\"email\", \"username\", \"password\", \"is_active\", \"role\", \"is_superuser\", \"first_name\", \"last_name\", \"is_staff\", \"date_joined\") values "
 
-for i in range(10000 - 1):
-    insertText += insertUser(i) + ", "
-insertText += insertUser(9999) + ";\n"
+# for i in range(10000 - 1):
+#     insertText += insertUser(i) + ", "
+# insertText += insertUser(9999) + ";\n"
 
-with open("lab/SQLQueries/data4.sql", "a") as file:
-        file.write(insertText)
+# with open("lab/SQLQueries/data4.sql", "a") as file:
+#         file.write(insertText)
 
 insertText = "INSERT INTO lab1_api_userdetail(\"userName_id\", \"bio\", \"location\", \"birthday\", \"gender\", \"marital\", \"paginationValue\") values "
 
 for i in range(1,10001):
     insertText += insertDetail(i) + ", "
-insertText += insertDetail(9999) + ";\n"
 
-with open("lab/SQLQueries/data4.sql", "a") as file:
+with open("lab/SQLQueries/data6.sql", "a") as file:
         file.write(insertText)
 
 # NUM_TABLE = 1_000_000
