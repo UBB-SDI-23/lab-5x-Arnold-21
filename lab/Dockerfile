@@ -5,7 +5,9 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
     
-RUN python -m pip install --upgrade pip
+RUN pip install --upgrade pip
+RUN pip install setuptools
+RUN pip install ez_setup
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
