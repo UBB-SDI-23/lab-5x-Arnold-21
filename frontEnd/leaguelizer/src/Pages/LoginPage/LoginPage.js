@@ -19,7 +19,9 @@ function LoginPage() {
         }
 
         login(username, password);
-        navigate("/");
+        if (localStorage.getItem('tokens')){
+            navigate("/");
+        }
     }
 
     useEffect(() => {
