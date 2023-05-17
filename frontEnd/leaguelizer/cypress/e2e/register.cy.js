@@ -18,6 +18,9 @@ describe('Testing Login', () => {
         cy.get('#birthday').type('2002-07-18')
 
         //Press register
-        cy.
+        cy.get('#registerBtn').click()
+
+        //Check url
+        cy.url().should('include', '/activation')
     })
 })

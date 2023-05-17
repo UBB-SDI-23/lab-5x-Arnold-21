@@ -132,7 +132,7 @@ function RegisterPage() {
                     </Grid>
                 </Grid>
                 <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5, mb:20 }}>
-                    <Button variant="contained" onClick={registerHandler}>Register</Button>
+                    <Button variant="contained" onClick={registerHandler} id='registerBtn'>Register</Button>
                 </Grid>
             </form>
         </MainLayout>
