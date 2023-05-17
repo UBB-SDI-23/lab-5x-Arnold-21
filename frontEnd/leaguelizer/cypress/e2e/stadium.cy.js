@@ -53,5 +53,11 @@ describe('Testing Login', () => {
 
     //Logging out
     cy.visit('https://leaguelizer.netlify.app/logout')
+    cy.get('#logoutBtn').click()
+    cy.url().should('include', '/login')
+    cy.window().then((win) => {
+      const key = win.localStorage.getItem('tokens') !== null;
+      cy.expect(key).to.be.not.true
+    })
   })
 })
