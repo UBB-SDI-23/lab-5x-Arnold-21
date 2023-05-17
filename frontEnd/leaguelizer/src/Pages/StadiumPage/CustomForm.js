@@ -149,10 +149,10 @@ export default function CustomForm(props) {
             </Grid>
             {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
                 <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
-                    <Button variant="contained" onClick={postButtonHandler}>Post</Button>
-                    <Button variant="contained" onClick={putButtonHandler}>Put</Button>
+                    <Button variant="contained" onClick={postButtonHandler} id="stadiumPostBtn">Post</Button>
+                    <Button variant="contained" onClick={putButtonHandler} id="stadiumPUTBtn">Put</Button>
                     {((user.role === "Moderator" || user.role === "Admin")) ?
-                    <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button> : null }
+                    <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler} id="stadiumDeleteBtn">Delete</Button> : null }
                 </Grid> : null : null
             }
         </form>

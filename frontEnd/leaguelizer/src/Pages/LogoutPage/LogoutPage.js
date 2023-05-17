@@ -22,7 +22,7 @@ function LogoutPage() {
         <MainLayout>
             <Container sx={{display:"flex", justifyContent:"space-evenly", alignContent:"center"}}>
                 <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
-                    <Button variant="contained" onClick={logoutHandler}>Logout</Button>
+                    <Button variant="contained" onClick={logoutHandler} id='logoutBtn'>Logout</Button>
                 </Grid>
             </Container>
         </MainLayout>
