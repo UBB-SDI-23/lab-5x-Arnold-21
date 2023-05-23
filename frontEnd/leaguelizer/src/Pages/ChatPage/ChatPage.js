@@ -15,7 +15,6 @@ function ChatPage() {
             let varMessages = messages
             varMessages.unshift({msg: dataFromServer.text, name: dataFromServer.sender})
             setMessages(varMessages);
-            console.log(messages);
         }
     }, [messages]);
 

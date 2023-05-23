@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
-ASGI_APPLICATION = 'lab1_api.routing.application'
+ASGI_APPLICATION = 'lab1.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': "channels.layers.InMemoryChannelLayer"
