@@ -14,7 +14,7 @@ import RegisterPage from "./Pages/RegisterPage/RegisterPage";
 import ActivationPage from "./Pages/RegisterPage/RegisterActivation";
 import UserPage from "./Pages/UserPage/UserPage";
 import AdminPage from "./Pages/AdminPage/AdminPage";
-
+import ChatPage from "./Pages/ChatPage/ChatPage";
 
 export default function App(){
   return (
@@ -32,6 +32,7 @@ export default function App(){
         <Route path="/activation" element={<ActivationPage />}></Route>
         <Route path="/user" element={<UserPage />}></Route>
         <Route path="/admin" element={<AdminPage />}></Route>
+        <Route path="/chat" element={<ChatPage />}></Route>
       </Routes>
     </AuthProvider>
   );

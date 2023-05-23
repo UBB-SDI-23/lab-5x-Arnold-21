@@ -79,3 +79,8 @@ class MatchesPlayed(models.Model):
     roundOfPlay = models.CharField(max_length=100)
     score = models.CharField(max_length=100)
     date = models.DateField()
+
+#Message log model
+class MessageLog(models.Model):
+    sender = models.CharField(max_length=100)
+    message = models.TextField()

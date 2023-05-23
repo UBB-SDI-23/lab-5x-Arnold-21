@@ -35,6 +35,7 @@ function Navigation() {
                     <Link to="/competition"><Button variant='text' id="competitionNavButton">Competition</Button></Link>
                     <Link to="/matches"><Button variant='text' id="matchNavButton">Matches</Button></Link>
                     <Link to="/statistics"><Button variant='text' id="statisticsNavButton">Statistics</Button></Link>
+                    <Link to="/chat"><Button variant='text' id="chatNavButton">Chat</Button></Link>
                     {(user && user.role === "Admin") ?
                         <Link to="/admin"><Button variant='text' id="adminNavButton">AdminPage</Button></Link> : null
                     }
