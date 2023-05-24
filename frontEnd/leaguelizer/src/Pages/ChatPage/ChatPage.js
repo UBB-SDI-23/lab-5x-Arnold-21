@@ -18,7 +18,7 @@ function ChatPage() {
         'sender4': "",
         'sender5': ""
     });
-    const client = useMemo(() => new W3CWebSocket('wss://SArnold-sdi-22-23.chickenkiller.com/ws/room/'), []);
+    const client = useMemo(() => new W3CWebSocket('ws://127.0.0.1:8000/ws/room/'), []);
 
     client.onmessage = useCallback((message) => {
         const dataFromServer = JSON.parse(message.data);
