@@ -35,6 +35,7 @@ function UserPage(props) {
     const [ numberOfCompetitions, setNumberOfCompetitions ] = useState(0);
     const [ numberOfMatches, setNumberOfMatches ] = useState(0);
     const [ userName, setUserName ] = useState("");
+    const [ messageNumber, setMessageNumber ] = useState("");
     const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
     let navigate = useNavigate();
 
@@ -50,6 +51,7 @@ function UserPage(props) {
             setNumberOfCompetitions(userLook.NumberOfCompetitions);
             setNumberOfMatches(userLook.NumberOfMatches);
             setUserName(userLook.userName.username);
+            setMessageNumber(userLook.userName.numberOfMessages);
         }
     }, [])
 
@@ -79,6 +81,7 @@ function UserPage(props) {
                 <TextField variant="outlined" id="numberOfClubs" value={numberOfClubs} label="NumberOfClubs"  aria-readonly>NumberOfClubs</TextField>
                 <TextField variant="outlined" id="numberOfCompetitions" value={numberOfCompetitions} label="NumberOfCompetitions"  aria-readonly>NumberOfCompetitions</TextField>
                 <TextField variant="outlined" id="numberOfMatches" value={numberOfMatches} label="NumberOfMatches"  aria-readonly>NumberOfMatches</TextField>
+                <TextField variant="outlined" id="messageNumber" value={messageNumber} label="MessageNumber"  aria-readonly>MessageNumber</TextField>
                 <Grid container sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", pt: 5}} id='genderHolder'>
                     <InputLabel id="genderLabel">Gender</InputLabel>
                     <Select
