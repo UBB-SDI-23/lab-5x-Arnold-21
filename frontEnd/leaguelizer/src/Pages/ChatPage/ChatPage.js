@@ -20,27 +20,23 @@ function ChatPage() {
     ]);
     const client = useMemo(() => new W3CWebSocket('wss://SArnold-sdi-22-23.chickenkiller.com/ws/room/'), []);
 
+    const changeMessages = (messages, dataFromServer) => {
+        if (dataFromServer.text === ""){
+            return messages;
+        }
+        
+        messages.unshift({msg: dataFromServer.text, name: dataFromServer.sender})
+        messages.pop()
+        return messages
+    }
+
     client.onmessage = useCallback((message) => {
         const dataFromServer = JSON.parse(message.data);
         if (dataFromServer) {
-            let varMessages = messages
-            varMessages.unshift({msg: dataFromServer.text, name: dataFromServer.sender})
-            varMessages.pop()
-            setMessages([
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""},
-                {msg: "", name: ""}
-            ]);
-            setMessages(varMessages);
+            setMessages(messages => changeMessages(messages, dataFromServer));
+            setMessages(messages => [...messages])
         }
-    }, [messages]);
+    }, []);
 
     let messageSend = () => {
         client.send(
@@ -64,9 +60,10 @@ function ChatPage() {
             </Grid>
             {messages.map((message) => (
                 <>
-                  <Card>
-                    <CardHeader title={message.name} subheader={message.msg} key={message.msg}/>
-                  </Card>
+                  {message.msg !== "" ?
+                    <Card>
+                        <CardHeader title={message.msg} subheader={message.name} key={message.msg}/>
+                    </Card> : <></>}
                 </>
             ))}
         </MainLayout>
