@@ -68,7 +68,7 @@ export default function CustomForm(props) {
             })
         };
 
-        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/userdetail/" + String(props.value.id) + "/"
+        const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/userdetail/" + String(props.value.id) + "/"
 
         fetch(URL, requestOptions)
             .then(message => message.json())
