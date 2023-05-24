@@ -6,7 +6,18 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 function ChatPage() {
     let [nickname, setNickname] = useState("");
     let [message, setMessage] = useState("");
-    let [ messages, setMessages ] = useState([]);
+    let [ messages, setMessages ] = useState([
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""},
+        {msg: "", name: ""}
+    ]);
     const client = useMemo(() => new W3CWebSocket('wss://SArnold-sdi-22-23.chickenkiller.com/ws/room/'), []);
 
     client.onmessage = useCallback((message) => {
@@ -14,8 +25,8 @@ function ChatPage() {
         if (dataFromServer) {
             let varMessages = messages
             varMessages.unshift({msg: dataFromServer.text, name: dataFromServer.sender})
+            varMessages.pop()
             setMessages(varMessages);
-            console.log(messages)
         }
     }, [messages]);
 
