@@ -26,6 +26,18 @@ function ChatPage() {
             let varMessages = messages
             varMessages.unshift({msg: dataFromServer.text, name: dataFromServer.sender})
             varMessages.pop()
+            setMessages([
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""},
+                {msg: "", name: ""}
+            ]);
             setMessages(varMessages);
         }
     }, [messages]);
