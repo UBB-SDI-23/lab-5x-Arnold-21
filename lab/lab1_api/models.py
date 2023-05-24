@@ -84,4 +84,3 @@ class MatchesPlayed(models.Model):
 class MessageLog(models.Model):
     sender = models.CharField(max_length=100)
     message = models.TextField()
-    userID = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, related_name="userMessage")

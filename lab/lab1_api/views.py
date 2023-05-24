@@ -90,7 +90,7 @@ class userList(generics.ListCreateAPIView):
         return super().post(request,*args,**kwargs)
     
 class userDetail(generics.RetrieveUpdateAPIView):
-    queryset = User.objects.annotate(numberOfMessages=Count("userMessage"))
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'id'
     permission_classes = [IsAuthenticated, isAdmin]

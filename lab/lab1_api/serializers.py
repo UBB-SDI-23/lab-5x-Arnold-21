@@ -18,8 +18,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
     
 class UserSerializer(serializers.ModelSerializer):
-    numberOfMessages = serializers.IntegerField(read_only=True)
-
     class Meta:
         model = User
         fields = ("id", "username", "role")
