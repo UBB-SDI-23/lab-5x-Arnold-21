@@ -58,12 +58,9 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'lab1.asgi.application'
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("localhost", 8000)],
-        },
-    },
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer"
+    }
 }
 
 REST_FRAMEWORK = {
