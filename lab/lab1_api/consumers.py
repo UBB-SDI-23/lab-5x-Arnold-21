@@ -35,7 +35,6 @@ class TextRoomConsumer(WebsocketConsumer):
         #log
         MessageLog.objects.create(sender=sender, message=text)
         
-        print(text, sender, self.room_group_name)
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
