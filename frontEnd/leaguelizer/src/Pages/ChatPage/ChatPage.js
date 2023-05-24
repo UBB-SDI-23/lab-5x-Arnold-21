@@ -7,7 +7,7 @@ function ChatPage() {
     let [nickname, setNickname] = useState("");
     let [message, setMessage] = useState("");
     let [ messages, setMessages ] = useState([]);
-    const client = useMemo(() => new W3CWebSocket('ws://127.0.0.1:8000/ws/room/'), []);
+    const client = useMemo(() => new W3CWebSocket('ws://SArnold-sdi-22-23.crabdance.com:8000/ws/room/'), []);
 
     client.onmessage = useCallback((message) => {
         const dataFromServer = JSON.parse(message.data);
