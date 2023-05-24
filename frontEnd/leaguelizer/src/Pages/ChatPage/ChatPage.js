@@ -7,7 +7,7 @@ function ChatPage() {
     let [nickname, setNickname] = useState("");
     let [message, setMessage] = useState("");
     let [ messages, setMessages ] = useState([]);
-    const client = useMemo(() => new W3CWebSocket('ws://SArnold-sdi-22-23.crabdance.com:8000/ws/room/'), []);
+    const client = useMemo(() => new W3CWebSocket('wss://SArnold-sdi-22-23.crabdance.com/ws/room/'), []);
 
     client.onmessage = useCallback((message) => {
         const dataFromServer = JSON.parse(message.data);
@@ -15,6 +15,7 @@ function ChatPage() {
             let varMessages = messages
             varMessages.unshift({msg: dataFromServer.text, name: dataFromServer.sender})
             setMessages(varMessages);
+            console.log(messages)
         }
     }, [messages]);
 

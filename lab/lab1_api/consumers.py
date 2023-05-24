@@ -11,7 +11,6 @@ from .models import MessageLog
 class TextRoomConsumer(WebsocketConsumer):
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        print(self.room_name)
         self.room_group_name = 'chat_%s' % self.room_name
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
@@ -36,6 +35,7 @@ class TextRoomConsumer(WebsocketConsumer):
         #log
         MessageLog.objects.create(sender=sender, message=text)
         
+        print(text, sender, self.room_group_name)
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
