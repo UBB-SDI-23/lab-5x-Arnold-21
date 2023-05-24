@@ -37,7 +37,7 @@ class TextRoomConsumer(WebsocketConsumer):
 
         #Get last 5 messages
         messageCount = MessageLog.objects.count()
-        messages = MessageLog.objects.all()[messageCount - 6:]
+        messages = MessageLog.objects.order_by("-id")[:5]
         messagesList = [{'message': message.message, 'sender': message.sender} for message in messages]
         
         # Send message to room group
