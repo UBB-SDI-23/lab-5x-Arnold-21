@@ -10,11 +10,11 @@ from .models import MessageLog
 
 class TextRoomConsumer(WebsocketConsumer):
     def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
+        self.room_name = 'room'
+        self.room_group_name = 'chat_room'
         # Join room group
         async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
+            'chat_room',
             self.channel_name
         )
         self.accept()
@@ -22,7 +22,7 @@ class TextRoomConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
+            'chat_room',
             self.channel_name
         )
 
@@ -37,7 +37,7 @@ class TextRoomConsumer(WebsocketConsumer):
         
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
+            'chat_room',
             {
                 'type': 'chat_message',
                 'message': text,
