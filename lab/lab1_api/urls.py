@@ -35,5 +35,6 @@ urlpatterns = [
     path('api/admin/clubs/', bulkClub.as_view()),
     path('api/admin/competitions/', bulkCompetition.as_view()),
     path('api/admin/matchs/', bulkMatch.as_view()),
-    path('api/admin/userdetail/<int:id>/', updateUserPagination.as_view())
+    path('api/admin/userdetail/<int:id>/', updateUserPagination.as_view()),
+    path('api/predict/', aiPrediction.as_view())
 ]

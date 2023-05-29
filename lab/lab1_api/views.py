@@ -754,3 +754,15 @@ class updateUserPagination(APIView):
         UserLogic.updatePagination(id, request.data)
         
         return Response({"res": "Pagination Updated"}, status=status.HTTP_200_OK)
+
+# Call for the ai model prediction, loading and calling the already trained ai
+
+class aiPrediction(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        error = MatchesPlayedLogic.aiPredict(data)
+
+        if error[0]:
+            return Response({"error": "Invalid Data for prediction"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({"score": error[1]}, status=status.HTTP_200_OK)

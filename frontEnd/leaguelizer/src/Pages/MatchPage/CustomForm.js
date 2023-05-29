@@ -165,6 +165,27 @@ export default function CustomForm(props) {
             .then(() => props.refresh());
     }
 
+    const predictHandler = () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
+            body: JSON.stringify({
+                "club1": club1Value,
+                "club2": club2Value,
+                "competition": compValue,
+                "stadium": stadiumValue,
+                "roundOfPlay": roundValue,
+                "date": dateValue
+            })
+        };
+
+        fetch("http://localhost:8000/api/predict/", requestOptions)
+            .then(message => message.json())
+            .then((message) => {
+                ToasterError("The predicted score for the match is: " + message.score)
+            })
+    }
+
     return (
         <form className="stadiumForm">
             <Grid container id='inputHolder'>
@@ -174,14 +195,13 @@ export default function CustomForm(props) {
                 <TextField variant="outlined" id="stadium" value={stadiumValue} label="Stadium" onChange={(e) => {setStadiumValue(e.target.value)}}>Stadium</TextField>
                 <TextField variant="outlined" id="round" value={roundValue} label="Round Of Play" onChange={(e) => {setRoundValue(e.target.value)}}>Round Of Play</TextField>
                 <TextField variant="outlined" id="score" value={scoreValue} label="Score" onChange={(e) => {setScoreValue(e.target.value)}}
-                    
                 >Score</TextField>
                 <TextField variant="outlined" id="date" value={dateValue} label="Date" onChange={(e) => {setDateValue(e.target.value)}}
-                    
                 >Date</TextField>
             </Grid>
             {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
             <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
+                <Button variant="contained" onClick={predictHandler}>Predict</Button>
                 <Button variant="contained" onClick={postButtonHandler}>Post</Button>
                 <Button variant="contained" onClick={putButtonHandler}>Put</Button>
                 {((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?

@@ -8,6 +8,10 @@ from django.conf import settings
 from django.utils import timezone
 from math import ceil
 import random
+from keras.models import load_model
+from pandas import DataFrame
+from numpy import argmax
+from datetime import datetime
 
 User = get_user_model()
 
@@ -493,3 +497,27 @@ class MatchesPlayedLogic:
                 obj.delete()
             except:
                 continue
+
+    @staticmethod
+    def aiPredict(data):
+        datetime_obj = datetime.strptime(data.get("date"), '%Y-%m-%d')
+        date = int((datetime_obj - datetime(1970, 1, 1)).total_seconds())
+        predictData = DataFrame({
+            'club1_id': [int(data.get("club1"))],
+            'club2_id': [int(data.get("club2"))],
+            'competition_id': [int(data.get("competition"))],
+            'stadium_id': [int(data.get("stadium"))],
+            'date': [date],
+            'roundOfPlay_F': [1 if data.get("roundOfPlay") == 'F' else 0],
+            'roundOfPlay_G': [1 if data.get("roundOfPlay") == 'G' else 0],
+            'roundOfPlay_L': [1 if data.get("roundOfPlay") == 'L' else 0],
+            'roundOfPlay_QF': [1 if data.get("roundOfPlay") == 'QF' else 0],
+            'roundOfPlay_R16': [1 if data.get("roundOfPlay") == 'R16' else 0],
+            'roundOfPlay_SM': [1 if data.get("roundOfPlay") == 'SM' else 0]
+        })
+        unique =  ['1-1', '6-1', '7-7', '2-8', '2-6', '4-6', '4-1', '8-3', '6-8', '4-3', '1-4', '4-4', '7-5', '2-7', '1-5', '1-3', '5-1', '2-3', '5-0', '3-1', '0-1', '2-1', '8-1', '0-0', '8-2', '4-7', '1-7', '1-6', '3-8', '6-7', '0-3', '7-6', '3-3', '1-8', '0-8', '5-6', '3-5', '2-0', '5-3', '5-2', '8-7', '3-7', '6-5', '7-3', '4-0', '4-2', '0-7', '3-0', '1-2', '6-6', '1-0', '6-2', '5-7', '0-4', '4-5', '7-1', '0-5', '6-3', '7-8', '7-4', '0-6', '7-0', '8-4', '6-0', '8-5', '2-2', '7-2', '8-6', '2-4', '2-5', '5-8', '6-4', '8-8', '4-8', '0-2', '8-0', '5-5', '3-2', '3-4', '3-6', '5-4']
+        model = load_model("./lab1_api/matchModel.h5")
+        result = model.predict(predictData)
+        resultScore = unique[argmax(result)]
+
+        return (False, resultScore)
