@@ -4,6 +4,8 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 import django
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lab1.settings')
 django.setup()
 
 from .models import MessageLog

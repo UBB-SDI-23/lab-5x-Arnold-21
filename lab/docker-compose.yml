@@ -4,7 +4,7 @@ services:
   web:
     build: 
       context: .
-    command: gunicorn lab1.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn --bind 0.0.0.0:8000 lab1.asgi -w 1 -k uvicorn.workers.UvicornWorker
     expose:
       - 8000
     env_file:
