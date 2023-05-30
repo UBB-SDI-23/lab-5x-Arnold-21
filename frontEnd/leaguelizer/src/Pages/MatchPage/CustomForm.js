@@ -174,12 +174,11 @@ export default function CustomForm(props) {
                 "club2": club2Value,
                 "competition": compValue,
                 "stadium": stadiumValue,
-                "roundOfPlay": roundValue,
-                "date": dateValue
+                "roundOfPlay": roundValue
             })
         };
 
-        fetch("http://localhost:8000/api/predict/", requestOptions)
+        fetch("https://SArnold-sdi-22-23.chickenkiller.com/api/predict/", requestOptions)
             .then(message => message.json())
             .then((message) => {
                 ToasterError("The predicted score for the match is: " + message.score)
