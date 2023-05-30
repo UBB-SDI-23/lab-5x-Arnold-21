@@ -11,7 +11,7 @@ RUN pip install numpy
 RUN pip install pandas
 RUN pip install psycopg2
 RUN pip install gunicorn
-RUN pip install uvicorn
+RUN pip install uvicorn[standard]
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
