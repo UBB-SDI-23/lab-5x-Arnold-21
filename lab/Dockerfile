@@ -9,7 +9,7 @@ RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev
     
 RUN pip install --upgrade pip
-RUN pip install tensorflow
+RUN pip install keras
 RUN pip install numpy
 RUN pip install pandas
 COPY ./requirements.txt .
