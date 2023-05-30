@@ -11,7 +11,6 @@ import random
 from keras.models import load_model
 from pandas import DataFrame
 from numpy import argmax
-from datetime import datetime
 
 User = get_user_model()
 
@@ -500,14 +499,11 @@ class MatchesPlayedLogic:
 
     @staticmethod
     def aiPredict(data):
-        datetime_obj = datetime.strptime(data.get("date"), '%Y-%m-%d')
-        date = int((datetime_obj - datetime(1970, 1, 1)).total_seconds())
         predictData = DataFrame({
             'club1_id': [int(data.get("club1"))],
             'club2_id': [int(data.get("club2"))],
             'competition_id': [int(data.get("competition"))],
             'stadium_id': [int(data.get("stadium"))],
-            'date': [date],
             'roundOfPlay_F': [1 if data.get("roundOfPlay") == 'F' else 0],
             'roundOfPlay_G': [1 if data.get("roundOfPlay") == 'G' else 0],
             'roundOfPlay_L': [1 if data.get("roundOfPlay") == 'L' else 0],
