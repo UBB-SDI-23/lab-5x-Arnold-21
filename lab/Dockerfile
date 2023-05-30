@@ -9,6 +9,7 @@ RUN pip install --upgrade pip
 RUN pip install tensorflow
 RUN pip install numpy
 RUN pip install pandas
+RUN pip install psycopg2
 RUN pip install gunicorn
 RUN pip install uvicorn
 COPY ./requirements.txt .

@@ -178,7 +178,7 @@ export default function CustomForm(props) {
             })
         };
 
-        fetch("https://SArnold-sdi-22-23.chickenkiller.com/api/predict/", requestOptions)
+        fetch("https://SArnold-sdi-22-23.crabdance.com/api/predict/", requestOptions)
             .then(message => message.json())
             .then((message) => {
                 ToasterError("The predicted score for the match is: " + message.score)

@@ -54,19 +54,19 @@ export default function AdminPage(){
     }, [user, navigate]);
 
     var getUrlForStadiums = useCallback(() => {
-        return "https://SArnold-sdi-22-23.chickenkiller.com/api/stadiums/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+        return "https://SArnold-sdi-22-23.crabdance.com/api/stadiums/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
 
     var getUrlForClubs = useCallback(() => {
-        return "https://SArnold-sdi-22-23.chickenkiller.com/api/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+        return "https://SArnold-sdi-22-23.crabdance.com/api/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
     
     var getUrlForCompetitions = useCallback(() => {
-        return "https://SArnold-sdi-22-23.chickenkiller.com/api/competitions/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+        return "https://SArnold-sdi-22-23.crabdance.com/api/competitions/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
 
     var getUrlForMatches = useCallback(() => {
-        return "https://SArnold-sdi-22-23.chickenkiller.com/api/matches/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+        return "https://SArnold-sdi-22-23.crabdance.com/api/matches/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
     }, [pageNumber, paginationValue])
 
     useEffect(() => {
@@ -74,7 +74,7 @@ export default function AdminPage(){
             setDeleteClubList([]);
             setDeleteCompetitionList([]);
             setDeleteMatchList([]);
-            fetch("https://SArnold-sdi-22-23.chickenkiller.com/api/stadiums/?pageNumber=" + String(paginationValue))
+            fetch("https://SArnold-sdi-22-23.crabdance.com/api/stadiums/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
@@ -82,7 +82,7 @@ export default function AdminPage(){
             setDeleteStadiumList([]);
             setDeleteCompetitionList([]);
             setDeleteMatchList([]);
-            fetch("https://SArnold-sdi-22-23.chickenkiller.com/api/clubs/?pageNumber=" + String(paginationValue))
+            fetch("https://SArnold-sdi-22-23.crabdance.com/api/clubs/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
@@ -90,7 +90,7 @@ export default function AdminPage(){
             setDeleteClubList([]);
             setDeleteStadiumList([]);
             setDeleteMatchList([]);
-            fetch("https://SArnold-sdi-22-23.chickenkiller.com/api/competitions/?pageNumber=" + String(paginationValue))
+            fetch("https://SArnold-sdi-22-23.crabdance.com/api/competitions/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
@@ -98,7 +98,7 @@ export default function AdminPage(){
             setDeleteClubList([]);
             setDeleteCompetitionList([]);
             setDeleteStadiumList([]);
-            fetch("https://SArnold-sdi-22-23.chickenkiller.com/api/matches/?pageNumber=" + String(paginationValue))
+            fetch("https://SArnold-sdi-22-23.crabdance.com/api/matches/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
@@ -316,7 +316,7 @@ export default function AdminPage(){
                 "stadiums": deleteStadiumList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/stadiums/";
+        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/stadiums/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }
@@ -333,7 +333,7 @@ export default function AdminPage(){
                 "clubs": deleteClubList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/clubs/";
+        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/clubs/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }
@@ -350,7 +350,7 @@ export default function AdminPage(){
                 "comps": deleteCompetitionList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/competitions/";
+        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/competitions/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }
@@ -367,7 +367,7 @@ export default function AdminPage(){
                 "matches": deleteMatchList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/admin/matches/";
+        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/matches/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }

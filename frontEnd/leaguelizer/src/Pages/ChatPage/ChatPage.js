@@ -18,7 +18,7 @@ function ChatPage() {
         {msg: "", name: ""},
         {msg: "", name: ""}
     ]);
-    const client = useMemo(() => new W3CWebSocket('wss://SArnold-sdi-22-23.chickenkiller.com/ws/room/'), []);
+    const client = useMemo(() => new W3CWebSocket('wss://SArnold-sdi-22-23.crabdance.com/ws/room/'), []);
 
     const changeMessages = (messages, dataFromServer) => {
         if (dataFromServer.text === ""){

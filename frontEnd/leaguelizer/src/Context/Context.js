@@ -5,8 +5,8 @@ import ToasterError from "../Layouts/ErrorLayout/ToasterError";
 const authContext = createContext();
 // const URL = "http://localhost:8000/api/token/";
 // const URL_DETAIL = "http://localhost:8000/api/user/";
-const URL = "https://SArnold-sdi-22-23.chickenkiller.com/api/token/";
-const URL_DETAIL = "https://SArnold-sdi-22-23.chickenkiller.com/api/user/";
+const URL = "https://SArnold-sdi-22-23.crabdance.com/api/token/";
+const URL_DETAIL = "https://SArnold-sdi-22-23.crabdance.com/api/user/";
 
 
 export default authContext;
