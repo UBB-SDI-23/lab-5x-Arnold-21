@@ -1,7 +1,11 @@
 import { TableCell, TableRow, TableBody } from "@mui/material";
 import { useState, useEffect } from "react";
 
+//This module renders the elemments it was given with the headerlist it was given
+//The logic for printing out the elements is the same as in the header
+//If the screen becomes smaller, than only application specific elements will be rendered
 export default function TableContent(props){
+    //Getting all the elements the module needs for rendering
     const objectList = props.objectList;
     const rowClickHandler = props.handler;
     const headers = props.headerList;
@@ -13,6 +17,8 @@ export default function TableContent(props){
         window.addEventListener("resize", () => setWidth(window.innerWidth))
     }, [])
 
+    // The rendering goes through all the elements gotten from element list gotten from the parent
+    // For each element it creates a row, with either all the elements from the header list or only a part of it
     return (
         <TableBody>
             {objectList.map((object) => (

@@ -1,42 +1,54 @@
-import { React, useEffect, useState, useCallback } from "react";
+import { React, useEffect, useState, useCallback, useContext } from "react";
 import { Button, Grid } from "@mui/material";
 import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
-import statURLS from "./constants";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
+import authContext from "../../Context/Context";
 
 export default function StadiumPage(){
+    /* These are all state variables being declared using the `useState` hook in a React functional
+    component. Each variable is declared with an initial value and a corresponding setter function.
+    These variables are used to manage the state of the component and trigger re-renders when their
+    values change. */
+    //Page logic variables
+    let {URL_BASE} = useContext(authContext);
     const [leagueStatVisible, setLeagueStatVisible] = useState(false);
     const [clubStatVisible, setClubStatVisible] = useState(false);
     const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
 
+    //Variables for the league statistics
     const [ leagueList, setLeagueList ] = useState([]);
     const [ leagueOrderValue, setLeagueOrderValue ] = useState("name");
     const [ leagueOrderDirection, setLeagueOrderDirection ] = useState("asc");
     const [ leaguePageNumber, setLeaguePageNumber ] = useState(1);
     const [ leaguePageMax, setLeaguePageMax ] = useState(1);
 
+    //Variable for the club statistics
     const [ clubList, setClubList ] = useState([]);
     const [ clubOrderValue, setClubOrderValue ] = useState("name");
     const [ clubOrderDirection, setClubOrderDirection ] = useState("asc");
     const [ clubPageNumber, setClubPageNumber ] = useState(1);
     const [ clubPageMax, setClubPageMax ] = useState(1);
 
+    //Functions, which get the number of pages for both statistics, depending on the number of elements per page
+    //If that variable changes, the variable changes
     useEffect(() => {
-        fetch(statURLS.league + "?pageNumber=" + String(paginationValue))
+        fetch(URL_BASE + "/api/leaguesByAnnualBudget/?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setLeaguePageMax(number["pageNumber"]));
-    }, [paginationValue]);
+    }, [paginationValue, URL_BASE]);
 
     useEffect(() => {
-        fetch(statURLS.clubs + "?pageNumber=" + String(paginationValue))
+        fetch(URL_BASE + "/api/clubsByStadiumCapacity/?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setClubPageMax(number["pageNumber"]));
-    }, [paginationValue]);
+    }, [paginationValue, URL_BASE]);
 
+    //Getting and updating the list of elements, only if their visible
+    //The Get Url functions are only here to help in making the code cleaner
     var getUrlForClubs = useCallback(() => {
-        let URL = statURLS.clubs + "?page=" + String(clubPageNumber) + "&pageNumber=" + String(paginationValue);
+        let URL = URL_BASE + "/api/clubsByStadiumCapacity/?page=" + String(clubPageNumber) + "&pageNumber=" + String(paginationValue);
         return URL;
-    }, [clubPageNumber, paginationValue])
+    }, [clubPageNumber, paginationValue, URL_BASE])
 
     useEffect(() => {
         if (clubStatVisible)
@@ -46,9 +58,9 @@ export default function StadiumPage(){
     }, [getUrlForClubs, clubStatVisible])
 
     var getUrlForLeague = useCallback(() => {
-        let URL = statURLS.league + "?page=" + String(leaguePageNumber) + "&pageNumber=" + String(paginationValue);
+        let URL = URL_BASE + "/api/leaguesByAnnualBudget/?page=" + String(leaguePageNumber) + "&pageNumber=" + String(paginationValue);
         return URL;
-    }, [leaguePageNumber, paginationValue])
+    }, [leaguePageNumber, paginationValue, URL_BASE])
 
     useEffect(() => {
         if (leagueStatVisible)
@@ -57,6 +69,8 @@ export default function StadiumPage(){
                 .then(league => setLeagueList(league));
     }, [getUrlForLeague, leagueStatVisible])
 
+    //The two sorting function are declared here, and work on the local element list
+    //They are called by the custom table module header
     const clubSortingHandler = (property) => {
         const isAscending = clubOrderDirection === "asc";
         setClubOrderValue(property);
@@ -99,6 +113,7 @@ export default function StadiumPage(){
         setLeagueList(varCompList);
     }
 
+    //Four function declarations, that are passed to the custom table, to handle paging of the elements
     const clubPageUp = () => {
         if (clubPageNumber < clubPageMax) {
             const newPageNumber = clubPageNumber + 1;
@@ -127,6 +142,7 @@ export default function StadiumPage(){
         }
     }
 
+    //Extracting and headers to pass on to the table
     const getClubHeadings = () => {
         if(clubList.length === 0)
             return [];
@@ -139,6 +155,14 @@ export default function StadiumPage(){
         return Object.keys(leagueList[0])
     }
 
+    /* This is the JSX code that is being returned by the `StadiumPage` functional component. It is
+    rendering a `MainLayout` component that contains two `Button` components. Depending on the state
+    of `leagueStatVisible` and `clubStatVisible`, it will render either a `CustomTable` component
+    with data from `clubList` or `leagueList`, respectively. The `CustomTable` component is passed
+    various props such as `orderValue`, `sortingHandler`, `headerList`, `objectList`, `pageDown`,
+    `pageUp`, `pageNumber`, `pageMax`, `setPageNumber`, `paginationOptions`, `paginationHandler`,
+    and `aggregateHeader`. These props are used to control the sorting, pagination, and rendering of
+    the table. */
     return (
         <MainLayout>
             <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>

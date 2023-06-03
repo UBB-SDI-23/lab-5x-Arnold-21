@@ -5,6 +5,13 @@
     padding-top: 5vw;
 }
 
+#lineBreak{
+    margin-bottom: 150px;
+
+    border-bottom: 5px solid whitesmoke;
+    border-radius: 150px;
+}
+
 @media only screen and (max-width:1450px){
     #inputHolder{
         flex-direction: column;

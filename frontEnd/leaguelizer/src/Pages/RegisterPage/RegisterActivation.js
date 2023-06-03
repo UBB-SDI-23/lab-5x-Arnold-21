@@ -3,22 +3,30 @@ import MainLayout from '../../Layouts/PageLayout/MainLayout/MainLayout'
 import { Grid, TextField, Button } from '@mui/material'
 import authContext from '../../Context/Context'
 import { useNavigate } from 'react-router-dom';
-import URL_BASE from './constants';
 import ToasterError from '../../Layouts/ErrorLayout/ToasterError';
 
+//Activation page, which is only available after register, to activate the new user account
 function ActivationPage() {
-    let {user} = useContext(authContext);
+    /* These lines of code are defining variables and state hooks for the ActivationPage component. */
+    let {user, URL_BASE} = useContext(authContext);
     let [code, setCode] = useState("");
     let [message, setMessage] = useState(null);
     const navigate = useNavigate()
     
+   /**
+    * The function handles the activation process by sending a GET request to a specified URL with a
+    * code parameter and displaying a success or failure message based on the response status.
+    * @returns The function `activationHandler` does not return anything explicitly. It performs some
+    * asynchronous operations and updates the UI by setting the message or displaying an error message
+    * using the `ToasterError` function.
+    */
     let activationHandler = async () => {
         if (!/^[0-9]+$/.test(code)){
             ToasterError("Invalid code");
             return;
         }
 
-        let response = await fetch(URL_BASE + "confirm/" + code + "/", {
+        let response = await fetch(URL_BASE + "/api/register/confirm/" + code + "/", {
             method: 'GET',
             headers: {
                 'Content-Type':'application/json'
@@ -37,6 +45,8 @@ function ActivationPage() {
             navigate("/");
     }, [user, navigate])
 
+    /* The `return` statement is returning a JSX element that represents the UI of the `ActivationPage`
+    component. */
     return (
         <MainLayout>
             <form className="registerForm">

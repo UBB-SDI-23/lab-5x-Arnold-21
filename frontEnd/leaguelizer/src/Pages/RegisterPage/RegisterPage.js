@@ -3,12 +3,13 @@ import MainLayout from '../../Layouts/PageLayout/MainLayout/MainLayout'
 import { Grid, TextField, Button, Select, InputLabel, MenuItem } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import authContext from '../../Context/Context';
-import URL_BASE from './constants';
 import ToasterError from '../../Layouts/ErrorLayout/ToasterError';
 import "./Register.css"
 
 function RegisterPage() {
-    let {user} = useContext(authContext);
+    /* This code is using React hooks to declare and initialize state variables and a navigation
+    function. */
+    let {user, URL_BASE} = useContext(authContext);
     let [username, setUsername] = useState("");
     let [password, setPassword] = useState("");
     let [email, setEmail] = useState("");
@@ -19,6 +20,11 @@ function RegisterPage() {
     let [marital, setMarital] = useState("S");
     const navigate = useNavigate()
 
+    /**
+     * The function validates user input for a registration form.
+     * @returns a boolean value (true or false) depending on whether the input values pass the
+     * validation checks or not.
+     */
     function validateRegister() {
         if (!/^[a-zA-Z0-9 ]+$/.test(username)){
             ToasterError("Username can only contain numbers and letters");
@@ -59,11 +65,18 @@ function RegisterPage() {
         return true;
     }
     
+    /**
+     * The function sends a POST request to register a user and navigates to the activation page if
+     * successful.
+     * @returns The function `registerHandler` is returning nothing (`undefined`). It is using the
+     * `return` statement only to exit the function early if the `validateRegister()` function returns
+     * false.
+     */
     let registerHandler = async () => {
         if (!validateRegister())
             return;
 
-        let response = await fetch(URL_BASE, {
+        let response = await fetch(URL_BASE + "/api/register/", {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json'
@@ -83,7 +96,7 @@ function RegisterPage() {
         if (response.status === 200){
             navigate("/activation");
         } else {
-            alert("registration Failed!");
+            ToasterError("Registration Failed!");
         }
     }
 
@@ -92,6 +105,11 @@ function RegisterPage() {
             navigate("/");
     }, [user, navigate])
 
+    /* The `return` statement is returning a JSX code block that renders a registration form with
+    various input fields such as username, password, email, bio, location, birthday, gender, and
+    marital status. The form also includes a "Register" button that triggers the `registerHandler`
+    function when clicked. The form is wrapped in a `MainLayout` component that provides a
+    consistent layout and styling across the application. */
     return (
         <MainLayout>
             <form className="registerForm">
@@ -131,7 +149,7 @@ function RegisterPage() {
                         </Select>
                     </Grid>
                 </Grid>
-                <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5, mb:20 }}>
+                <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", pt: 5, mb:20 }}>
                     <Button variant="contained" onClick={registerHandler} id='registerBtn'>Register</Button>
                 </Grid>
             </form>

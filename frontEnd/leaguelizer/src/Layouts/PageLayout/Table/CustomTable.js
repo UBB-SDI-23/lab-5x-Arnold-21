@@ -4,6 +4,7 @@ import TableHeader from "./TableHead/TableHeader";
 import TableContent from "./TableBody/TableContent";
 import "./Table.css"
 
+// Extracting the navigation button's style for easier development usage
 const buttonStyle ={
     mt: 3,
     width: 2,
@@ -12,15 +13,46 @@ const buttonStyle ={
     alignSelf: "center"
 }
 
+// The purpose of this component, is to have an easy to use, and highly reusable table, which can handle all different cases
+// Therefore it doesn' handle logic, it only communicates with the page component that it is a part of, from which it will get it's values and render them
+// Every logic that table would need to do, is handled by the parent, in form of functions, which it gets from the parent
 function CustomTable(props) {
-    const { aggregateHeader,orderValue, orderDirection, sortingHandler, headerList, rowClickHandler, objectList, pageDown, pageUp, pageMax, pageNumber, setPageNumber, paginationOptions, paginationHandler, userClickHandler } = props;
+    // Extracting all the information for the table, there is a lot, for the sake of reuse and customability
+    const { 
+        aggregateHeader,
+        orderValue, 
+        orderDirection, 
+        sortingHandler, 
+        headerList, 
+        rowClickHandler, 
+        objectList, 
+        pageDown, 
+        pageUp, 
+        pageMax, 
+        pageNumber,
+        setPageNumber, 
+        paginationOptions, 
+        paginationHandler, 
+        userClickHandler 
+    } = props;
 
+    //Buttons for the pagination navigation
     const [ buttons, setButtons] = useState([]);
 
+    // Width to handle the pagination navigation in case of resize
+    const [width, setWidth] = useState(window.innerWidth)
+    useEffect(() => {
+        window.addEventListener("resize", () => setWidth(window.innerWidth))
+    }, [])
+
+    //Function which changes the actual page number
     const pageNumberHandler = useCallback((e) => {
         setPageNumber(parseInt(e.target.value));
     }, [setPageNumber]);
 
+    // The sole purpose of this function is to handle the pagination navigation
+    // The if statemants handle all the possible scenarios, so the navigation looks how it was shown
+    // It creates the buttons, than passes it to the list already created, which will be rendered
     useEffect(() => {
         let varButtons = []
         let varNumber = parseInt(pageNumber)
@@ -52,19 +84,23 @@ function CustomTable(props) {
         setButtons(varButtons);
     }, [setButtons, pageNumber, setPageNumber, pageNumberHandler, pageMax]);
 
+    //Rendering the actual table
+    // First the pagination navigation with all the buttons
+    // A select, which handles the number of elements in a page
+    // Finally the table itself, with a header and a content section
     return (
         <>
             <Grid container id='pageHolder'>
                 <Button variant="contained" onClick={pageDown} id='prevPage'>Prev</Button>
-                {(pageMax > 15) ? (
+                {(pageMax > 15 || width <= 1000) ? (
                     <>
                         <button className='innerButton' onClick={pageNumberHandler} sx={buttonStyle} value={1}>1</button>
                         <button className='innerButton' variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={2} key={"button2"}>2</button>
                         <button className='innerButton' variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={3} key={"button3"}>3</button>
                     </>
                 ) : <></>}
-                {buttons}
-                {(pageMax > 15) ? (
+                {(width > 1000) ? buttons: <></>}
+                {(pageMax > 15 || width <= 1000) ? (
                     <>
                         <button className='innerButton' variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax - 2} key={"button" + String(pageMax - 2)}>{pageMax - 2}</button>
                         <button className='innerButton' variant="contained" onClick={pageNumberHandler} sx={buttonStyle} value={pageMax - 1} key={"button" + String(pageMax - 1)}>{pageMax - 1}</button>

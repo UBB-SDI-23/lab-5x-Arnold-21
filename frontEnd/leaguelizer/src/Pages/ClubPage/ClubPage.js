@@ -3,11 +3,11 @@ import { Autocomplete, TextField } from "@mui/material";
 import CustomForm from "./CustomForm";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
 import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
-import URL_BASE from "./constants";
 import { debounce } from "lodash";
 import authContext from "../../Context/Context";
 import { useNavigate } from "react-router-dom";
 
+//Empty json object for a club instance, for better clarity
 const initialClubValue = {
     "name": "",
     "annualBudget": "",
@@ -26,7 +26,10 @@ const initialClubValue = {
 }
 
 export default function StadiumPage(){
-    let {setUserLookup} = useContext(authContext)
+    /* This code is defining multiple state variables using the `useState` hook, including `clubList`,
+    `clubValue`, `orderValue`, `orderDirection`, `pageNumber`, `pageMax`, `autoCompleteNames`,
+    `budgetFilter`, `localBudgetFilter`, and `paginationValue`. */
+    let {setUserLookup, URL_BASE} = useContext(authContext)
     const [ clubList, setclubList ] = useState([]);
     const [ clubValue, setclubValue ] = useState(initialClubValue);
     const [ orderValue, setOrderValue ] = useState("name");
@@ -40,28 +43,31 @@ export default function StadiumPage(){
 
     let navigate = useNavigate();
 
+    //Compared to other pagenumber functions, this is a little more complex, for the simple fact, that it incorporates the budgetfilter
+    //If there is a filter present, it gets that pagenumber, otherwise the normal one
     useEffect(() => {
         if (budgetFilter !== null){
-            fetch(URL_BASE + "?pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
+            fetch(URL_BASE + "/api/clubs/?pageNumber=" + String(paginationValue) + "&budgetFilter=" + String(budgetFilter))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
 
             setPageNumber(1)
         }
         else{
-            fetch(URL_BASE + "?pageNumber=" + String(paginationValue))
+            fetch(URL_BASE + "/api/clubs/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
-    }, [paginationValue, budgetFilter]);
+    }, [paginationValue, budgetFilter, URL_BASE]);
     
+    //Getting and updating the club elements in the list, according to the pagenumber
     var getUrlForClubs = useCallback(() => {
-        let URL = URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+        let URL = URL_BASE + "/api/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
         if (budgetFilter !== null){
             URL += "&budgetFilter=" + String(budgetFilter);
         }
         return URL;
-    }, [pageNumber, budgetFilter, paginationValue])
+    }, [pageNumber, budgetFilter, paginationValue, URL_BASE])
 
     useEffect(() => {
         fetch(getUrlForClubs())
@@ -69,10 +75,13 @@ export default function StadiumPage(){
             .then(club => setclubList(club));
     }, [getUrlForClubs])
 
+    //Function to handle a row click in the table 
     const rowClickHandler = (club) => {
         setclubValue(club);
     } 
 
+    //Function that's being called, when the user makes an action which could change the list
+    //The function is created here, because the operations are handled in the custom form module
     const refresh = () => {
         setclubValue(initialClubValue);
         fetch(getUrlForClubs())
@@ -80,6 +89,7 @@ export default function StadiumPage(){
             .then(club => setclubList(club));
     }
 
+    //Sorting sent and called by the table header, only works on the local data
     const sortingHandler = (property) => {
         const isAscending = orderDirection === "asc";
         setOrderValue(property);
@@ -101,6 +111,7 @@ export default function StadiumPage(){
         setclubList(varClubList);
     }
 
+    //Pagination navigation functions for the table of the clubs
     const pageUp = () => {
         if (pageNumber < pageMax) {
             const newPageNumber = pageNumber + 1;
@@ -115,10 +126,12 @@ export default function StadiumPage(){
         }
     }
 
+    //The function is called every few seconds, to handle the autocomplete functionality
+    //Gets objects based on partial user input, which can be choosen
     const fetchSuggestion = async (e) => {
         try {
             setAutoCompleteNames([])
-            fetch(URL_BASE + "?name=" + e.target.value)
+            fetch(URL_BASE + "/api/clubs/?name=" + e.target.value)
                 .then(club => club.json())
                 .then(club => setAutoCompleteNames(club));
         } catch (error) {
@@ -128,28 +141,42 @@ export default function StadiumPage(){
 
     const debouncedHandler = useRef(debounce(fetchSuggestion, 500)).current;
 
+    //Calculating the header for the table header
     const getHeadings = () => {
         if(clubList.length === 0)
             return [];
         return Object.keys(clubList[0])
     }
 
+    //The function is called every few seconds, for the input change of the budget flter field
     const budgetFetchHandler = (value) => {
         setBudgetFilter(value)
     }
 
     const debouncedBudgetFetchHandler = useRef(debounce(budgetFetchHandler, 1000)).current
 
+    //Little React quark, the function needs to activaly change the local value, for the input field to work properly
     const budgetFilterHandler = (value) => {
         setLocalBudgetFilter(value)
         debouncedBudgetFetchHandler(value)
     }
 
+    //Function which handles if the user presses a username in the table
+    //Userlookup variable is for getting the right userinformation in the user page
     const userClickHandler = (stadium) => {
         setUserLookup(stadium["user"]["id"]);
         navigate("/user");
     };
 
+    /* The code is returning a JSX element that contains a `MainLayout` component, a `CustomForm`
+    component, an `Autocomplete` component, a `TextField` component, and a `CustomTable` component.
+    The `CustomForm` component is passed a `value` prop and a `refresh` prop. The `Autocomplete`
+    component is passed `options`, `getOptionLabel`, `label`, `renderInput`, `filterOptions`,
+    `onInputChange`, and `onChange` props. The `TextField` component is passed `variant`, `id`,
+    `value`, `label`, `onChange`, and `sx` props. The `CustomTable` component is passed
+    `orderValue`, `orderDirection`, `sortingHandler`, `headerList`, `objectList`, `rowClickHandler`,
+    `pageDown`, `pageUp`, `pageNumber`, `pageMax`, `setPageNumber`, `paginationOptions`,
+    `paginationHandler`, `userClickHandler`, and `aggregateHeader` props. */
     return (
         <MainLayout>
             <CustomForm value = {clubValue} refresh={refresh}/>

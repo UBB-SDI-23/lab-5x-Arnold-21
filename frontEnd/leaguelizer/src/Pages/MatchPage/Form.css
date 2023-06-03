@@ -6,8 +6,20 @@
 }
 
 #score, #date {
-    width: 40%;
+    width: 500px;
     margin-top: 3px;
+}
+
+#PredictInstruction{
+    margin-top: 50px;
+    color: rgb(168, 168, 168);
+}
+
+#lineBreak{
+    margin-bottom: 150px;
+
+    border-bottom: 5px solid whitesmoke;
+    border-radius: 150px;
 }
 
 @media only screen and (max-width:1450px){

@@ -16,6 +16,8 @@ import UserPage from "./Pages/UserPage/UserPage";
 import AdminPage from "./Pages/AdminPage/AdminPage";
 import ChatPage from "./Pages/ChatPage/ChatPage";
 
+// The application page, which runs first, as the application starts
+// It's purpose is grouping all the components in to one context, and providing routing between them
 export default function App(){
   return (
     <AuthProvider>

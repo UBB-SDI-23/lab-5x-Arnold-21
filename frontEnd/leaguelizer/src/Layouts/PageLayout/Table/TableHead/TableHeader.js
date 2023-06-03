@@ -1,7 +1,11 @@
 import { TableHead, TableRow, TableCell, TableSortLabel } from "@mui/material";
 import { useEffect, useState } from "react";
 
+// This module renders the header semi-automaticaly
+// Meaning that there is a specific case for the application user and the match pages for a nicer layout
+// These are hardcoded, but the module still works if the is a name and an aggregate field in the headerlist
 export default function TableHeader(props) {
+    // Getting all the neccessary information for the rendering
     const { orderValue, orderDirection, sortHandler, headerList, aggregateHeader } = props;
     const [width, setWidth] = useState(window.innerWidth)
 

@@ -1,33 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext} from 'react'
 import { Button } from '@mui/material'
 import { Link } from "react-router-dom"
 import authContext from '../../Context/Context';
 import "./Navigation.css"
 
+// Universal navigation menu, for all components, which require one
 function Navigation() {
     let {user, setUserLookup} = useContext(authContext);
-    const [width, setWidth] = useState(window.innerWidth);
-    const [direction, setDirection] = useState("row");
-
-    useEffect(() => {
-        window.addEventListener("resize", () => setWidth(window.innerWidth))
-    }, []);
-
-    useEffect(() => {
-        if (width < 750 && direction === "row"){
-            setDirection("column");
-        }
-        else if (width > 750 && direction === "column"){
-            setDirection("row");
-        }
-    }, [width, setDirection, direction])
 
     return (
         <>
             <div id='navHolder'>
                 <div id='homeHolder'>
                     <Link to="/"><Button variant='text' sx={{width:"50%"}}>Home</Button></Link>
-                    {direction}
                 </div>
                 <div id='linksHolder'>
                     <Link to="/stadium"><Button variant='text' id="stadiumNavButton">Stadium</Button></Link>

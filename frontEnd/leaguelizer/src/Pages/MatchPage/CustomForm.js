@@ -1,12 +1,16 @@
 import { React, useContext, useEffect, useState } from "react";
 import { Button, Grid, TextField } from "@mui/material";
-import URL_BASE from "./constants";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
 import "./Form.css"
 
 export default function CustomForm(props) {
-    let {user, tokens} = useContext(authContext);
+    /* This code is using the `useContext` hook to access the `user` and `tokens` values from the
+    `authContext` context. It is also using the `useState` hook to initialize and manage the state
+    of several variables (`club1Value`, `club2Value`, `compValue`, `stadiumValue`, `roundValue`,
+    `scoreValue`, and `dateValue`) based on the `props` passed to the component. These variables are
+    used to populate and update the form fields in the component. */
+    let {user, tokens, URL_BASE} = useContext(authContext);
     const [club1Value, setClub1Value] = useState(props.value.club1.name);
     const [club2Value, setClub2Value] = useState(props.value.club2.name);
     const [compValue, setCompValue] = useState(props.value.competition.name);
@@ -15,6 +19,7 @@ export default function CustomForm(props) {
     const [scoreValue, setScoreValue] = useState(props.value.score);
     const [dateValue, setDateValue] = useState(props.value.date);
 
+    //Everytim the page is refreshed, the values are changed by this function
     useEffect(() => {
         setClub1Value(props.value.club1.name)
         setClub2Value(props.value.club2.name)
@@ -25,6 +30,12 @@ export default function CustomForm(props) {
         setDateValue(props.value.date)
     }, [props]);
 
+    /**
+     * The function validates various input values and returns true if they are valid, and false if
+     * they are not.
+     * @returns a boolean value (either true or false) depending on whether all the validation checks
+     * pass or not.
+     */
     function validateMatch(){
         if (!/^[0-9]{1,2}-[0-9]{1,2}$/.test(scoreValue)){
             ToasterError("Incorrect/Impossible Score!");
@@ -61,6 +72,13 @@ export default function CustomForm(props) {
         return true;
     }
 
+    /**
+     * This function sends a POST request with data to a specified URL and displays error messages if
+     * necessary.
+     * @returns If the `validateMatch()` function returns `false`, the function will return without
+     * executing the rest of the code. Otherwise, the function will make a POST request to the
+     * specified URL with the provided request options and handle the response accordingly.
+     */
     const postButtonHandler = () => {
         if (!validateMatch())
             return;
@@ -80,7 +98,7 @@ export default function CustomForm(props) {
             })
         };
 
-        fetch(URL_BASE, requestOptions)
+        fetch(URL_BASE + "/api/matches/", requestOptions)
             .then(message => message.json())
             .then((message) => {
                 if (message.club1 !== undefined)
@@ -100,6 +118,12 @@ export default function CustomForm(props) {
             })
     }
 
+    /**
+     * This is a JavaScript function that handles the PUT request for updating a match, with validation
+     * checks and error handling.
+     * @returns nothing (undefined) in most cases, except when one of the error conditions is met, in
+     * which case it returns early and does not execute the rest of the code block.
+     */
     const putButtonHandler = () => {
         if (!validateMatch())
             return;
@@ -126,7 +150,7 @@ export default function CustomForm(props) {
             })
         };
 
-        const URL = URL_BASE + String(props.value.id) + "/"
+        const URL = URL_BASE + "/api/matches/" + String(props.value.id) + "/"
 
         fetch(URL, requestOptions)
             .then(message => message.json())
@@ -148,6 +172,14 @@ export default function CustomForm(props) {
             })
     }
 
+    /**
+     * This function handles the deletion of an item by sending a DELETE request to a specified URL and
+     * refreshing the page afterwards.
+     * @returns If the `props.value.id` is less than 0, the function returns after displaying an error
+     * message using the `ToasterError` function. If the `props.value.id` is greater than or equal to
+     * 0, the function sends a DELETE request to the specified URL using the `fetch` function and then
+     * calls the `props.refresh()` function. However, the function does not explicitly return
+     */
     const deleteButtonHandler = () => {
         if (props.value.id < 0){
             ToasterError("Id needs to be a positive integer");
@@ -159,12 +191,16 @@ export default function CustomForm(props) {
             headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) }
         };
 
-        const URL = URL_BASE + String(props.value.id)
+        const URL = URL_BASE + "/api/matches/" + String(props.value.id)
 
         fetch(URL, requestOptions)
             .then(() => props.refresh());
     }
 
+    /**
+     * The predictHandler function sends a POST request to an API endpoint with specific data and
+     * displays the predicted score returned by the API.
+     */
     const predictHandler = () => {
         const requestOptions = {
             method: 'POST',
@@ -178,13 +214,16 @@ export default function CustomForm(props) {
             })
         };
 
-        fetch("https://SArnold-sdi-22-23.crabdance.com/api/predict/", requestOptions)
+        fetch(URL_BASE + "/api/predict/", requestOptions)
             .then(message => message.json())
             .then((message) => {
                 ToasterError("The predicted score for the match is: " + message.score)
             })
     }
 
+    /* The above code is rendering a form with several input fields for a stadium event. It also
+    includes buttons for predicting, posting, updating, and deleting the event. The visibility of
+    these buttons is dependent on the user's role (Regular, Moderator, or Admin). */
     return (
         <form className="stadiumForm">
             <Grid container id='inputHolder'>
@@ -199,13 +238,15 @@ export default function CustomForm(props) {
                 >Date</TextField>
             </Grid>
             {(user !== null) ? ((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
-            <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5}}>
+            <>
+            <h5 id="PredictInstruction">Predicting a match requires the input of club1, club2, competition, stadium and roundOfPlay</h5>
+            <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                 <Button variant="contained" onClick={predictHandler}>Predict</Button>
                 <Button variant="contained" onClick={postButtonHandler}>Post</Button>
                 <Button variant="contained" onClick={putButtonHandler}>Put</Button>
                 {((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
                 <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button> : null }
-            </Grid> : null : null }
+            </Grid></> : null : null }
         </form>
     );
 }
