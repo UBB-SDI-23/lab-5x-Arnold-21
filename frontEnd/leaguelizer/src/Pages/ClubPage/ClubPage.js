@@ -180,6 +180,7 @@ export default function StadiumPage(){
     return (
         <MainLayout>
             <CustomForm value = {clubValue} refresh={refresh}/>
+            <hr class="lineBreak"></hr>
             <Autocomplete sx={{mt:10, width: "100%"}}
                 options={autoCompleteNames}
                 getOptionLabel={(option) => option.name}

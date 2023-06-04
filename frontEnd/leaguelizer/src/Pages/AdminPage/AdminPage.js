@@ -3,12 +3,12 @@ import { Autocomplete, TextField, Grid, Button } from "@mui/material";
 import CustomForm from "./CustomForm";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable"
 import MainLayout from "../../Layouts/PageLayout/MainLayout/MainLayout";
-import URL_BASE from "./constants";
 import { debounce } from "lodash";
 import authContext from "../../Context/Context";
 import { useNavigate } from "react-router-dom";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 
+//Initial json object for user value for better clarity
 const initialUserValue = {
     "id":"",
     "username":"",
@@ -16,6 +16,11 @@ const initialUserValue = {
 }
 
 export default function AdminPage(){
+    /* The above code is defining multiple state variables and their initial values using the useState
+    hook in a React functional component. It also imports and uses some hooks and context from
+    React. The state variables are used to manage the visibility and data of different lists (user,
+    stadium, club, competition, and match), as well as some sorting, pagination, and autocomplete
+    functionality. The code also defines a navigate function using the useNavigate hook. */
     const [userListVisible, setUserListVisible] = useState(false);
     const [bulkDeleteVisible, setBulkDeleteVisible] = useState(false);
 
@@ -42,9 +47,10 @@ export default function AdminPage(){
     const [matchList, setMatchList] = useState([]);
     const [deleteMatchList, setDeleteMatchList] = useState([]);
 
-    const {tokens, user} = useContext(authContext);
+    const {tokens, user, URL_BASE} = useContext(authContext);
     let navigate = useNavigate();
 
+    //Checking the user privilege, if not alright, the user is navigated back to the main page
     useEffect(() => {
         if (!user)
             navigate("/");
@@ -53,28 +59,38 @@ export default function AdminPage(){
             navigate("/");
     }, [user, navigate]);
 
+    /* The above code defines four functions that return URLs for different API endpoints related to
+    stadiums, clubs, competitions, and matches. The URLs include the current page number and
+    pagination value as query parameters. The functions use the `useCallback` hook to memoize the
+    URLs and update them only when the `pageNumber` or `paginationValue` variables change. */
     var getUrlForStadiums = useCallback(() => {
-        return "https://SArnold-sdi-22-23.crabdance.com/api/stadiums/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
-    }, [pageNumber, paginationValue])
+        return URL_BASE + "/api/stadiums/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+    }, [pageNumber, paginationValue, URL_BASE])
 
     var getUrlForClubs = useCallback(() => {
-        return "https://SArnold-sdi-22-23.crabdance.com/api/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
-    }, [pageNumber, paginationValue])
+        return URL_BASE + "/api/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+    }, [pageNumber, paginationValue, URL_BASE])
     
     var getUrlForCompetitions = useCallback(() => {
-        return "https://SArnold-sdi-22-23.crabdance.com/api/competitions/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
-    }, [pageNumber, paginationValue])
+        return URL_BASE + "/api/competitions/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+    }, [pageNumber, paginationValue, URL_BASE])
 
     var getUrlForMatches = useCallback(() => {
-        return "https://SArnold-sdi-22-23.crabdance.com/api/matches/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
-    }, [pageNumber, paginationValue])
+        return URL_BASE + "/api/matches/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+    }, [pageNumber, paginationValue, URL_BASE])
 
+   /* The code is using the useEffect hook to fetch data from different API endpoints based on which
+   list is currently visible (stadium, club, competition, or match list). It also sets the maximum
+   page number for pagination based on the response from the API. Additionally, it resets the delete
+   lists for each list type when a new list is made visible. The useEffect hook is triggered
+   whenever any of the dependencies (list visibility, pagination value, and setPageMax function)
+   change. */
     useEffect(() => {
         if (stadiumListVisible){
             setDeleteClubList([]);
             setDeleteCompetitionList([]);
             setDeleteMatchList([]);
-            fetch("https://SArnold-sdi-22-23.crabdance.com/api/stadiums/?pageNumber=" + String(paginationValue))
+            fetch(URL_BASE + "/api/stadiums/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
@@ -82,7 +98,7 @@ export default function AdminPage(){
             setDeleteStadiumList([]);
             setDeleteCompetitionList([]);
             setDeleteMatchList([]);
-            fetch("https://SArnold-sdi-22-23.crabdance.com/api/clubs/?pageNumber=" + String(paginationValue))
+            fetch(URL_BASE + "/api/clubs/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
@@ -90,7 +106,7 @@ export default function AdminPage(){
             setDeleteClubList([]);
             setDeleteStadiumList([]);
             setDeleteMatchList([]);
-            fetch("https://SArnold-sdi-22-23.crabdance.com/api/competitions/?pageNumber=" + String(paginationValue))
+            fetch(URL_BASE + "/api/competitions/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
@@ -98,12 +114,16 @@ export default function AdminPage(){
             setDeleteClubList([]);
             setDeleteCompetitionList([]);
             setDeleteStadiumList([]);
-            fetch("https://SArnold-sdi-22-23.crabdance.com/api/matches/?pageNumber=" + String(paginationValue))
+            fetch(URL_BASE + "/api/matches/?pageNumber=" + String(paginationValue))
                 .then(number => number.json())
                 .then(number => setPageMax(number["pageNumber"]));
         }
-    }, [stadiumListVisible, clubListVisible, competitionListVisible, matchListVisible, paginationValue, setPageMax]);
+    }, [stadiumListVisible, clubListVisible, competitionListVisible, matchListVisible, paginationValue, setPageMax, URL_BASE]);
 
+    /* The above code is using the `useEffect` hook in React to fetch data from different URLs for
+    stadiums, clubs, competitions, and matches. It then sets the state of the corresponding lists
+    with the fetched data. The `getUrlForStadiums`, `getUrlForClubs`, `getUrlForCompetitions`, and
+    `getUrlForMatches` functions are likely returning the URLs for the respective API endpoints. */
     useEffect(() => {
         fetch(getUrlForStadiums())
             .then(stadium => stadium.json())
@@ -128,17 +148,19 @@ export default function AdminPage(){
             .then(match => setMatchList((match.detail === undefined) ? match : []));
     }, [getUrlForMatches])
 
+    //Getting and updating the pagenumber for the list of users
     useEffect(() => {
-        fetch(URL_BASE + "?pageNumber=" + String(paginationValue), {
+        fetch(URL_BASE + "/api/admin/user/?pageNumber=" + String(paginationValue), {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
         }).then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, [paginationValue, tokens]);
+    }, [paginationValue, tokens, URL_BASE]);
     
+    //Getting and updating the list of users, based on the page number
     var getUrlForUsers = useCallback(() => {
-        return URL_BASE + "?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
-    }, [pageNumber, paginationValue])
+        return URL_BASE + "/api/admin/user/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+    }, [pageNumber, paginationValue, URL_BASE])
 
     useEffect(() => {
         fetch(getUrlForUsers(), {
@@ -148,10 +170,12 @@ export default function AdminPage(){
             .then(user => setUserList((user.detail === undefined) ? user : []));
     }, [getUrlForUsers, tokens])
 
+    //Function to handle row click in table
     const rowClickHandler = (stadium) => {
         setUserValue(stadium);
     } 
 
+    //Function which called by the custom form, when a user action, which could change the list is done
     const refresh = () => {
         setUserValue(initialUserValue);
         fetch(getUrlForUsers(), {
@@ -161,6 +185,10 @@ export default function AdminPage(){
             .then(user => setUserList((user.detail === undefined) ? user : []));
     }
 
+    /**
+     * This function refreshes the lists of stadiums, clubs, competitions, and matches based on which
+     * list is currently visible.
+     */
     const refreshPages = () => {
         if (stadiumListVisible){
             setDeleteClubList([]);
@@ -200,6 +228,7 @@ export default function AdminPage(){
         }
     }
 
+    //Sorting function for the users, which is sent and called by the table header, only works on the local user list
     const sortingHandler = (property) => {
         const isAscending = orderDirection === "asc";
         setOrderValue(property);
@@ -221,6 +250,7 @@ export default function AdminPage(){
         setUserList(varUserList);
     }
 
+    //Page navigation functions for the table
     const pageUp = () => {
         if (pageNumber < pageMax) {
             const newPageNumber = pageNumber + 1;
@@ -235,10 +265,12 @@ export default function AdminPage(){
         }
     }
 
+    //The function is called every few seconds, when the user types somethin in the autocomplete field
+    //Gets a list of users, which can be selected through the autocomplete
     const fetchSuggestion = async (e) => {
         try {
             setAutoCompleteNames([]);
-            fetch(URL_BASE + "?name=" + e.target.value, {
+            fetch(URL_BASE + "/api/admin/user/?name=" + e.target.value, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Authorization':'Bearer ' + String(tokens?.access) },
             }).then(user => user.json())
@@ -250,6 +282,10 @@ export default function AdminPage(){
 
     const debouncedHandler = useRef(debounce(fetchSuggestion, 500)).current;
 
+    /* The above code defines five functions that use the `useCallback` hook in React. Each function
+    returns an array of keys of the first object in a given list (userList, stadiumList, clubList,
+    competitionList, and matchList). The `useCallback` hook is used to memoize the functions and
+    prevent unnecessary re-renders when the corresponding list props are updated. */
     const getHeadings = useCallback(() => {
         if(userList.length === 0)
             return [];
@@ -280,6 +316,12 @@ export default function AdminPage(){
         return Object.keys(matchList[0])
     }, [matchList]);
 
+    /**
+     * The above code defines four functions that handle click events on rows and add the clicked item
+     * to a corresponding delete list.
+     * @param stadium - It is a variable representing a stadium object that is passed as an argument to
+     * the stadiumRowClickHandler function.
+     */
     const stadiumRowClickHandler = (stadium) => {
         let list = deleteStadiumList
         list.push(stadium)
@@ -304,6 +346,13 @@ export default function AdminPage(){
         setDeleteMatchList(list)
     } 
 
+    /**
+     * This function handles the deletion of stadiums by sending a POST request to the server with the
+     * list of stadiums to be deleted, but only if the user has admin privileges.
+     * @returns The function `stadiumDeleteButtonHandler` returns nothing (`undefined`). It performs
+     * some actions such as checking if the user has admin privileges, making a POST request to delete
+     * stadiums, and refreshing the page after the request is completed.
+     */
     const stadiumDeleteButtonHandler = () => {
         if (user.role !== "Admin"){
             ToasterError("No admin privilege");
@@ -316,11 +365,18 @@ export default function AdminPage(){
                 "stadiums": deleteStadiumList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/stadiums/";
+        const URL = URL_BASE + "/api/admin/stadiums/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }
 
+    /**
+     * The function handles the deletion of clubs by sending a POST request to the server with the list
+     * of clubs to be deleted, but only if the user has admin privileges.
+     * @returns The function `clubDeleteButtonHandler` returns nothing (i.e., `undefined`). It performs
+     * some actions such as checking the user's role, making a POST request to delete clubs, and
+     * refreshing the pages after the request is completed.
+     */
     const clubDeleteButtonHandler = () => {
         if (user.role !== "Admin"){
             ToasterError("No admin privilege");
@@ -333,11 +389,19 @@ export default function AdminPage(){
                 "clubs": deleteClubList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/clubs/";
+        const URL = URL_BASE + "/api/admin/clubs/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }
 
+    /**
+     * This function handles the deletion of competitions by sending a POST request to the server with
+     * the list of competitions to be deleted, but only if the user has admin privileges.
+     * @returns The function `competitionDeleteButtonHandler` returns nothing (`undefined`). It only
+     * executes some code, such as displaying an error message if the user does not have admin
+     * privileges, sending a request to delete competitions if the user is an admin, and refreshing the
+     * page after the competitions are deleted.
+     */
     const competitionDeleteButtonHandler = () => {
         if (user.role !== "Admin"){
             ToasterError("No admin privilege");
@@ -350,11 +414,16 @@ export default function AdminPage(){
                 "comps": deleteCompetitionList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/competitions/";
+        const URL = URL_BASE + "/api/admin/competitions/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }
 
+    /**
+     * This function handles the deletion of matches by sending a POST request to the API endpoint, but
+     * only if the user has admin privileges.
+     * @returns The function `matchDeleteButtonHandler` returns nothing (`undefined`).
+     */
     const matchDeleteButtonHandler = () => {
         if (user.role !== "Admin"){
             ToasterError("No admin privilege");
@@ -367,11 +436,17 @@ export default function AdminPage(){
                 "matches": deleteMatchList
             })
         };
-        const URL = "https://SArnold-sdi-22-23.crabdance.com/api/admin/matches/";
+        const URL = URL_BASE + "/api/admin/matches/";
         fetch(URL, requestOptions)
             .then(() => {refreshPages();});
     }
 
+    /* The above code is rendering a dashboard view with various components such as buttons, forms,
+    tables, and autocomplete fields. The view is conditionally rendered based on the user's role and
+    the visibility of certain components. The user can see a list of users and perform bulk delete
+    operations, or they can see lists of stadiums, clubs, competitions, and matches and perform
+    delete operations on them. The view also includes pagination and sorting functionality for the
+    tables. */
     return (
         <MainLayout>
             <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
@@ -417,7 +492,7 @@ export default function AdminPage(){
             }
             {userListVisible && !bulkDeleteVisible && user && user.role === "Admin" &&
                 <>
-                    <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5 }}>
+                    <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", pt: 5 }} id="bulkButtons">
                         <Button variant="contained" sx={{ m: 3 }}
                             onClick={() => (setStadiumListVisible((!clubListVisible && !matchListVisible && !competitionListVisible) ? !stadiumListVisible : stadiumListVisible))}
                         >See Stadium List</Button>

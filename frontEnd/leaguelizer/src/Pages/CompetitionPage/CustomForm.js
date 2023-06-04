@@ -1,11 +1,11 @@
 import { React, useEffect, useState, useCallback, useContext } from "react";
 import { Button, Grid, TextField, Autocomplete, Container } from "@mui/material";
-import URL_BASE from "./constants";
 import CustomTable from "../../Layouts/PageLayout/Table/CustomTable";
 import ToasterError from "../../Layouts/ErrorLayout/ToasterError";
 import authContext from "../../Context/Context";
 import "./Form.css"
 
+//Initial match value for better clarity
 const initialMatchValue = {
     "club1": {
         "id": "",
@@ -33,23 +33,32 @@ const initialMatchValue = {
 }
 
 export default function CustomForm(props) {
-    let {user} = useContext(authContext);
+   /* The above code is defining multiple state variables using the useState hook in a React component.
+   These variables are used to store values related to a competition, club, league, and match. The
+   code also initializes some of these variables with values passed in as props. Additionally, there
+   are variables related to pagination. The code is also using the useContext hook to access the
+   authentication context. */
+    let {user, URL_BASE} = useContext(authContext);
+    //Competition fields
     const [compNameValue, setCompNameValue] = useState(props.value.name);
     const [compTeamValue, setCompTeamValue] = useState(props.value.numberOfTeams);
     const [compDateValue, setCompDateValue] = useState(props.value.foundedDate);
     const [compPrizeValue, setCompPrizeValue] = useState(props.value.prizeMoney);
     const [compTypeValue, setCompTypeValue] = useState(props.value.competitionType);
 
+    //Selected club fields
     const [clubNameValue, setClubNameValue] = useState("");
     const [clubAnnualBudgetValue, setClubAnnualBudgetValue] = useState("");
     const [clubStaffValue, setClubStaffValue] = useState("");
     const [clubDateValue, setClubDateValue] = useState("");
     const [clubStadiumValue, setClubStadiumValue] = useState("");
 
+    //Page logic fields
     const [leagueClubs, setLeagueClubs] = useState([]);
     const [ specificLeagueVisible, setSpecificLeagueVisible ] = useState(false);
     const [clubMatchesVisible, setClubMatchesVisible] = useState(false);
 
+    //Match fields
     const [club1Value, setClub1Value] = useState("");
     const [club2Value, setClub2Value] = useState("");
     const [stadiumValue, setStadiumValue] = useState("");
@@ -57,6 +66,7 @@ export default function CustomForm(props) {
     const [scoreValue, setScoreValue] = useState("");
     const [dateValue, setDateValue] = useState("");
 
+    //Other needed funcitonality fields
     const [ matchValue, setMatchValue ] = useState(initialMatchValue);
     const [ matchList, setMatchList ] = useState([]);
     const [ orderValue, setOrderValue ] = useState("name");
@@ -65,6 +75,12 @@ export default function CustomForm(props) {
     const [ pageMax, setPageMax ] = useState(1);
     const [ paginationValue, setPaginationValue ] = useState(localStorage.getItem('paginationValue') ? JSON.parse(localStorage.getItem('paginationValue')) : 12);
 
+   /**
+    * The above code contains three functions for validating input fields related to competitions,
+    * matches, and clubs in a sports management system.
+    * @returns The functions are returning a boolean value (true or false) depending on whether the
+    * input values pass the validation checks or not.
+    */
     function validateCompetition() {
         if (!/^[0-9]+$/.test(compTeamValue) | parseInt(compTeamValue) < 0){
             ToasterError("There must be a positive number of teams");
@@ -145,6 +161,7 @@ export default function CustomForm(props) {
         return true;
     }
 
+    //Getting pagenumber of the matches list for a specific competition
     const getPageMax = useCallback(() => {
         if (props.value.id === undefined)
             return;
@@ -154,11 +171,12 @@ export default function CustomForm(props) {
             return;
         }
     
-        fetch(URL_BASE + String(props.value.id) + "/clubs/?pageNumber=" + String(paginationValue))
+        fetch(URL_BASE + "/api/competitions/" + String(props.value.id) + "/clubs/?pageNumber=" + String(paginationValue))
             .then(number => number.json())
             .then(number => setPageMax(number["pageNumber"]));
-    }, [props.value.id, paginationValue]);
+    }, [props.value.id, paginationValue, URL_BASE]);
 
+    //When the page refreshes, so will the valued
     useEffect(() => {
         setCompNameValue(props.value.name)
         setCompTeamValue(props.value.numberOfTeams)
@@ -169,6 +187,7 @@ export default function CustomForm(props) {
         getPageMax()
     }, [props, getPageMax]);
 
+    //Getting and updating the list of matches for a specific competition
     var getUrlForMatches = useCallback(() => {
         if (props.value.id === undefined)
             return "";
@@ -178,8 +197,8 @@ export default function CustomForm(props) {
             return "";
         }
 
-        return URL_BASE + String(props.value.id) + "/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
-    }, [pageNumber, props.value.id, paginationValue])
+        return URL_BASE + "/api/competitions/" + String(props.value.id) + "/clubs/?page=" + String(pageNumber) + "&pageNumber=" + String(paginationValue);
+    }, [pageNumber, props.value.id, paginationValue, URL_BASE])
 
     useEffect(() => {
         if (getUrlForMatches() !== "")
@@ -188,6 +207,7 @@ export default function CustomForm(props) {
                 .then(match => setMatchList(match));
     }, [getUrlForMatches])
 
+    //When the given part is opened, get the list of clubs for a specific competition 
     useEffect(() => {
         if (props.value.id < 0){
             ToasterError("Id needs to be a positive integer");
@@ -195,15 +215,16 @@ export default function CustomForm(props) {
         }
         
         if (specificLeagueVisible && compNameValue !== "" && props.value.id !== undefined){
-            fetch(URL_BASE + String(props.value.id))
+            fetch(URL_BASE + "/api/competitions/" + String(props.value.id))
                 .then(clubs => clubs.json())
                 .then(clubs => setLeagueClubs(clubs["clubs"]));
         }
         else{
             setLeagueClubs([]);
         }
-    }, [specificLeagueVisible, compNameValue, props, compTypeValue])
+    }, [specificLeagueVisible, compNameValue, props, compTypeValue, URL_BASE])
 
+    //Theese 3 function are for handling row clikcing, passed on to the table, and change the current values in the form 
     const changeClubValue = (club) => {
         setClubNameValue(club.name)
         setClubAnnualBudgetValue(club.annualBudget)
@@ -226,6 +247,7 @@ export default function CustomForm(props) {
         changeMatchValues(match);
     } 
 
+    //Sorting handler for the match list, sent and called by the table, only works on the local list
     const sortingHandler = (property) => {
         const isAscending = orderDirection === "asc";
         setOrderValue(property);
@@ -247,6 +269,7 @@ export default function CustomForm(props) {
         setMatchList(varMatchList);
     }
 
+    //Page navigation function for the competition list
     const pageUp = () => {
         if (pageNumber < pageMax) {
             const newPageNumber = pageNumber + 1;
@@ -261,12 +284,22 @@ export default function CustomForm(props) {
         }
     }
 
+    //Calculating the header for the match table
     const getHeadings = () => {
         if(matchList.length === 0)
             return [];
         return Object.keys(matchList[0])
     }
 
+    /**
+     * The function sends a POST request to a URL with competition data and displays an error message
+     * if there is an issue.
+     * @returns The function `postButtonHandler` is returning nothing (`undefined`) if the
+     * `validateCompetition` function returns false. Otherwise, it is making a POST request to a
+     * specified URL with a JSON payload, and handling the response by displaying an error message if
+     * there is a user or error property in the response, or refreshing the page if the request was
+     * successful.
+     */
     const postButtonHandler = () => {
         if (!validateCompetition())
             return;
@@ -284,7 +317,7 @@ export default function CustomForm(props) {
             })
         };
 
-        fetch(URL_BASE, requestOptions)
+        fetch(URL_BASE + "/api/competitions/", requestOptions)
             .then(message => message.json())
             .then((message) => {
                 if (message.user !== undefined)
@@ -296,6 +329,11 @@ export default function CustomForm(props) {
             })
     }
 
+    /**
+     * This is a function that handles the PUT request for updating a competition's information.
+     * @returns The function `putButtonHandler` returns nothing (`undefined`) in most cases, but it may
+     * return early with a `return` statement if certain conditions are met.
+     */
     const putButtonHandler = () => {
         if (!validateCompetition())
             return;
@@ -321,7 +359,7 @@ export default function CustomForm(props) {
             })
         };
 
-        const URL = URL_BASE + String(props.value.id) + "/"
+        const URL = URL_BASE + "/api/competitions/" + String(props.value.id) + "/"
 
         fetch(URL, requestOptions)
             .then(message => message.json())
@@ -335,6 +373,12 @@ export default function CustomForm(props) {
             })
     }
 
+    /**
+     * This function handles the deletion of an item by sending a DELETE request to a specified URL and
+     * refreshing the page.
+     * @returns The function `deleteButtonHandler` returns nothing (`undefined`). It only executes some
+     * code to handle the deletion of an item and refresh the component.
+     */
     const deleteButtonHandler = () => {
         if (props.value.id < 0){
             ToasterError("Id needs to be a positive integer");
@@ -345,12 +389,19 @@ export default function CustomForm(props) {
             method: 'DELETE'
         };
 
-        const URL = URL_BASE + String(props.value.id)
+        const URL = URL_BASE + "/api/competitions/" + String(props.value.id)
 
         fetch(URL, requestOptions)
             .then(() => {props.refresh();});
     }
 
+    /**
+     * This function sends a POST request to a server with data about a competition and its associated
+     * clubs.
+     * @returns The function `postWithClubsHandler` is returning nothing (`undefined`). It is making a
+     * POST request to a URL with some data in the request body, and then handling the response by
+     * checking for errors and refreshing the page if there are none.
+     */
     const postWithClubsHandler = () => {
         if (!validateCompetition())
             return;
@@ -369,7 +420,7 @@ export default function CustomForm(props) {
             })
         };
 
-        fetch(URL_BASE + "leagueClubs/", requestOptions)
+        fetch(URL_BASE + "/api/competitions/leagueClubs/", requestOptions)
             .then(message => message.json())
             .then((message) => {
                 if (message.error !== undefined)
@@ -379,6 +430,13 @@ export default function CustomForm(props) {
             })
     }
 
+    /**
+     * The function adds a new club to a list of league clubs after validating the input.
+     * @returns If the `validateClub()` function returns `false`, the function will return without
+     * executing the rest of the code. Otherwise, the function will add a new club object to the
+     * `leagueClubs` array and update the state using the `setLeagueClubs` function. However, the
+     * function does not explicitly return anything.
+     */
     const addClubHandler = () => {
         if (!validateClub()){
             return;
@@ -398,6 +456,10 @@ export default function CustomForm(props) {
         setLeagueClubs(varLeagueCLubList);
     }
 
+    /**
+     * This function handles the click event of a button to post a match to a server.
+     * @returns The function `postMatchButtonHandler` returns nothing (`undefined`).
+     */
     const postMatchButtonHandler = () => {
         if (!validateMatch())
             return;
@@ -421,7 +483,7 @@ export default function CustomForm(props) {
             })
         };
 
-        fetch(URL_BASE + String(props.value.id) + "/clubs/" , requestOptions)
+        fetch(URL_BASE + "/api/competitions/" + String(props.value.id) + "/clubs/" , requestOptions)
             .then(message => message.json())
             .then((message) => {
                 if (message.club1 !== undefined)
@@ -441,6 +503,12 @@ export default function CustomForm(props) {
             })
     }
 
+    /**
+     * This function handles the PUT request for updating a match with the provided values.
+     * @returns nothing if the validation fails or if any of the conditions in the if statements are
+     * met. If none of the conditions are met, the function will execute the PUT request with the
+     * specified requestOptions.
+     */
     const putMatchButtonHandler = () => {
         if (!validateMatch())
             return;
@@ -468,7 +536,7 @@ export default function CustomForm(props) {
             })
         };
 
-        const URL = URL_BASE + String(props.value.id) + "/clubs/"
+        const URL = URL_BASE + "/api/competitions/" + String(props.value.id) + "/clubs/"
 
         fetch(URL, requestOptions)
             .then(message => message.json())
@@ -490,6 +558,13 @@ export default function CustomForm(props) {
             })
     }
 
+    /**
+     * This function handles the deletion of a match and displays an error message if the match ID is
+     * not a positive integer.
+     * @returns The function `deleteMatchButtonHandler` is returning nothing (`undefined`). It only
+     * returns early with a `return` statement if the `id` value is not a positive integer. Otherwise,
+     * it makes a `DELETE` request to a URL and then calls the `refresh` function passed in as a prop.
+     */
     const deleteMatchButtonHandler = () => {
         if (props.value.id < 0){
             ToasterError("Id needs to be a positive integer");
@@ -500,12 +575,17 @@ export default function CustomForm(props) {
             method: 'DELETE'
         };
 
-        const URL = URL_BASE + String(matchValue.id) + "/clubs/"
+        const URL = URL_BASE + "/api/competitions/" + String(matchValue.id) + "/clubs/"
 
         fetch(URL, requestOptions)
             .then(() => {props.refresh();});
     }
 
+    /* The above code is rendering a form with various input fields and buttons. It allows the user to
+    input information about a competition or a club, and also has options to view clubs in a league
+    or matches in a competition. The form also has options to add, edit, or delete information based
+    on the user's role. The form also includes a custom table component to display and sort data
+    related to matches. */
     return (
         <form className="clubForm">
             <Grid container id='inputHolder'>
@@ -522,12 +602,14 @@ export default function CustomForm(props) {
                 {((user.role === "Regular" || user.role === "Moderator" || user.role === "Admin")) ?
                 <Button variant="contained" sx={{bgcolor: "red"}} onClick={deleteButtonHandler}>Delete</Button> : null }
             </Grid> : null : null }
-            <Button variant="contained" sx={{mt:3, mr: 5, width:250 }}
-                onClick={() => (setSpecificLeagueVisible((!clubMatchesVisible) ? !specificLeagueVisible : specificLeagueVisible))}
-            >See Clubs In League</Button>
-            <Button variant="contained" sx={{ mt: 3, width:250 }}
-                onClick={() => (setClubMatchesVisible((!specificLeagueVisible) ? !clubMatchesVisible : clubMatchesVisible))}
-            >Competitions Matches</Button>
+            <Grid container sx={{display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 5, mb:10}}>
+                <Button variant="contained" sx={{mt:3, mr: 5, width:250 }}
+                    onClick={() => (setSpecificLeagueVisible((!clubMatchesVisible) ? !specificLeagueVisible : specificLeagueVisible))}
+                >See Clubs In League</Button>
+                <Button variant="contained" sx={{ mt: 3, width:250 }}
+                    onClick={() => (setClubMatchesVisible((!specificLeagueVisible) ? !clubMatchesVisible : clubMatchesVisible))}
+                >Competitions Matches</Button>
+            </Grid>
             {specificLeagueVisible && !clubMatchesVisible &&
                 <>
                 <Grid container id='clubHolder'>
@@ -543,7 +625,7 @@ export default function CustomForm(props) {
                     options={leagueClubs}
                     getOptionLabel={(option) => option.name}
                     label="Clubs in the league"
-                    renderInput={(params) => <TextField {...params} label="Club" variant="outlined"></TextField>}
+                    renderInput={(params) => <TextField {...params} label="Select a club from the league" variant="outlined"></TextField>}
                     filterOptions={(x) => x}
                     onChange={(event, value) => {
                         if (value) {

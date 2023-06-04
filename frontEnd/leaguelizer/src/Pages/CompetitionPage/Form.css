@@ -25,6 +25,17 @@
     margin-top: 3px;
 }
 
+.lineBreak{
+    margin-bottom: 150px;
+
+    border-bottom: 5px solid whitesmoke;
+    border-radius: 150px;
+}
+
+#matchHolder div{
+    margin-top: 15px;
+}
+
 @media only screen and (max-width:1450px){
     #inputHolder, #clubHolder, #matchHolder{
         flex-direction: column;
@@ -34,8 +45,5 @@
     }
     #clubHolder div{
         margin-bottom: 15px;
-    }
-    #matchHolder div{
-        margin-top: 15px;
     }
 }

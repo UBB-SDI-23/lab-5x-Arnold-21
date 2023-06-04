@@ -586,7 +586,6 @@ export default function CustomForm(props) {
                 {((user.role === "Moderator" || user.role === "Admin")) ?
                 <Button variant="contained" sx={{ bgcolor: "red" }} onClick={deleteButtonHandler}>Delete</Button> : null }
             </Grid> : null : null }
-            <hr class="lineBreak"></hr>
             <Grid container sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                 <Button variant="contained" sx={{ mt: 3, mr: 5, width:200 }}
                     onClick={() => (setSpecificLeagueVisible((!clubMatchesVisible) ? !specificLeagueVisible : specificLeagueVisible))}
@@ -609,7 +608,7 @@ export default function CustomForm(props) {
                 </Container>
             }
             {!specificLeagueVisible && clubMatchesVisible &&
-                <div id='matchContainer'>
+                <Container id='matchContainer'>
                     <Grid container id='matchHolder'>
                         <TextField variant="outlined" id="club2" value={club2Value} label="Club2" onChange={(e) => { setClub2Value(e.target.value) }}>Club2</TextField>
                         <TextField variant="outlined" id="comp" value={compValue} label="Competition" onChange={(e) => { setCompValue(e.target.value) }}>Competition</TextField>
@@ -627,7 +626,6 @@ export default function CustomForm(props) {
                         {((user.role === "Moderator" || user.role === "Admin")) ?
                         <Button variant="contained" sx={{ bgcolor: "red" }} onClick={deleteMatchButtonHandler}>Delete</Button> : null }
                     </Grid> : null : null }
-                    <hr></hr>
                                         
                     <CustomTable
                         orderValue = {orderValue}
@@ -645,9 +643,8 @@ export default function CustomForm(props) {
                         paginationHandler = {setPaginationValue}
                         aggregateHeader = "avgleaguebudget"
                     ></CustomTable>
-                </div>
+                </Container>
             }
-            <hr class="lineBreak"></hr>
         </form>
     );
 }

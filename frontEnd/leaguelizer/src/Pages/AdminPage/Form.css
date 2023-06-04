@@ -12,4 +12,7 @@
     #inputHolder div{
         margin-bottom: 5px;
     }
+    #bulkButtons button{
+        width: 100%;
+    }
 }

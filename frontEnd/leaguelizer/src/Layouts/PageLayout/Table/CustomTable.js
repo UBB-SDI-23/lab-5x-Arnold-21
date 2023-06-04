@@ -17,7 +17,7 @@ const buttonStyle ={
 // Therefore it doesn' handle logic, it only communicates with the page component that it is a part of, from which it will get it's values and render them
 // Every logic that table would need to do, is handled by the parent, in form of functions, which it gets from the parent
 function CustomTable(props) {
-    // Extracting all the information for the table, there is a lot, for the sake of reuse and customability
+    // Extracting all the information for the table, there is a lot, for the sake of reuse and customability by the parent modules
     const { 
         aggregateHeader,
         orderValue, 
