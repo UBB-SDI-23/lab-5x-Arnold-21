@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 # Create user models
+# This is a Django User model with additional fields for user role, confirmation code, and
+# confirmation start time.
 class User(AbstractUser):
     class Role(models.TextChoices):
         REGULAR = "Regular", 'Regular'
@@ -12,6 +14,8 @@ class User(AbstractUser):
     confirmation_code = models.CharField(max_length=20, blank=True, null=True, unique=True)
     confirmation_start = models.DateTimeField(blank=True, null=True)
 
+# This is a Django model class that represents user details including bio, location, birthday, gender,
+# marital status, and pagination value.
 class UserDetail(models.Model):
     genderChoices = [
         ('M', 'Male'),
@@ -34,6 +38,8 @@ class UserDetail(models.Model):
 
 
 # Create your models here.
+# This is a Django model class for a Stadium object with various attributes such as name, city,
+# description, capacity, build and renovation dates, and a foreign key to a User object.
 class Stadium(models.Model):
     name = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
@@ -46,6 +52,8 @@ class Stadium(models.Model):
     def __str__(self):
         return self.name
     
+# This is a Django model class for a competition with attributes such as name, number of teams,
+# founded date, prize money, competition type, and a foreign key to the User model.
 class Competition(models.Model):
     name = models.CharField(max_length=100)
     numberOfTeams = models.IntegerField()
@@ -57,6 +65,8 @@ class Competition(models.Model):
     def __str__(self):
         return self.name
     
+# This is a Django model class for a Club with various attributes such as name, budget, number of
+# staff, founded date, stadium, league, and user.
 class Club(models.Model):
     name = models.CharField(max_length=100)
     annualBudget = models.IntegerField()
@@ -69,6 +79,8 @@ class Club(models.Model):
     def __str__(self):
         return self.name
     
+# This is a Django model class for MatchesPlayed with fields for club1, club2, competition, stadium,
+# user, roundOfPlay, score, and date.
 class MatchesPlayed(models.Model):
     club1 = models.ForeignKey(Club, related_name="related_club1", on_delete=models.CASCADE)
     club2 = models.ForeignKey(Club, related_name="related_club2", on_delete=models.CASCADE)
@@ -81,6 +93,8 @@ class MatchesPlayed(models.Model):
     date = models.DateField()
 
 #Message log model
+# This is a Django model class called MessageLog that has two fields: sender (a CharField with a
+# maximum length of 100) and message (a TextField).
 class MessageLog(models.Model):
     sender = models.CharField(max_length=100)
     message = models.TextField()

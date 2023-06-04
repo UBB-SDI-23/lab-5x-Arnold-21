@@ -19,11 +19,37 @@ from rest_framework_simplejwt.views import (
 from django.core.asgi import get_asgi_application
 from channels.security.websocket import AllowedHostsOriginValidator
 from channels.auth import AuthMiddlewareStack
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
 
+# This code sets the default value for the `DJANGO_SETTINGS_MODULE` environment variable to
+# `'lab1.settings'` if it is not already set. It then gets the ASGI application object for the Django
+# project using the `get_asgi_application()` function from `django.core.asgi`. The ASGI application
+# object is used to handle incoming HTTP and WebSocket requests.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lab1.settings')
 
 django_asgi_app = get_asgi_application()
 
+# `descView` is a variable that is assigned the result of calling the `get_schema_view` function from
+# the `drf_yasg.views` module. This function returns a view function that generates a Swagger/OpenAPI
+# schema for the specified API.
+descView = get_schema_view(
+    openapi.Info(
+        title="Snippets API",
+        default_version="v1",
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
+
+# `websocket_urlpatterns` is a list of URL patterns that are used to define the application endpoints
+# for the Django Channels application. It includes both WebSocket endpoints and REST API endpoints.
+# Each endpoint is defined using the `path` or `re_path` function from Django's URL routing system,
+# and is associated with a corresponding view or consumer function. When a WebSocket connection is
+# established to one of these endpoints, the associated consumer function is called to handle the
+# incoming messages. Similarly, when a REST API request is made to one of these endpoints, the
+# associated view function is called to handle the request and return a response.
 websocket_urlpatterns = [
     re_path(r'^ws/(?P<room_name>[^/]+)/$', TextRoomConsumer.as_asgi()),
     path('api/stadiums/', stadiumList.as_view()),
@@ -56,9 +82,13 @@ websocket_urlpatterns = [
     path('api/admin/competitions/', bulkCompetition.as_view()),
     path('api/admin/matchs/', bulkMatch.as_view()),
     path('api/admin/userdetail/<int:id>/', updateUserPagination.as_view()),
-    path('api/predict/', aiPrediction.as_view())
+    path('api/predict/', aiPrediction.as_view()),
+    path('desc/', descView.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui')
 ]
 
+# This code is creating an ASGI application object that can handle both HTTP and WebSocket requests.
+# It uses the `ProtocolTypeRouter` class from the `channels.routing` module to route incoming requests
+# to the appropriate handler based on the protocol used.
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     'websocket': AllowedHostsOriginValidator(
